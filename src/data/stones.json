@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "sample": true,
+    "note": "Six sample stones so the shelf can be seen working. Measurements and weights are typical for each cut. The house's own stones, with their reports and daylight videos, take their place. No price is printed anywhere, by the house's own rule."
+  },
+  "stones": [
+    { "ref": "IC-101", "name": "Royal blue cushion", "colour": "blue", "colourWord": "Royal blue", "hex": "#0c2f9c", "deep": "#06184f", "cut": "cushion", "carat": 3.12, "mm": [8.4, 7.6], "origin": "Ratnapura", "treatment": "Unheated", "lab": "GRS" },
+    { "ref": "IC-102", "name": "Padparadscha oval", "colour": "padparadscha", "colourWord": "Padparadscha", "hex": "#ee8a62", "deep": "#b4472a", "cut": "oval", "carat": 1.84, "mm": [8.1, 6.2], "origin": "Ratnapura", "treatment": "Unheated", "lab": "GIA" },
+    { "ref": "IC-103", "name": "Cornflower round", "colour": "blue", "colourWord": "Cornflower blue", "hex": "#2b5ad0", "deep": "#123083", "cut": "round", "carat": 2.05, "mm": [7.6, 7.6], "origin": "Elahera", "treatment": "Heated", "lab": "NGJA" },
+    { "ref": "IC-104", "name": "Pink cushion", "colour": "pink", "colourWord": "Pink", "hex": "#dc4e86", "deep": "#8e1f4e", "cut": "cushion", "carat": 1.46, "mm": [6.5, 6.1], "origin": "Balangoda", "treatment": "Unheated", "lab": "SSEF" },
+    { "ref": "IC-105", "name": "Yellow oval", "colour": "yellow", "colourWord": "Yellow", "hex": "#e9b72c", "deep": "#a3730a", "cut": "oval", "carat": 4.20, "mm": [10.4, 8.3], "origin": "Okkampitiya", "treatment": "Heated", "lab": "GIA" },
+    { "ref": "IC-106", "name": "Teal round", "colour": "teal", "colourWord": "Teal", "hex": "#137c88", "deep": "#07434a", "cut": "round", "carat": 2.60, "mm": [8.2, 8.2], "origin": "Elahera", "treatment": "Unheated", "lab": "Gübelin" }
+  ]
+}

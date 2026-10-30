@@ -1,0 +1,177 @@
+
+phone 390px
+PASS  phone 390px: nav WhatsApp pill opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  phone 390px: nav brand mark goes to the top changes something a person can see   0
+PASS  phone 390px: the top is the top   scrollY 0
+PASS  phone 390px: hero "See a stone turn" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  phone 390px: hero "The stones" changes something a person can see   29
+PASS  phone 390px: a drag on the hero stone tilts it   tilt 0.55 to 1.03
+PASS  phone 390px: colour chip blue changes something a person can see   IC-101,IC-103
+PASS  phone 390px: colour chip blue keeps 2   2 stones of 6
+PASS  phone 390px: colour chip padparadscha changes something a person can see   IC-102
+PASS  phone 390px: colour chip padparadscha keeps 1   1 stone of 6
+PASS  phone 390px: colour chip pink changes something a person can see   IC-104
+PASS  phone 390px: colour chip pink keeps 1   1 stone of 6
+PASS  phone 390px: colour chip yellow changes something a person can see   IC-105
+PASS  phone 390px: colour chip yellow keeps 1   1 stone of 6
+PASS  phone 390px: colour chip teal changes something a person can see   IC-106
+PASS  phone 390px: colour chip teal keeps 1   1 stone of 6
+PASS  phone 390px: colour chip all changes something a person can see   All 6 stones
+PASS  phone 390px: unheated only changes something a person can see   4 stones of 6
+PASS  phone 390px: unheated only keeps 4   4 stones of 6
+PASS  phone 390px: sort lightest first turns the shelf round   IC-104,IC-102,IC-103,IC-106,IC-101,IC-105
+PASS  phone 390px: unheated on a heated colour shows the empty state changes something a person can see   block
+PASS  phone 390px: the empty state is on screen   0 stones of 6
+PASS  phone 390px: empty state "Ask what else there is" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I am looking for a stone that is not on the page. Could you show me what you have? I am in [your city]. (fr
+PASS  phone 390px: "Show all stones" changes something a person can see   All 6 stones
+PASS  phone 390px: reset brings all six back   All 6 stones
+PASS  phone 390px: "Ask for the price" on IC-101 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the royal blue cushion (IC-101), 3.12 ct, unheated, GRS report? I am in [your cit
+PASS  phone 390px: "Set this stone" on IC-101 changes something a person can see   Royal blue cushion, 3.12 ct, as a ring in platinum, size 7 (17.3 mm).A person re
+PASS  phone 390px: IC-101 is now the stone in the configurator   Royal blue cushion, 3.12 ct, as a ring in platinum, size 7 (
+PASS  phone 390px: "Ask for the price" on IC-102 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the padparadscha oval (IC-102), 1.84 ct, unheated, GIA report? I am in [your city
+PASS  phone 390px: "Set this stone" on IC-102 changes something a person can see   Padparadscha oval, 1.84 ct, as a ring in platinum, size 7 (17.3 mm).A person rep
+PASS  phone 390px: IC-102 is now the stone in the configurator   Padparadscha oval, 1.84 ct, as a ring in platinum, size 7 (1
+PASS  phone 390px: "Ask for the price" on IC-103 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the cornflower round (IC-103), 2.05 ct, heated, NGJA report? I am in [your city].
+PASS  phone 390px: "Set this stone" on IC-103 changes something a person can see   Cornflower round, 2.05 ct, as a ring in platinum, size 7 (17.3 mm).A person repl
+PASS  phone 390px: IC-103 is now the stone in the configurator   Cornflower round, 2.05 ct, as a ring in platinum, size 7 (17
+PASS  phone 390px: "Ask for the price" on IC-104 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the pink cushion (IC-104), 1.46 ct, unheated, SSEF report? I am in [your city]. (
+PASS  phone 390px: "Set this stone" on IC-104 changes something a person can see   Pink cushion, 1.46 ct, as a ring in platinum, size 7 (17.3 mm).A person replies 
+PASS  phone 390px: IC-104 is now the stone in the configurator   Pink cushion, 1.46 ct, as a ring in platinum, size 7 (17.3 m
+PASS  phone 390px: "Ask for the price" on IC-105 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the yellow oval (IC-105), 4.20 ct, heated, GIA report? I am in [your city]. (from
+PASS  phone 390px: "Set this stone" on IC-105 changes something a person can see   Yellow oval, 4.20 ct, as a ring in platinum, size 7 (17.3 mm).A person replies w
+PASS  phone 390px: IC-105 is now the stone in the configurator   Yellow oval, 4.20 ct, as a ring in platinum, size 7 (17.3 mm
+PASS  phone 390px: "Ask for the price" on IC-106 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the teal round (IC-106), 2.60 ct, unheated, Gübelin report? I am in [your city]. 
+PASS  phone 390px: "Set this stone" on IC-106 changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  phone 390px: IC-106 is now the stone in the configurator   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm)
+PASS  phone 390px: stone chip IC-101 changes something a person can see   Royal blue cushion, 3.12 ct, as a ring in platinum, size 7 (17.3 mm).A person re
+PASS  phone 390px: stone chip IC-102 changes something a person can see   Padparadscha oval, 1.84 ct, as a ring in platinum, size 7 (17.3 mm).A person rep
+PASS  phone 390px: stone chip IC-103 changes something a person can see   Cornflower round, 2.05 ct, as a ring in platinum, size 7 (17.3 mm).A person repl
+PASS  phone 390px: stone chip IC-104 changes something a person can see   Pink cushion, 1.46 ct, as a ring in platinum, size 7 (17.3 mm).A person replies 
+PASS  phone 390px: stone chip IC-105 changes something a person can see   Yellow oval, 4.20 ct, as a ring in platinum, size 7 (17.3 mm).A person replies w
+PASS  phone 390px: stone chip IC-106 changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  phone 390px: piece pendant changes something a person can see   Teal round, 2.60 ct, as a pendant in platinum.A person replies with the render. 
+PASS  phone 390px: the ring size field hides for a pendant   size field none
+PASS  phone 390px: piece earrings changes something a person can see   Teal round, 2.60 ct, as a earrings in platinum.A person replies with the render.
+PASS  phone 390px: piece ring changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  phone 390px: the ring size field returns for a ring   size field flex
+PASS  phone 390px: metal yellow changes something a person can see   Teal round, 2.60 ct, as a ring in 18k yellow gold, size 7 (17.3 mm).A person rep
+PASS  phone 390px: metal white changes something a person can see   Teal round, 2.60 ct, as a ring in 18k white gold, size 7 (17.3 mm).A person repl
+PASS  phone 390px: metal rose changes something a person can see   Teal round, 2.60 ct, as a ring in 18k rose gold, size 7 (17.3 mm).A person repli
+PASS  phone 390px: metal platinum changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  phone 390px: ring size 5 reaches the summary and the drawing   Teal round, 2.60 ct, as a ring in platinum, size 5 (15.7 mm).A person replies wi
+PASS  phone 390px: inscription extra changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 5 (15.7 mm). With the report nu
+PASS  phone 390px: the extra is in the WhatsApp message   https://wa.me/94767412531?text=Hello The Island Cut. Could you draw Teal round, 2.60 ct, unheated, Gübelin report (IC-10
+PASS  phone 390px: melee extra changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 5 (15.7 mm). With the report nu
+PASS  phone 390px: "Send for a CAD drawing" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could you draw Teal round, 2.60 ct, unheated, Gübelin report (IC-106) as a ring in platinum, size 5 (15.7 m
+PASS  phone 390px: close "Open WhatsApp" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  phone 390px: footer link #stones changes something a person can see
+PASS  phone 390px: footer link #stones lands on its section   #stones
+PASS  phone 390px: footer link #set changes something a person can see
+PASS  phone 390px: footer link #set lands on its section   #set
+PASS  phone 390px: footer link #buy changes something a person can see
+PASS  phone 390px: footer link #buy lands on its section   #buy
+PASS  phone 390px: footer link #province changes something a person can see
+PASS  phone 390px: footer link #province lands on its section   #province
+PASS  phone 390px: footer WhatsApp opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  phone 390px: footer brand mark goes to the top changes something a person can see   0
+PASS  phone 390px: the footer brand mark reaches the top even with #top already in the address   scrollY 0
+PASS  phone 390px: the floating button over the buy steps opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  phone 390px: a drag on the piece tilts it   tilt 0.42 to 0.98
+PASS  phone 390px: Back once returns from #set to the section before it   #set then #stones
+PASS  phone 390px: Back twice returns to the top with the page intact   {"hash":"","gl":true,"cards":6}
+PASS  phone 390px: every touchpoint the page showed was pressed   51 counted, 51 pressed
+PASS  phone 390px: no error thrown during the run   clean
+PASS  phone 390px: every door that left the page went to the house line   13 doors, 0 elsewhere
+
+desk 1440px
+PASS  desk 1440px: nav link #stones changes something a person can see   #stones
+PASS  desk 1440px: nav link #stones lands on its section   #stones
+PASS  desk 1440px: nav link #set changes something a person can see   #set
+PASS  desk 1440px: nav link #set lands on its section   #set
+PASS  desk 1440px: nav link #buy changes something a person can see   #buy
+PASS  desk 1440px: nav link #buy lands on its section   #buy
+PASS  desk 1440px: nav link #province changes something a person can see   #province
+PASS  desk 1440px: nav link #province lands on its section   #province
+PASS  desk 1440px: nav WhatsApp opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  desk 1440px: nav brand mark goes to the top changes something a person can see   0
+PASS  desk 1440px: the top is the top   scrollY 0
+PASS  desk 1440px: hero "See a stone turn" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  desk 1440px: hero "The stones" changes something a person can see   23
+PASS  desk 1440px: a drag on the hero stone tilts it   tilt 0.55 to 1.03
+PASS  desk 1440px: colour chip blue changes something a person can see   IC-101,IC-103
+PASS  desk 1440px: colour chip blue keeps 2   2 stones of 6
+PASS  desk 1440px: colour chip padparadscha changes something a person can see   IC-102
+PASS  desk 1440px: colour chip padparadscha keeps 1   1 stone of 6
+PASS  desk 1440px: colour chip pink changes something a person can see   IC-104
+PASS  desk 1440px: colour chip pink keeps 1   1 stone of 6
+PASS  desk 1440px: colour chip yellow changes something a person can see   IC-105
+PASS  desk 1440px: colour chip yellow keeps 1   1 stone of 6
+PASS  desk 1440px: colour chip teal changes something a person can see   IC-106
+PASS  desk 1440px: colour chip teal keeps 1   1 stone of 6
+PASS  desk 1440px: colour chip all changes something a person can see   All 6 stones
+PASS  desk 1440px: unheated only changes something a person can see   4 stones of 6
+PASS  desk 1440px: unheated only keeps 4   4 stones of 6
+PASS  desk 1440px: sort lightest first turns the shelf round   IC-104,IC-102,IC-103,IC-106,IC-101,IC-105
+PASS  desk 1440px: unheated on a heated colour shows the empty state changes something a person can see   block
+PASS  desk 1440px: the empty state is on screen   0 stones of 6
+PASS  desk 1440px: empty state "Ask what else there is" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I am looking for a stone that is not on the page. Could you show me what you have? I am in [your city]. (fr
+PASS  desk 1440px: "Show all stones" changes something a person can see   All 6 stones
+PASS  desk 1440px: reset brings all six back   All 6 stones
+PASS  desk 1440px: "Ask for the price" on IC-101 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the royal blue cushion (IC-101), 3.12 ct, unheated, GRS report? I am in [your cit
+PASS  desk 1440px: "Set this stone" on IC-101 changes something a person can see   Royal blue cushion, 3.12 ct, as a ring in platinum, size 7 (17.3 mm).A person re
+PASS  desk 1440px: IC-101 is now the stone in the configurator   Royal blue cushion, 3.12 ct, as a ring in platinum, size 7 (
+PASS  desk 1440px: "Ask for the price" on IC-102 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the padparadscha oval (IC-102), 1.84 ct, unheated, GIA report? I am in [your city
+PASS  desk 1440px: "Set this stone" on IC-102 changes something a person can see   Padparadscha oval, 1.84 ct, as a ring in platinum, size 7 (17.3 mm).A person rep
+PASS  desk 1440px: IC-102 is now the stone in the configurator   Padparadscha oval, 1.84 ct, as a ring in platinum, size 7 (1
+PASS  desk 1440px: "Ask for the price" on IC-103 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the cornflower round (IC-103), 2.05 ct, heated, NGJA report? I am in [your city].
+PASS  desk 1440px: "Set this stone" on IC-103 changes something a person can see   Cornflower round, 2.05 ct, as a ring in platinum, size 7 (17.3 mm).A person repl
+PASS  desk 1440px: IC-103 is now the stone in the configurator   Cornflower round, 2.05 ct, as a ring in platinum, size 7 (17
+PASS  desk 1440px: "Ask for the price" on IC-104 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the pink cushion (IC-104), 1.46 ct, unheated, SSEF report? I am in [your city]. (
+PASS  desk 1440px: "Set this stone" on IC-104 changes something a person can see   Pink cushion, 1.46 ct, as a ring in platinum, size 7 (17.3 mm).A person replies 
+PASS  desk 1440px: IC-104 is now the stone in the configurator   Pink cushion, 1.46 ct, as a ring in platinum, size 7 (17.3 m
+PASS  desk 1440px: "Ask for the price" on IC-105 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the yellow oval (IC-105), 4.20 ct, heated, GIA report? I am in [your city]. (from
+PASS  desk 1440px: "Set this stone" on IC-105 changes something a person can see   Yellow oval, 4.20 ct, as a ring in platinum, size 7 (17.3 mm).A person replies w
+PASS  desk 1440px: IC-105 is now the stone in the configurator   Yellow oval, 4.20 ct, as a ring in platinum, size 7 (17.3 mm
+PASS  desk 1440px: "Ask for the price" on IC-106 opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could I have the price of the teal round (IC-106), 2.60 ct, unheated, Gübelin report? I am in [your city]. 
+PASS  desk 1440px: "Set this stone" on IC-106 changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  desk 1440px: IC-106 is now the stone in the configurator   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm)
+PASS  desk 1440px: stone chip IC-101 changes something a person can see   Royal blue cushion, 3.12 ct, as a ring in platinum, size 7 (17.3 mm).A person re
+PASS  desk 1440px: stone chip IC-102 changes something a person can see   Padparadscha oval, 1.84 ct, as a ring in platinum, size 7 (17.3 mm).A person rep
+PASS  desk 1440px: stone chip IC-103 changes something a person can see   Cornflower round, 2.05 ct, as a ring in platinum, size 7 (17.3 mm).A person repl
+PASS  desk 1440px: stone chip IC-104 changes something a person can see   Pink cushion, 1.46 ct, as a ring in platinum, size 7 (17.3 mm).A person replies 
+PASS  desk 1440px: stone chip IC-105 changes something a person can see   Yellow oval, 4.20 ct, as a ring in platinum, size 7 (17.3 mm).A person replies w
+PASS  desk 1440px: stone chip IC-106 changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  desk 1440px: piece pendant changes something a person can see   Teal round, 2.60 ct, as a pendant in platinum.A person replies with the render. 
+PASS  desk 1440px: the ring size field hides for a pendant   size field none
+PASS  desk 1440px: piece earrings changes something a person can see   Teal round, 2.60 ct, as a earrings in platinum.A person replies with the render.
+PASS  desk 1440px: piece ring changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  desk 1440px: the ring size field returns for a ring   size field flex
+PASS  desk 1440px: metal yellow changes something a person can see   Teal round, 2.60 ct, as a ring in 18k yellow gold, size 7 (17.3 mm).A person rep
+PASS  desk 1440px: metal white changes something a person can see   Teal round, 2.60 ct, as a ring in 18k white gold, size 7 (17.3 mm).A person repl
+PASS  desk 1440px: metal rose changes something a person can see   Teal round, 2.60 ct, as a ring in 18k rose gold, size 7 (17.3 mm).A person repli
+PASS  desk 1440px: metal platinum changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 7 (17.3 mm).A person replies wi
+PASS  desk 1440px: ring size 5 reaches the summary and the drawing   Teal round, 2.60 ct, as a ring in platinum, size 5 (15.7 mm).A person replies wi
+PASS  desk 1440px: inscription extra changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 5 (15.7 mm). With the report nu
+PASS  desk 1440px: the extra is in the WhatsApp message   https://wa.me/94767412531?text=Hello The Island Cut. Could you draw Teal round, 2.60 ct, unheated, Gübelin report (IC-10
+PASS  desk 1440px: melee extra changes something a person can see   Teal round, 2.60 ct, as a ring in platinum, size 5 (15.7 mm). With the report nu
+PASS  desk 1440px: "Send for a CAD drawing" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. Could you draw Teal round, 2.60 ct, unheated, Gübelin report (IC-106) as a ring in platinum, size 5 (15.7 m
+PASS  desk 1440px: close "Open WhatsApp" opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  desk 1440px: footer link #stones changes something a person can see
+PASS  desk 1440px: footer link #stones lands on its section   #stones
+PASS  desk 1440px: footer link #set changes something a person can see
+PASS  desk 1440px: footer link #set lands on its section   #set
+PASS  desk 1440px: footer link #buy changes something a person can see
+PASS  desk 1440px: footer link #buy lands on its section   #buy
+PASS  desk 1440px: footer link #province changes something a person can see
+PASS  desk 1440px: footer link #province lands on its section   #province
+PASS  desk 1440px: footer WhatsApp opens WhatsApp with its message   https://wa.me/94767412531?text=Hello The Island Cut. I would like to see a stone turn on a video call. I am in [your city]. (from the website)
+PASS  desk 1440px: footer brand mark goes to the top changes something a person can see   0
+PASS  desk 1440px: the footer brand mark reaches the top even with #top already in the address   scrollY 0
+PASS  desk 1440px: a drag on the piece tilts it   tilt 0.42 to 0.98
+PASS  desk 1440px: Back once returns from #set to the section before it   #set then #stones
+PASS  desk 1440px: Back twice returns to the top with the page intact   {"hash":"","gl":true,"cards":6}
+PASS  desk 1440px: every touchpoint the page showed was pressed   54 counted, 54 pressed
+PASS  desk 1440px: no error thrown during the run   clean
+PASS  desk 1440px: every door that left the page went to the house line   12 doors, 0 elsewhere
+
+171 of 171 checks passed.

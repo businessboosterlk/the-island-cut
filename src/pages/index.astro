@@ -1,0 +1,222 @@
+---
+// THE ONE PAGE. Seven scenes, dark and light in turn, one door (WhatsApp with a video viewing) that every scene
+// points at. Every stone and fact comes from src/data/stones.json and src/config.js. Nothing is invented here.
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import data from '../data/stones.json';
+import { SITE, LINKS, RING_SIZES, METALS, PIECES, wa } from '../config.js';
+const stones = [...data.stones].sort((a, b) => b.carat - a.carat);
+const hello = wa(`Hello ${SITE.name}. I would like to see a stone turn on a video call. I am in [your city]. (from the website)`);
+const ask = s => wa(`Hello ${SITE.name}. Could I have the price of the ${s.name.toLowerCase()} (${s.ref}), ${s.carat.toFixed(2)} ct, ${s.treatment.toLowerCase()}, ${s.lab} report? I am in [your city]. (from the website, the stones)`);
+const colours = [...new Map(data.stones.map(s => [s.colour, s])).values()];
+const colourLabel = { blue: 'Blue', padparadscha: 'Padparadscha', pink: 'Pink', yellow: 'Yellow', teal: 'Teal' };
+const first = data.stones[0];
+const stamp = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Layout>
+  <header class="nav" id="top">
+    <a class="brand" href="#top" aria-label={`${SITE.name}, top of the page`}><Icon name="gem" /><span>{SITE.name}</span></a>
+    <nav class="links" aria-label="Sections">{LINKS.map(l => <a href={l.href}>{l.label}</a>)}</nav>
+    <a class="btn btn-wa nav-wa" href={hello} target="_blank" rel="noopener"><Icon name="b-whatsapp" /><span>WhatsApp</span></a>
+  </header>
+  <a class="fab" href={hello} target="_blank" rel="noopener" aria-label="Open WhatsApp"><Icon name="b-whatsapp" /></a>
+
+  <main>
+    <!-- 1 HERO: the stone turns, the words rise. -->
+    <section class="hero dark" aria-labelledby="h1">
+      <div class="wrap">
+        <div class="hero-copy">
+          <p class="eyebrow">A gem house in Sri Lanka</p>
+          <h1 id="h1">Ceylon sapphire. Cut on the island it came from.</h1>
+          <p class="lead">Loose stones with a report you can check. Pieces built around them. Every stone turns in daylight on a video call, with its report in frame, before a word about money.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-wa" href={hello} target="_blank" rel="noopener"><Icon name="video" />See a stone turn</a>
+            <a class="btn btn-ghost" href="#stones">The stones<Icon name="down" /></a>
+          </div>
+        </div>
+        <div class="stage">
+          <canvas id="hero-canvas" aria-label={`A ${first.name.toLowerCase()} sapphire, drawn in code, turning`}></canvas>
+          <p class="cap"><span>Drawn in code to a {first.carat.toFixed(2)} ct {first.cut}, {first.mm[0]} by {first.mm[1]} mm.</span><span>Drag to turn</span></p>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#stones" aria-label="Scroll to the stones"><span>Scroll</span><Icon name="down" /></a>
+    </section>
+
+    <!-- 2 PROMISE STRIP -->
+    <section class="strip dark" aria-label="How the house works">
+      <div class="wrap">
+        <ul>
+          <li><Icon name="sun" /><span>Heated or unheated, said on every stone</span></li>
+          <li><Icon name="report" /><span>A report from a lab you can ring</span></li>
+          <li><Icon name="truck" /><span>Insured courier with export papers</span></li>
+          <li><Icon name="chat" /><span>The price on the call, never on the page</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3 THE STONES -->
+    <section class="band stones" id="stones" aria-labelledby="h-stones">
+      <div class="wrap">
+        <div class="head" data-rv>
+          <p class="eyebrow">The stones</p>
+          <h2 id="h-stones">Six stones. Each one named by its district, its treatment and its lab.</h2>
+          <p class="lead">Filter by colour, keep only the unheated, sort by weight. Ask for the price of any stone and the reply is a person with the stone in hand.</p>
+        </div>
+        <div class="filters" role="group" aria-label="Filter the stones" data-rv>
+          <button class="chip" type="button" data-colour-chip="all" aria-pressed="true">All colours</button>
+          {colours.map(s => <button class="chip" type="button" data-colour-chip={s.colour} aria-pressed="false"><i class="dot" style={`--c:${s.hex}`}></i>{colourLabel[s.colour]}</button>)}
+          <button class="chip" type="button" id="unheated" aria-pressed="false"><Icon name="check" style="width:16px;height:16px" />Unheated only</button>
+          <span class="gap"></span>
+          <label class="select"><span class="sr">Sort the stones</span>
+            <select id="sort"><option value="desc">Heaviest first</option><option value="asc">Lightest first</option></select>
+            <Icon name="down" />
+          </label>
+        </div>
+        <p class="count"><span id="count">All {stones.length} stones</span><span>Six sample stones so the shelf can be seen working. The house's own stones take their place.</span></p>
+        <div class="grid" id="grid">
+          {stones.map(s => (
+            <article class="stone" data-ref={s.ref} data-colour={s.colour} data-treat={s.treatment} data-carat={s.carat}>
+              <div class="tile" data-ref={s.ref} data-alt={`${s.name} sapphire, ${s.carat.toFixed(2)} carats, drawn in code to its measurements`} style={`--c:${s.hex};--d:${s.deep}`}>
+                <div class="fallback" aria-hidden="true"></div>
+                <span class="tag">{s.treatment}</span>
+              </div>
+              <div class="stone-body">
+                <p class="ref">{s.ref}</p>
+                <h3>{s.name}</h3>
+                <p class="spec"><b>{s.carat.toFixed(2)} ct</b><span>{s.cut}</span><span>{s.mm[0]} by {s.mm[1]} mm</span></p>
+                <div class="facts">
+                  <div><span>District</span>{s.origin}</div>
+                  <div><span>Report</span>{s.lab}</div>
+                  <div><span>Colour</span>{s.colourWord}</div>
+                  <div><span>Treatment</span>{s.treatment}</div>
+                </div>
+                <div class="pair">
+                  <a class="btn btn-primary btn-sm" href={ask(s)} target="_blank" rel="noopener">Ask for the price</a>
+                  <button class="btn btn-ghost btn-sm" type="button" data-set={s.ref}>Set this stone</button>
+                </div>
+              </div>
+            </article>
+          ))}
+          <div class="empty" id="empty" hidden>
+            <p>No stone on the shelf matches that. The house holds more than it shows.</p>
+            <div class="pair" style="justify-content:center;max-width:420px;margin:0 auto">
+              <button class="btn btn-ghost btn-sm" type="button" id="reset">Show all stones</button>
+              <a class="btn btn-wa btn-sm" href={wa(`Hello ${SITE.name}. I am looking for a stone that is not on the page. Could you show me what you have? I am in [your city]. (from the website, the stones)`)} target="_blank" rel="noopener">Ask what else there is</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 SET A STONE -->
+    <section class="band set dark" id="set" aria-labelledby="h-set">
+      <div class="wrap">
+        <div class="stage">
+          <canvas id="set-canvas" aria-label="The chosen stone drawn as the chosen piece"></canvas>
+          <p class="cap small" id="set-cap">Drawn to size. Drag to turn.</p>
+        </div>
+        <div class="panel">
+          <div class="head" style="margin-bottom:0">
+            <p class="eyebrow">Set a stone</p>
+            <h2 id="h-set">Pick the stone. Pick the piece. See it before anything is cast.</h2>
+            <p class="lead">The drawing follows your choices. Send it and the house replies with a CAD render to approve. Nothing is cast until you say yes. There is no bag and no checkout.</p>
+          </div>
+          <div class="field">
+            <span class="label" id="l-stone">Stone</span>
+            <div class="chips" role="group" aria-labelledby="l-stone">
+              {data.stones.map((s, i) => <button class="chip" type="button" data-stone-chip={s.ref} aria-pressed={i === 0 ? 'true' : 'false'}><i class="dot" style={`--c:${s.hex}`}></i>{s.name}</button>)}
+            </div>
+          </div>
+          <div class="field">
+            <span class="label" id="l-piece">Piece</span>
+            <div class="seg" role="group" aria-labelledby="l-piece">
+              {PIECES.map((p, i) => <button type="button" data-piece={p.key} aria-pressed={i === 0 ? 'true' : 'false'}>{p.label}</button>)}
+            </div>
+          </div>
+          <div class="field">
+            <span class="label" id="l-metal">Metal</span>
+            <div class="swatches" role="group" aria-labelledby="l-metal">
+              {METALS.map((m, i) => <button class="swatch" type="button" data-metal={m.key} aria-pressed={i === 0 ? 'true' : 'false'}><i style={`--c:${m.hex}`}></i>{m.label}</button>)}
+            </div>
+          </div>
+          <div class="field" id="size-field">
+            <label class="label" for="size">Ring size, US scale</label>
+            <span class="select">
+              <select id="size">{RING_SIZES.map(([us, mm]) => <option value={us} selected={us === 7}>Size {us}, {mm} mm inside</option>)}</select>
+              <Icon name="down" />
+            </span>
+          </div>
+          <div class="field">
+            <span class="label">Private extras</span>
+            <label class="check"><input type="checkbox" id="inscribe"><span>The report number laser inscribed on the girdle, read only under a loupe</span></label>
+            <label class="check"><input type="checkbox" id="melee"><span>One hidden Ceylon melee under the head, for the wearer alone</span></label>
+          </div>
+          <div class="summary" id="summary" aria-live="polite"><span></span><small>A person replies with the render. The price is on that call.</small></div>
+          <a class="btn btn-wa" id="send" href={hello} target="_blank" rel="noopener"><Icon name="b-whatsapp" />Send for a CAD drawing</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 HOW TO BUY FROM SRI LANKA -->
+    <section class="band buy" id="buy" aria-labelledby="h-buy">
+      <div class="wrap">
+        <div class="head" data-rv>
+          <p class="eyebrow">How to buy from Sri Lanka</p>
+          <h2 id="h-buy">Five steps. You can check every one of them yourself.</h2>
+          <p class="lead">A buyer abroad cannot hold the stone. What they can hold is the paper, the call and the courier's tracking number. The page is built so each of those is in your hands before any money moves.</p>
+        </div>
+        <ol class="steps" style="list-style:none;margin:0;padding:0">
+          <li class="step"><span class="n"></span><Icon name="chat" /><h3>Choose and ask</h3><p>Pick a stone on this page and open WhatsApp. Say where you are. The house replies with a time for a call.</p></li>
+          <li class="step"><span class="n"></span><Icon name="video" /><h3>See it turn in daylight</h3><p>On a video call the stone turns in daylight with its report in the frame. Ask for any angle. Ask to see it beside a ruler.</p></li>
+          <li class="step"><span class="n"></span><Icon name="report" /><h3>Check the report yourself</h3><p>Every report number can be checked on the lab's own site before you pay, not after.</p><div class="labs"><span>GIA</span><span>GRS</span><span>SSEF</span><span>Gübelin</span><span>AGL</span><span>NGJA</span></div></li>
+          <li class="step"><span class="n"></span><Icon name="bank" /><h3>Pay against an invoice</h3><p>Bank transfer in your currency against a written invoice. The return terms are on that invoice before you pay.</p></li>
+          <li class="step"><span class="n"></span><Icon name="truck" /><h3>Insured courier, export papers</h3><p>The stone ships insured, with the NGJA export permit and the report in the parcel. You get the tracking number the day it leaves.</p></li>
+        </ol>
+        <p class="terms" data-rv><Icon name="shield" /><span>If the stone is not the stone on the report, it comes back and the money comes back. That line is on the invoice too.</span></p>
+      </div>
+    </section>
+
+    <!-- 6 THE PROVINCE -->
+    <section class="band province dark" id="province" aria-labelledby="h-province">
+      <div class="wrap">
+        <div class="head" data-rv>
+          <p class="eyebrow">From the gem province</p>
+          <h2 id="h-province">A Ceylon sapphire is named by where it came out of the ground.</h2>
+          <p class="lead">The district is part of the stone. Every stone on this page says its district, its treatment and its lab, because those three words are what a buyer abroad is really buying.</p>
+        </div>
+        <div class="kin" aria-label="Gem districts of Sri Lanka">
+          <span>Ratnapura</span><span>Elahera</span><span>Balangoda</span><span>Okkampitiya</span><span>Pelmadulla</span>
+        </div>
+        <div class="trade">
+          <div data-rv><h3>The darker blues lead</h3><p>Royal blue and cornflower are the colours traders chase. A pale stone is not the Ceylon standard, whatever a catalogue says. The deeper the blue, the harder it is to find.</p></div>
+          <div data-rv><h3>Unheated means more</h3><p>Most sapphires on the market have been heated to deepen their colour. A stone that has not been needs a lab to say so. The lab's word is what carries the value.</p></div>
+          <div data-rv><h3>Padparadscha is the island's own</h3><p>Pink and orange in one stone, named from the Sinhala word for the lotus. A lab decides whether a stone earns the name. The house does not decide it for them.</p></div>
+        </div>
+        {SITE.houseLine && <blockquote class="house" data-rv>{SITE.houseLine}{SITE.founderName && <small>{SITE.founderName}</small>}</blockquote>}
+      </div>
+    </section>
+
+    <!-- 7 CLOSE, then the flat dark foot -->
+    <section class="close dark" aria-labelledby="h-close">
+      <div class="wrap">
+        <h2 id="h-close">See it turn.</h2>
+        <p class="lead">One stone, in daylight, on a call. No price on the page, no bag and no pressure.</p>
+        <a class="btn btn-wa" href={hello} target="_blank" rel="noopener"><Icon name="b-whatsapp" />Open WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div>
+        <a class="brand" href="#top"><Icon name="gem" /><span>{SITE.name}</span></a>
+        <p>{SITE.tagline}.</p>
+        <p class="small" style="margin-top:var(--s-3)">A concept by Business Booster for a gem house in Sri Lanka. Six sample stones, drawn in code. Nothing here is for sale yet.</p>
+      </div>
+      <div><h4>On this page</h4><ul>{LINKS.map(l => <li><a href={l.href}>{l.label}</a></li>)}</ul></div>
+      <div><h4>Talk to the house</h4><ul><li><a href={hello} target="_blank" rel="noopener">WhatsApp</a></li>{SITE.instagram && <li><a href={`https://instagram.com/${SITE.instagram}`} target="_blank" rel="noopener">Instagram</a></li>}</ul></div>
+      <p class="stamp"><span>{SITE.name}. A working name.</span><span>Built {stamp}</span></p>
+    </div>
+  </footer>
+  <script src="../scripts/site.js"></script>
+</Layout>

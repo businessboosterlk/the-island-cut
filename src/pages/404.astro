@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../config.js';
+import { url } from '../scripts/icon.js';
+---
+<Layout title={`Not here: ${SITE.name}`} description="That page is not on this site.">
+  <main class="dark" style="min-height:100dvh;display:grid;place-items:center;text-align:center;padding:var(--gutter)">
+    <div>
+      <p class="eyebrow">{SITE.name}</p>
+      <h1 style="font-size:var(--t-3xl)">That page is not here.</h1>
+      <p class="lead" style="margin:var(--s-5) auto var(--s-8)">The whole house is on one page.</p>
+      <a class="btn btn-light" href={url('')}>Back to the page</a>
+    </div>
+  </main>
+</Layout>

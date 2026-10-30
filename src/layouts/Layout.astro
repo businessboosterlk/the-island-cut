@@ -1,0 +1,52 @@
+---
+// The one page shell: head, fonts, share card, JSON-LD. Every path goes through url() so the site moves domains
+// by changing two environment variables (see astro.config.mjs).
+import '../styles/site.css';
+import { SITE } from '../config.js';
+import { url } from '../scripts/icon.js';
+const { title = `${SITE.name}: ${SITE.tagline}`, description = SITE.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/index\.html$/, ''), Astro.site).href;
+const og = new URL(url('assets/og.png'), Astro.site).href;
+const fonts = { fraunces: url('assets/fonts/fraunces.woff2'), inter: url('assets/fonts/inter.woff2') };
+const fontCss = `@font-face{font-family:'Fraunces';src:url(${fonts.fraunces}) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}` +
+  `@font-face{font-family:'Inter';src:url(${fonts.inter}) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}`;
+const ld = {
+  '@context': 'https://schema.org', '@type': 'JewelryStore', name: SITE.name, description, url: canonical,
+  address: { '@type': 'PostalAddress', addressCountry: 'LK' },
+  makesOffer: { '@type': 'Offer', itemOffered: { '@type': 'Product', name: 'Ceylon sapphires, loose and set' }, availability: 'https://schema.org/PreOrder' }
+};
+---
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <meta name="robots" content={SITE.robots}>
+  <link rel="canonical" href={canonical}>
+  <meta name="theme-color" content={SITE.themeDark}>
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content={SITE.name}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={og}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content={canonical}>
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={og}>
+  <link rel="icon" href={url('favicon.svg')} type="image/svg+xml">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href={fonts.fraunces}>
+  <link rel="preload" as="font" type="font/woff2" crossorigin href={fonts.inter}>
+  <style is:inline set:html={fontCss}></style>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(ld)}></script>
+</head>
+<body>
+  <slot />
+</body>
+</html>

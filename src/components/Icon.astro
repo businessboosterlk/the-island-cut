@@ -1,0 +1,6 @@
+---
+// The one icon. Draws a symbol from assets/icons.svg (Lucide and Simple Icons through the generator).
+import { icon } from '../scripts/icon.js';
+const { name, class: cls = '' } = Astro.props;
+---
+<Fragment set:html={icon(name, cls)} />

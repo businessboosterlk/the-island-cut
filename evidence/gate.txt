@@ -1,0 +1,51 @@
+
+A. The source and the built files
+PASS  the site is built   dist/index.html and dist/404.html
+PASS  icons and the favicon come from the licensed sets, untouched   PASS  icons match the packages: 16 line, 2 brand
+PASS  no icon typed by hand (one named exception: the function that places a symbol)   PASS  no svg typed by hand in src
+PASS  stack standard   PASS stack standard: astro  (~/bb-systems/STACK-STANDARD.md)
+PASS  first try checker on both pages and every script   2 pages and 3 scripts pass
+PASS  the concept cannot be found by Google while it is a concept   noindex on both pages
+PASS  the share card and the favicon the head names exist in the build   dist/assets/og.png, dist/favicon.svg (shots.mjs makes the card)
+PASS  foundation knobs, none at zero   touch-action 1, tap-highlight-color 1, overscroll-behavior 1, text-size-adjust 2
+PASS  a field cannot zoom the screen: 16px on a touch screen   the coarse pointer rule is in the built stylesheet
+PASS  heights are in dvh, never vh   no vh unit in the stylesheet
+PASS  overflow is clipped on the page itself   overflow-x:clip on the page
+PASS  every hover rule is inside @media (hover:hover)   14 hover rules, all inside
+PASS  no price anywhere on the page   no currency figure in the rendered text
+PASS  none of the words the first call forbade   9 words searched
+PASS  no invented year or founding date   the only year is the build date
+PASS  the stones are marked as samples where the shelf is   sample note on the shelf, meta.sample true
+PASS  every one of the 6 stones names its district, its treatment and its lab, and none carries a price   IC-101 Ratnapura Unheated GRS, IC-102 Ratnapura Unheated GIA, IC-103 Elahera Heated NGJA, IC-104 Balangoda Unheated SSEF, IC-105 Okkampitiya Heated GIA, IC-106 Elahera Unheated Gübelin
+PASS  every WhatsApp door opens the house line with a message that says where it came from   13 doors to wa.me/94767412531
+PASS  the working name is held in one place   src/config.js SITE.name
+
+B. The page in a real browser
+PASS  390px: no error in the console or the page   console clean
+PASS  390px: the stone draws, the six stills land and nothing threw   gl true, 284 frames, 6 stills, errors []
+PASS  390px: six cards on the shelf and the count says so   6 cards, "All 6 stones"
+PASS  390px: no sideways scroll and nothing clipped off the right edge   nothing past the edge
+PASS  390px: every touchpoint is at least 44px   48 touchpoints measured
+PASS  390px: no field under 16px   select and checkboxes at 16px or more
+PASS  390px: no text under 11px   smallest text 11px or more
+PASS  390px: on a phone the hero and the close sit in the middle   hero and close centred
+PASS  390px: no heading tighter than 1.05   every heading 1.05 or more
+PASS  390px: every picture loaded   6 stills on the shelf
+PASS  390px: the floating WhatsApp button never sits on another control   read at 41 scroll stops
+PASS  390px: the nav survives a scroll and reads the section under it   top 0 then 0, tone dark
+PASS  390px: the WhatsApp mark sits in the centre of the floating button   dx 0 dy 0
+PASS  390px: the WhatsApp mark sits in the centre of the nav pill   dx 0 dy 0.5
+PASS  1440px: no error in the console or the page   console clean
+PASS  1440px: the stone draws, the six stills land and nothing threw   gl true, 423 frames, 6 stills, errors []
+PASS  1440px: six cards on the shelf and the count says so   6 cards, "All 6 stones"
+PASS  1440px: no sideways scroll and nothing clipped off the right edge   nothing past the edge
+PASS  1440px: no text under 11px   smallest text 11px or more
+PASS  1440px: on a desk no centred heading, the hero heading level with the brand mark   h1 0px from the brand mark
+PASS  1440px: no heading tighter than 1.05   every heading 1.05 or more
+PASS  1440px: every picture loaded   6 stills on the shelf
+PASS  1440px: the nav survives a scroll and reads the section under it   top 0 then 0, tone dark
+
+C. The words, read off the rendered page
+PASS  house style on the rendered words: no dashes, no comma before and, UK English, no AI filler   239 strings read, 8 rules
+
+43 of 43 checks passed.
