@@ -78,7 +78,7 @@ select,input[type=text]{width:100%;min-height:44px;padding:0 var(--s-3);border:1
 @media (hover:hover){.door:hover{border-color:var(--ink);color:var(--ink)}.door.fill:hover{color:var(--paper);background:#1b1917}.chip:hover{border-color:var(--ink-2)}}
 
 /* NAV */
-.nav{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
 .nav .in{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);gap:var(--s-4)}
 .brand{font:500 24px/1 var(--display);letter-spacing:.01em;min-height:44px;display:inline-flex;align-items:center}
 .links{display:none;gap:28px;font-size:15px;color:var(--ink-2)}
@@ -193,7 +193,7 @@ body.tray-on .footer{padding-bottom:calc(var(--s-12) + 72px + env(safe-area-inse
 dialog{border:0;padding:0;background:var(--white);color:var(--ink);max-width:none;max-height:none;width:100%;height:100dvh;margin:0;position:fixed;inset:0;overscroll-behavior:contain}
 dialog::backdrop{background:rgba(42,39,36,.45)}
 dialog .sheet{display:flex;flex-direction:column;height:100%}
-dialog .top{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);padding:var(--s-3) var(--gutter);border-bottom:1px solid var(--line);min-height:var(--nav-h)}
+dialog .top{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);padding:calc(var(--s-3) + env(safe-area-inset-top)) var(--gutter) var(--s-3);border-bottom:1px solid var(--line);min-height:var(--nav-h)}
 dialog .top h2{font-size:var(--t-2xl)}
 dialog .x{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:var(--r)}
 dialog .scroll{flex:1;overflow:auto;padding:var(--s-5) var(--gutter);display:grid;gap:var(--s-5);align-content:start}
