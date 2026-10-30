@@ -26,7 +26,7 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   const cards = await page.evaluate(() => document.querySelectorAll('.stone').length);
   check(cards === N, `${name}: ${cards} of ${N} records on the table`);
   /* the table's photographs are lazy, so walk the page first or the check judges them unloaded below the fold */
-  await page.evaluate(async () => { const H = document.documentElement.scrollHeight; for (let y = 0; y < H; y += 400) { scrollTo(0, y); await new Promise(r => setTimeout(r, 40)); } scrollTo(0, 0); });
+  await page.evaluate(async () => { const H = document.documentElement.scrollHeight; for (let y = 0; y < H; y += 300) { scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } scrollTo(0, 0); });
   await page.waitForFunction(() => [...document.images].filter(i => !i.hidden && i.closest('.stone, .hero')).every(i => i.complete), null, { timeout: 15000 }).catch(() => {});
   const photos = await page.evaluate(() => [...document.images].filter(i => !i.hidden && i.closest('.stone, .hero')).every(i => i.complete && i.naturalWidth > 0));
   check(photos, `${name}: every photograph on the page loaded`);
