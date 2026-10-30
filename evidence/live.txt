@@ -1,0 +1,13 @@
+PASS  phone: page answers 200
+PASS  phone: the stone rendered and all six stills were painted
+PASS  phone: robots says noindex,nofollow
+PASS  phone: every request answered (0 failed)
+PASS  phone: no console errors
+PASS  desk: page answers 200
+PASS  desk: the stone rendered and all six stills were painted
+PASS  desk: robots says noindex,nofollow
+PASS  desk: every request answered (0 failed)
+PASS  desk: no console errors
+
+LIVE https://businessboosterlk.github.io/the-island-cut/
+10 of 10 passed

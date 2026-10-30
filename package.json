@@ -15,7 +15,8 @@
     "check": "node scripts/check-site.mjs",
     "clicks": "node scripts/click-path.mjs",
     "shots": "node scripts/shots.mjs",
-    "verify": "npm run build && npm run check && npm run clicks"
+    "verify": "npm run build && npm run check && npm run clicks",
+    "live": "node scripts/live.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5",
