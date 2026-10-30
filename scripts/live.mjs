@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-/* LIVE PROOF. Opens the deployed address in a real browser at phone and desk, checks the stone rendered, every
-   request answered, no console errors, the robots tag still says noindex, and writes evidence/live-*.png.
+/* LIVE PROOF. Opens the deployed address in a real browser at phone and desk, checks the page ran, the records are
+   on the table, every request answered, no console errors, the robots tag still says noindex, and writes
+   evidence/live-*.png.
      node scripts/live.mjs [url]     default https://businessboosterlk.github.io/the-island-cut/ */
 import { chromium } from 'playwright';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 const URL_ = process.argv[2] || 'https://businessboosterlk.github.io/the-island-cut/';
+const N = JSON.parse(readFileSync('src/data/stones.json', 'utf8')).stones.length;
 const browser = await chromium.launch({ channel: 'chromium' });
 mkdirSync('evidence', { recursive: true });
 let pass = 0, fail = 0;
@@ -19,12 +21,16 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   const res = await page.goto(URL_, { waitUntil: 'load' });
   check(res.status() === 200, `${name}: page answers 200`);
   await page.evaluate(() => document.fonts.ready);
-  const stills = await page.waitForFunction(() => window.IslandCut && window.IslandCut.stills >= 6, null, { timeout: 15000 }).then(() => true).catch(() => false);
-  check(stills, `${name}: the stone rendered and all six stills were painted`);
+  const ready = await page.waitForFunction(() => window.IslandCut && window.IslandCut.ready, null, { timeout: 15000 }).then(() => true).catch(() => false);
+  check(ready, `${name}: the page script ran to the end`);
+  const cards = await page.evaluate(() => document.querySelectorAll('.stone').length);
+  check(cards === N, `${name}: ${cards} of ${N} records on the table`);
+  const photos = await page.evaluate(() => [...document.images].filter(i => !i.hidden && i.closest('.stone, .hero')).every(i => i.complete && i.naturalWidth > 0));
+  check(photos, `${name}: every photograph on the page loaded`);
   check(await page.getAttribute('meta[name="robots"]', 'content') === 'noindex,nofollow', `${name}: robots says noindex,nofollow`);
   const H = await page.evaluate(() => document.documentElement.scrollHeight);
-  for (let y = 0; y < H; y += 400) { await page.evaluate(v => window.scrollTo(0, v), y); await page.waitForTimeout(80); }
-  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1600);
+  for (let y = 0; y < H; y += 400) { await page.evaluate(v => window.scrollTo(0, v), y); await page.waitForTimeout(60); }
+  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(600);
   check(bad.length === 0, `${name}: every request answered (${bad.length} failed${bad.length ? ': ' + bad.join(', ') : ''})`);
   check(errors.length === 0, `${name}: no console errors${errors.length ? ': ' + errors.join(' | ') : ''}`);
   await page.screenshot({ path: `evidence/live-${name}-hero.png` });

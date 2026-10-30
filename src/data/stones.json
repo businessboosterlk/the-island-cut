@@ -1,14 +1,44 @@
 {
   "meta": {
     "sample": true,
-    "note": "Six sample stones so the shelf can be seen working. Measurements and weights are typical for each cut. The house's own stones, with their reports and daylight videos, take their place. No price is printed anywhere, by the house's own rule."
+    "note": "Sample records so the table, the viewing room, the tray and the passport can be seen working. Photographs are licensed stock standing in for the house's own stones, which must be shot on one ground. Every fact carries its status: Lab report, Seller disclosure or Not documented. No price, no report number, no cutter and no district is invented."
   },
   "stones": [
-    { "ref": "IC-101", "name": "Royal blue cushion", "colour": "blue", "colourWord": "Royal blue", "hex": "#0c2f9c", "deep": "#06184f", "cut": "cushion", "carat": 3.12, "mm": [8.4, 7.6], "origin": "Ratnapura", "treatment": "Unheated", "lab": "GRS" },
-    { "ref": "IC-102", "name": "Padparadscha oval", "colour": "padparadscha", "colourWord": "Padparadscha", "hex": "#ee8a62", "deep": "#b4472a", "cut": "oval", "carat": 1.84, "mm": [8.1, 6.2], "origin": "Ratnapura", "treatment": "Unheated", "lab": "GIA" },
-    { "ref": "IC-103", "name": "Cornflower round", "colour": "blue", "colourWord": "Cornflower blue", "hex": "#2b5ad0", "deep": "#123083", "cut": "round", "carat": 2.05, "mm": [7.6, 7.6], "origin": "Elahera", "treatment": "Heated", "lab": "NGJA" },
-    { "ref": "IC-104", "name": "Pink cushion", "colour": "pink", "colourWord": "Pink", "hex": "#dc4e86", "deep": "#8e1f4e", "cut": "cushion", "carat": 1.46, "mm": [6.5, 6.1], "origin": "Balangoda", "treatment": "Unheated", "lab": "SSEF" },
-    { "ref": "IC-105", "name": "Yellow oval", "colour": "yellow", "colourWord": "Yellow", "hex": "#e9b72c", "deep": "#a3730a", "cut": "oval", "carat": 4.20, "mm": [10.4, 8.3], "origin": "Okkampitiya", "treatment": "Heated", "lab": "GIA" },
-    { "ref": "IC-106", "name": "Teal round", "colour": "teal", "colourWord": "Teal", "hex": "#137c88", "deep": "#07434a", "cut": "round", "carat": 2.60, "mm": [8.2, 8.2], "origin": "Elahera", "treatment": "Unheated", "lab": "Gübelin" }
+    {
+      "ref": "IC-101", "title": "Blue, step cut", "colour": "Blue", "cut": "Step cut",
+      "carat": 2.14, "mm": [8.1, 6.2, 3.9],
+      "treatment": { "value": "Unheated", "status": "Lab report" },
+      "lab": { "value": "Report held by the house, number withheld in the demo", "status": "Lab report" },
+      "origin": { "value": "Sri Lanka", "status": "Lab report" },
+      "photo": { "file": "tweezers", "w": 1600, "h": 1067, "alt": "A blue cut stone held in tweezers on a white ground", "credit": "Licensed stock photograph (Unsplash), not the house's stone", "focus": "62% 55%" },
+      "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
+    },
+    {
+      "ref": "IC-104", "title": "Pink, cushion", "colour": "Pink", "cut": "Cushion",
+      "carat": 1.46, "mm": [6.5, 6.1, 3.8],
+      "treatment": { "value": "Unheated", "status": "Seller disclosure" },
+      "lab": { "value": "No report yet", "status": "Not documented" },
+      "origin": { "value": "Sri Lanka", "status": "Seller disclosure" },
+      "photo": { "file": "pink-cushion", "w": 1600, "h": 1067, "alt": "A pink cushion cut stone on a white ground", "credit": "Licensed stock photograph (Unsplash), not the house's stone", "focus": "50% 50%" },
+      "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
+    },
+    {
+      "ref": "IC-106", "title": "Yellow, step cut", "colour": "Yellow", "cut": "Step cut",
+      "carat": 3.05, "mm": [9.2, 7.4, 4.6],
+      "treatment": { "value": "Heated", "status": "Seller disclosure" },
+      "lab": { "value": "Report held by the house, number withheld in the demo", "status": "Lab report" },
+      "origin": { "value": "Sri Lanka", "status": "Seller disclosure" },
+      "photo": { "file": "yellow-step", "w": 1600, "h": 1600, "alt": "A yellow step cut stone on a pale ground", "credit": "Licensed stock photograph (Unsplash), not the house's stone", "focus": "50% 50%" },
+      "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
+    },
+    {
+      "ref": "IC-108", "title": "Teal, oval", "colour": "Teal", "cut": "Oval",
+      "carat": 1.92, "mm": [8.0, 6.1, 3.7],
+      "treatment": { "value": "Not stated", "status": "Not documented" },
+      "lab": { "value": "No report yet", "status": "Not documented" },
+      "origin": { "value": "Not stated", "status": "Not documented" },
+      "photo": null,
+      "media": { "daylight": null, "indoor": null, "macro": null, "rotation": null }
+    }
   ]
 }

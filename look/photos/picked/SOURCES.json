@@ -1,0 +1,26 @@
+{
+  "tweezers": {
+    "src": "unsplash",
+    "id": "photo-1605821771565-35e0d046a2fb",
+    "alt": "blue plastic container on white surface",
+    "full": "https://images.unsplash.com/photo-1605821771565-35e0d046a2fb?w=2400&q=85&fit=max",
+    "thumb": "https://images.unsplash.com/photo-1605821771565-35e0d046a2fb?w=600&q=70&fit=max",
+    "page": "https://unsplash.com/s/photos/blue-sapphire"
+  },
+  "pink-cushion": {
+    "src": "unsplash",
+    "id": "photo-1705575420317-daaed2ab4cf3",
+    "alt": "a pink diamond sitting on top of a pile of snow",
+    "full": "https://images.unsplash.com/photo-1705575420317-daaed2ab4cf3?w=2400&q=85&fit=max",
+    "thumb": "https://images.unsplash.com/photo-1705575420317-daaed2ab4cf3?w=600&q=70&fit=max",
+    "page": "https://unsplash.com/s/photos/sapphire-gemstone"
+  },
+  "yellow-step": {
+    "src": "unsplash",
+    "id": "photo-1705575472028-d92d0bba6608",
+    "alt": "a yellow diamond sitting on top of a pile of dirt",
+    "full": "https://images.unsplash.com/photo-1705575472028-d92d0bba6608?w=2400&q=85&fit=max",
+    "thumb": "https://images.unsplash.com/photo-1705575472028-d92d0bba6608?w=600&q=70&fit=max",
+    "page": "https://unsplash.com/s/photos/sapphire-gemstone"
+  }
+}

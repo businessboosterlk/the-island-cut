@@ -1,180 +1,166 @@
-// THE PAGE'S ONE SCRIPT: nav tone, the stone shelf (filter, sort, count), the configurator (a prefilled WhatsApp
-// line, never a bag), the gem views, and the motion. Every rule here is Tier 0: a filter, a calculation, a handover.
-// Content ships visible; motion is gated on gsap being present and reduced motion being off.
-import data from '../data/stones.json';
-import { SITE, RING_SIZES, METALS, PIECES, wa } from '../config.js';
-import { createView, buildStone, buildPiece, stillPainter, supported } from './gem.js';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+// THE ISLAND CUT, the page's one script. Hero state, the viewing room, the tray, the passport and the request sheet.
+// No framework, no three.js, no GSAP. Every door ends in a prefilled WhatsApp message that says "from the website".
+// The tray is saved on this device only (localStorage) and is never a reservation.
+import { url, icon } from './icon.js';
 
-const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const html = document.documentElement;
-const STONES = data.stones;
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const state = { drawn: 0, stills: 0, errors: [], gl: false };
-window.IslandCut = state;
-window.addEventListener('error', e => state.errors.push(String(e.message || e)));
+const P = JSON.parse(document.getElementById('payload').textContent);
+const STONES = P.stones, VIEWS = P.views, MAX = 3;
+const byRef = r => STONES.find(s => s.ref === r);
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+const wa = t => `https://wa.me/${P.whatsapp}?text=${encodeURIComponent(t)}`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const size = s => `${s.mm[0]} by ${s.mm[1]} by ${s.mm[2]} mm`;
+const ct = s => `${s.carat.toFixed(2)} ct`;
+const status = f => `<span class="status" data-s="${esc(f.status)}">${esc(f.status)}</span>`;
+const srcOf = (s, w) => url(`assets/photos/${s.photo.file}-${w}.webp`);
+const viewLabel = k => (VIEWS.find(v => v.key === k) || {}).label || k;
+const askText = s => `Hello, from the website. I am asking about stone ${s.ref} (${s.title}, ${ct(s)}).`;
+const state = { room: STONES[0].ref, view: 'daylight', tray: [], passport: null };
+window.IslandCut = { state, stones: STONES.length, ready: false };
 
-/* ---------- nav: solid after the first scroll, light over light sections ---------- */
-const nav = $('.nav'), fab = $('.fab');
-const onScroll = () => { nav.classList.toggle('scrolled', scrollY > 24); fab?.classList.toggle('on', scrollY > innerHeight * 0.8); };
-addEventListener('scroll', onScroll, { passive: true }); onScroll();
-// A link to #top always goes to the top. Left to the browser, a second press with #top already in the address scrolls nowhere.
-$$('a[href="#top"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }); history.replaceState(null, '', location.pathname + location.search); }));
-// The floating door shows only where a section has no door of its own. The hero, the shelf, the configurator,
-// the close and the footer all carry their own buttons at the right edge of a phone, so over those it steps aside.
-const near = new Set();
-const nearIO = new IntersectionObserver(es => { for (const e of es) e.isIntersecting ? near.add(e.target) : near.delete(e.target); fab?.classList.toggle('near', near.size > 0); });
-$$('.hero, #stones, #set, .close, .footer').forEach(s => nearIO.observe(s));
-const toneIO = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) nav.dataset.tone = e.target.classList.contains('dark') ? 'dark' : 'light'; }, { rootMargin: '-60px 0px -85% 0px' });
-$$('section, footer').forEach(s => toneIO.observe(s));
+/* ───────── pictures: one function puts a stone's photograph in a frame, or the honest empty panel ───────── */
+function picture(img, empty, s, sizes) {
+  if (s.photo) {
+    img.hidden = false; img.src = srcOf(s, 1600); img.srcset = `${srcOf(s, 800)} 800w, ${srcOf(s, 1600)} 1600w`; if (sizes) img.sizes = sizes;
+    img.alt = s.photo.alt; img.width = s.photo.w; img.height = s.photo.h; img.style.objectPosition = s.photo.focus; empty.hidden = true;
+  } else { img.hidden = true; img.removeAttribute('src'); img.removeAttribute('srcset'); img.alt = ''; empty.hidden = false; }
+}
 
-/* ---------- the shelf ---------- */
-const grid = $('#grid'), cards = $$('.stone', grid), countEl = $('#count'), empty = $('#empty');
-const shelf = { colour: 'all', unheated: false, sort: 'desc' };
-function applyShelf() {
-  let n = 0;
-  const live = cards.filter(c => (shelf.colour === 'all' || c.dataset.colour === shelf.colour) && (!shelf.unheated || c.dataset.treat === 'Unheated'));
-  live.sort((a, b) => shelf.sort === 'desc' ? b.dataset.carat - a.dataset.carat : a.dataset.carat - b.dataset.carat);
-  cards.forEach(c => { c.hidden = !live.includes(c); });
-  live.forEach(c => grid.appendChild(c)); n = live.length;
-  if (empty) { empty.hidden = n > 0; grid.appendChild(empty); }
-  countEl.textContent = n === cards.length ? `All ${n} stones` : n === 1 ? '1 stone of ' + cards.length : `${n} stones of ${cards.length}`;
+/* ───────── the hero: the stone, or the honest frame where the finished piece will go ───────── */
+{
+  const frame = $('#hero-frame'), img = $('#hero-img'), piece = $('#hero-piece'), cap = $('#hero-cap');
+  const CAP = cap.textContent;
+  $$('.hero .state button').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.state; frame.dataset.state = k;
+    $$('.hero .state button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    img.hidden = k !== 'stone'; piece.hidden = k === 'stone';
+    cap.textContent = k === 'stone' ? CAP : 'The finished piece is shown here only once it exists and has been photographed.';
+  }));
 }
-$$('[data-colour-chip]').forEach(b => b.addEventListener('click', () => {
-  $$('[data-colour-chip]').forEach(x => x.setAttribute('aria-pressed', x === b)); shelf.colour = b.dataset.colourChip; applyShelf();
-}));
-$('#unheated')?.addEventListener('click', e => { shelf.unheated = !shelf.unheated; e.currentTarget.setAttribute('aria-pressed', shelf.unheated); applyShelf(); });
-$('#sort')?.addEventListener('change', e => { shelf.sort = e.target.value; applyShelf(); });
-$('#reset')?.addEventListener('click', () => { shelf.colour = 'all'; shelf.unheated = false; $$('[data-colour-chip]').forEach(x => x.setAttribute('aria-pressed', x.dataset.colourChip === 'all')); $('#unheated').setAttribute('aria-pressed', 'false'); applyShelf(); });
-applyShelf();
 
-/* ---------- the configurator ---------- */
-const cfg = { stone: STONES[0], piece: 'ring', metal: METALS[0], size: 7, inscribe: false, melee: false };
-const sizeField = $('#size-field'), sizeSel = $('#size'), summary = $('#summary'), sendBtn = $('#send');
-const stoneLine = s => `${s.name}, ${s.carat.toFixed(2)} ct, ${s.treatment.toLowerCase()}, ${s.lab} report (${s.ref})`;
-function describe() {
-  const s = cfg.stone, mm = RING_SIZES.find(r => r[0] === +cfg.size)?.[1];
-  const piece = PIECES.find(p => p.key === cfg.piece).label.toLowerCase();
-  const size = cfg.piece === 'ring' ? `, size ${cfg.size} (${mm} mm)` : '';
-  const extras = [cfg.inscribe && 'the report number inscribed on the girdle', cfg.melee && 'one hidden Ceylon melee under the head'].filter(Boolean);
-  const line = `${s.name}, ${s.carat.toFixed(2)} ct, as a ${piece} in ${cfg.metal.label.toLowerCase()}${size}.`;
-  const extraLine = extras.length ? ` With ${extras.join(' and ')}.` : '';
-  return { line, extraLine, text: `Hello ${SITE.name}. Could you draw ${stoneLine(s)} as a ${piece} in ${cfg.metal.label.toLowerCase()}${size}?${extraLine} I am in [your city]. (from the website, set a stone)` };
+/* ───────── the viewing room ───────── */
+function room(ref, view) {
+  if (ref) state.room = ref; if (view) state.view = view;
+  const s = byRef(state.room), has = s.media[state.view];
+  $$('[data-pick]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pick === s.ref)));
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === state.view)));
+  const img = $('#stage-img'), empty = $('#stage-empty');
+  if (has === 'photo') { picture(img, empty, s, '(min-width:900px) 58vw, 100vw'); $('#stage-cap').textContent = `${viewLabel(state.view)}. ${s.photo.credit}.`; }
+  else {
+    img.hidden = true; empty.hidden = false;
+    $('#stage-empty-h').textContent = `${viewLabel(state.view)} not captured yet for ${s.ref}`;
+    $('#stage-empty-p').textContent = state.view === 'rotation' ? 'A rotation clip is filmed in daylight on request. Nothing is simulated.' : 'This view is photographed on request. Nothing is simulated.';
+    $('#stage-cap').textContent = `No ${viewLabel(state.view).toLowerCase()} view of ${s.ref} has been captured.`;
+  }
+  $('#room-ref').textContent = s.ref; $('#room-title').textContent = s.title;
+  $('#room-facts').innerHTML = [['Weight', ct(s)], ['Size', size(s)], ['Treatment', `${esc(s.treatment.value)} ${status(s.treatment)}`], ['Lab report', status(s.lab)]].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  const want = has === 'photo' ? `Hello, from the website. Could I see stone ${s.ref} (${s.title}) under indoor light, close up or turning, on a call or as a clip?` : `Hello, from the website. Could I see stone ${s.ref} (${s.title}) in ${viewLabel(state.view).toLowerCase()}, on a call or as a clip?`;
+  $('#room-ask').href = wa(want);
+  $('#room-compare').setAttribute('aria-pressed', String(state.tray.includes(s.ref)));
 }
-function paintSummary() {
-  const d = describe();
-  summary.firstElementChild.textContent = d.line + d.extraLine;
-  sendBtn.href = wa(d.text);
-  sizeField.hidden = cfg.piece !== 'ring';
-}
-$$('[data-stone-chip]').forEach(b => b.addEventListener('click', () => selectStone(b.dataset.stoneChip)));
-function selectStone(ref) {
-  cfg.stone = STONES.find(s => s.ref === ref) || STONES[0];
-  $$('[data-stone-chip]').forEach(x => x.setAttribute('aria-pressed', x.dataset.stoneChip === cfg.stone.ref));
-  paintSummary(); rebuildPiece();
-}
-$$('[data-piece]').forEach(b => b.addEventListener('click', () => { cfg.piece = b.dataset.piece; $$('[data-piece]').forEach(x => x.setAttribute('aria-pressed', x === b)); paintSummary(); rebuildPiece(); }));
-$$('[data-metal]').forEach(b => b.addEventListener('click', () => { cfg.metal = METALS.find(m => m.key === b.dataset.metal); $$('[data-metal]').forEach(x => x.setAttribute('aria-pressed', x === b)); paintSummary(); rebuildPiece(); }));
-sizeSel?.addEventListener('change', e => { cfg.size = +e.target.value; paintSummary(); rebuildPiece(); });
-$('#inscribe')?.addEventListener('change', e => { cfg.inscribe = e.target.checked; paintSummary(); });
-$('#melee')?.addEventListener('change', e => { cfg.melee = e.target.checked; paintSummary(); });
-$$('[data-set]').forEach(b => b.addEventListener('click', () => { selectStone(b.dataset.set); $('#set').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }));
-paintSummary();
+$$('[data-pick]').forEach(b => b.addEventListener('click', () => room(b.dataset.pick)));
+$$('.tab').forEach(t => t.addEventListener('click', () => room(null, t.dataset.view)));
+$$('[data-room]').forEach(b => b.addEventListener('click', () => { room(b.dataset.room, 'daylight'); $('#viewing').scrollIntoView({ block: 'start' }); }));
+$('#room-passport').addEventListener('click', () => passport(state.room, $('#room-passport')));
+$('#room-compare').addEventListener('click', () => toggle(state.room));
 
-/* ---------- gem views ---------- */
-let heroView, setView, heroHold, setHold;
-function liveView(canvas, build, { spin }) {
-  const view = createView(canvas);
-  const hold = new THREE_Group(); view.root.add(hold);
-  let active = false, dragging = false, lastX = 0, lastY = 0, vel = 0, idle = 0, t = 0, raf = 0;
-  const pose = { x: 0.55, y: 0 };
-  const frame = () => {
-    raf = 0; if (!active) return;
-    t += 1 / 60;
-    if (!dragging) {
-      if (spin === 'turn') { pose.y += 0.006 + vel; vel *= 0.94; }
-      else { idle += 1 / 60; vel *= 0.9; pose.y = (hold.userData.baseY || 0) + Math.sin(idle * 0.7) * 0.35 + vel * 20; }
-    }
-    hold.rotation.set(pose.x, pose.y, 0);
-    view.render(); state.drawn++;
-    if (!reduced || dragging || Math.abs(vel) > 0.0005) raf = requestAnimationFrame(frame);
-  };
-  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
-  new IntersectionObserver(es => { active = es[0].isIntersecting; if (active) kick(); }, { threshold: 0.05 }).observe(canvas);
-  canvas.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); kick(); });
-  canvas.addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - lastX, dy = e.clientY - lastY; lastX = e.clientX; lastY = e.clientY; pose.y += dx * 0.012; pose.x = Math.max(-0.4, Math.min(1.3, pose.x + dy * 0.008)); vel = dx * 0.0006; kick(); });
-  const up = () => { dragging = false; kick(); };
-  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
-  new ResizeObserver(() => kick()).observe(canvas);
-  return { view, hold, pose, kick, set(obj, radius, p) { view.clear(); hold.clear(); view.root.add(hold); hold.add(obj); view.fit(radius); if (p) { pose.x = p.x; hold.userData.baseY = p.y; pose.y = p.y; } kick(); } };
+/* ───────── the tray: up to three stones, saved on this device ───────── */
+const KEY = 'island-cut-tray';
+try { state.tray = (JSON.parse(localStorage.getItem(KEY) || '[]') || []).filter(byRef).slice(0, MAX); } catch { state.tray = []; }
+const ROWS = [['Colour', s => esc(s.colour)], ['Cut', s => esc(s.cut)], ['Weight', s => ct(s)], ['Size', s => size(s)], ['Treatment', s => `${esc(s.treatment.value)} ${status(s.treatment)}`], ['Lab report', s => `${esc(s.lab.value)} ${status(s.lab)}`], ['Provenance', s => `${esc(s.origin.value)} ${status(s.origin)}`]];
+function toggle(ref) {
+  const warn = $('#tray-warn');
+  if (state.tray.includes(ref)) state.tray = state.tray.filter(r => r !== ref);
+  else if (state.tray.length >= MAX) { warn.hidden = false; $('#tray').dataset.open = 'true'; $('#tray-open').setAttribute('aria-expanded', 'true'); $('#tray-open').textContent = 'Close'; return tray(); }
+  else state.tray.push(ref);
+  warn.hidden = true; tray();
 }
-// three's Group without importing three here twice: gem.js owns three; expose a tiny factory.
-import { Group as THREE_Group } from 'three';
+function tray() {
+  try { localStorage.setItem(KEY, JSON.stringify(state.tray)); } catch { /* private mode: the tray still works for this visit */ }
+  const t = $('#tray'), n = state.tray.length, picks = state.tray.map(byRef);
+  t.dataset.on = String(n > 0); document.body.classList.toggle('tray-on', n > 0);
+  if (!n) { t.dataset.open = 'false'; $('#tray-open').setAttribute('aria-expanded', 'false'); $('#tray-open').textContent = 'Open'; }
+  $('#tray-what').textContent = `Comparing ${n} of ${MAX}`;
+  $('#tray-refs').textContent = picks.map(s => `${s.ref} ${s.title}`).join(', ');
+  $$('[data-compare]').forEach(b => b.setAttribute('aria-pressed', String(state.tray.includes(b.dataset.compare))));
+  $('#room-compare').setAttribute('aria-pressed', String(state.tray.includes(state.room)));
+  if (state.passport) $('#pp-compare').setAttribute('aria-pressed', String(state.tray.includes(state.passport)));
+  $('#cmp-head').innerHTML = '<th scope="col"><span class="vh">Fact</span></th>' + picks.map(s => `<th scope="col">${esc(s.title)}<small>${esc(s.ref)}</small><button class="rm" type="button" data-remove="${esc(s.ref)}" aria-label="Remove ${esc(s.ref)} from the tray">${icon('close')}</button></th>`).join('');
+  const diff = $('#diff').checked;
+  $('#cmp-body').innerHTML = ROWS.map(([k, f]) => { const vals = picks.map(f); const same = vals.length > 1 && vals.every(v => v === vals[0]); return `<tr data-same="${same}"${same && diff ? ' hidden' : ''}><th scope="row">${k}</th>${vals.map(v => `<td>${v}</td>`).join('')}</tr>`; }).join('');
+  $$('[data-remove]').forEach(b => b.addEventListener('click', () => toggle(b.dataset.remove)));
+}
+$$('[data-compare]').forEach(b => b.addEventListener('click', () => toggle(b.dataset.compare)));
+$('#tray-open').addEventListener('click', () => { const t = $('#tray'), open = t.dataset.open !== 'true'; t.dataset.open = String(open); $('#tray-open').setAttribute('aria-expanded', String(open)); $('#tray-open').textContent = open ? 'Close' : 'Open'; if (!open) $('#tray-warn').hidden = true; });
+$('#tray-clear').addEventListener('click', () => { state.tray = []; $('#tray-warn').hidden = true; tray(); });
+$('#diff').addEventListener('change', tray);
 
-function rebuildPiece() {
-  if (!setHold) return;
-  const g = buildPiece(cfg.piece, cfg.stone, cfg.metal.hex, RING_SIZES.find(r => r[0] === +cfg.size)?.[1] || 17.3);
-  setHold.set(g, g.userData.radius, g.userData.pose);
-  $('#set-cap').textContent = `${cfg.stone.name}, ${cfg.stone.mm[0]} by ${cfg.stone.mm[1]} mm, drawn to size. Drag to turn.`;
+/* ───────── the passport: one stone, every fact with its status ───────── */
+let opener = null;
+function passport(ref, from) {
+  const s = byRef(ref); state.passport = ref; opener = from || document.activeElement;
+  $('#pp-ref').textContent = s.ref; $('#pp-title').textContent = s.title;
+  picture($('#pp-img'), $('#pp-empty'), s, '(min-width:900px) 560px, 100vw');
+  $('#pp-cap').textContent = s.photo ? s.photo.credit : 'No photograph on this record yet.';
+  $('#pp-dl').innerHTML = [['Reference', esc(s.ref)], ['Colour', esc(s.colour)], ['Cut', esc(s.cut)], ['Weight', ct(s)], ['Dimensions', size(s)], ['Treatment', `${esc(s.treatment.value)} ${status(s.treatment)}`], ['Lab report', `${esc(s.lab.value)} ${status(s.lab)}`], ['Provenance', `${esc(s.origin.value)} ${status(s.origin)}`]].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  $('#pp-views').innerHTML = VIEWS.map(v => `<li><span>${esc(v.label)}</span><span>${s.media[v.key] ? 'Captured, daylight photograph' : 'Not captured yet'}</span></li>`).join('');
+  $('#pp-ask').href = wa(askText(s));
+  $('#pp-compare').setAttribute('aria-pressed', String(state.tray.includes(ref)));
+  open($('#passport'));
 }
-function startGems() {
-  if (!supported()) { html.dataset.gl = 'off'; return; }
-  try {
-    html.dataset.gl = 'ok'; state.gl = true;
-    const heroCanvas = $('#hero-canvas');
-    heroHold = liveView(heroCanvas, null, { spin: 'turn' }); state.hero = heroHold;
-    const hs = STONES[0], m = buildStone(hs);
-    heroHold.set(m, m.userData.halfW * 1.35, { x: 0.55, y: 0.3 });
-    const setCanvas = $('#set-canvas');
-    setHold = liveView(setCanvas, null, { spin: 'sway' }); state.set = setHold;
-    rebuildPiece();
-    // One still per idle slice, and none until the hero's words have landed, so the intro never stutters.
-    const idle = window.requestIdleCallback || (f => setTimeout(f, 40));
-    const queue = STONES.slice(); let painter = null;
-    const paintOne = () => {
-      try {
-        if (!painter) painter = stillPainter();
-        const s = queue.shift(); if (!s) { painter.dispose(); return; }
-        const tile = $(`.tile[data-ref="${s.ref}"]`);
-        if (tile) {
-          const img = new Image(); img.src = painter.paint(s); img.width = 560; img.height = 560; img.alt = tile.dataset.alt || ''; img.decoding = 'async';
-          tile.prepend(img); state.stills++;
-        }
-        idle(paintOne);
-      } catch (e) { state.errors.push('stills: ' + e.message); }
-    };
-    setTimeout(() => idle(paintOne), reduced ? 0 : 1600);
-  } catch (e) { state.errors.push('gl: ' + e.message); html.dataset.gl = 'off'; }
-}
-startGems();
+$$('[data-passport]').forEach(b => b.addEventListener('click', () => passport(b.dataset.passport, b)));
+$('#pp-compare').addEventListener('click', () => toggle(state.passport));
 
-/* ---------- motion (bb-motion-master): one idea per scene, one duration, gated ---------- */
-function wordMask(el) {
-  const words = el.textContent.trim().split(/\s+/);
-  el.textContent = '';
-  words.forEach((w, i) => { const o = document.createElement('span'); o.className = 'wm'; const n = document.createElement('span'); n.className = 'w'; n.textContent = w; o.appendChild(n); el.appendChild(o); if (i < words.length - 1) el.appendChild(document.createTextNode(' ')); });
-  return $$('.w', el);
+/* ───────── the request: a time with a specialist, carrying the stones ───────── */
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const pad = n => String(n).padStart(2, '0');
+function request(from, carry) {
+  opener = from || document.activeElement;
+  /* the passport hands its stone over as `carry`, because by the time the request opens the passport is already shut */
+  const refs = carry ? carry.slice() : (state.passport && $('#passport').open ? [state.passport] : state.tray.slice());
+  const picks = refs.map(byRef);
+  $('#req-stones').innerHTML = picks.length ? picks.map(s => `<span class="chip static">${esc(s.ref)} ${esc(s.title)}</span>`).join('') : '<span class="note">No stone chosen yet. A specialist can walk the table with you.</span>';
+  const day = $('#req-day');
+  if (!day.options.length) {
+    const now = new Date();
+    for (let i = 1; i <= 7; i++) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i); const o = document.createElement('option'); o.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; o.textContent = `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`; day.appendChild(o); }
+    for (const t of P.slots) { const o = document.createElement('option'); o.value = t; o.textContent = t; $('#req-time').appendChild(o); }
+  }
+  $('#request').dataset.sent = 'false';
+  times(picks); open($('#request'));
 }
-async function startMotion() {
-  if (reduced || !gsap) return;
-  gsap.registerPlugin(ScrollTrigger);
-  html.classList.add('motion-on');
-  const D = 1.2, E = 'expo.out';
-  await document.fonts.ready;
-  const h1 = wordMask($('.hero h1'));
-  gsap.set(h1, { yPercent: 115 });
-  gsap.to(h1, { yPercent: 0, duration: D, ease: E, stagger: 0.08, delay: 0.1 });
-  gsap.from('.hero .lead, .hero-ctas', { autoAlpha: 0, y: 18, duration: D, ease: E, delay: 0.5, stagger: 0.1 });
-  gsap.from('.stage', { autoAlpha: 0, scale: 0.92, duration: D * 1.4, ease: E, delay: 0.2 });
-  $$('[data-rv]').forEach(el => gsap.from(el, { autoAlpha: 0, y: 28, duration: D, ease: E, scrollTrigger: { trigger: el, start: 'top 88%', once: true } }));
-  const stones = $$('.stone', grid);
-  gsap.set(stones, { clipPath: 'inset(0 0 100% 0)' });
-  ScrollTrigger.create({ trigger: grid, start: 'top 85%', once: true, onEnter: () => gsap.to(stones, { clipPath: 'inset(0 0 0% 0)', duration: D, ease: E, stagger: 0.1 }) });
-  $$('.step').forEach(st => gsap.fromTo(st, { opacity: 0.35 }, { opacity: 1, ease: 'none', scrollTrigger: { trigger: st, start: 'top 85%', end: 'top 55%', scrub: true } }));
-  $$('.kin span').forEach((w, i) => gsap.fromTo(w, { xPercent: i % 2 ? 6 : -6 }, { xPercent: i % 2 ? -6 : 6, ease: 'none', scrollTrigger: { trigger: '.province', start: 'top bottom', end: 'bottom top', scrub: 1 } }));
-  const h2 = wordMask($('.close h2'));
-  gsap.set(h2, { yPercent: 115 });
-  ScrollTrigger.create({ trigger: '.close', start: 'top 70%', once: true, onEnter: () => gsap.to(h2, { yPercent: 0, duration: D, ease: E, stagger: 0.1 }) });
+function times(picks) {
+  const [y, m, d] = $('#req-day').value.split('-').map(Number), [hh, mm] = $('#req-time').value.split(':').map(Number);
+  /* Sri Lanka keeps +05:30 all year: the Colombo slot as an instant, then the visitor's own clock on it */
+  const at = new Date(Date.UTC(y, m - 1, d, hh - 5, mm - 30));
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'your time zone';
+  const local = at.toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  const colombo = `${$('#req-day').selectedOptions[0].textContent}, ${$('#req-time').value}`;
+  $('#req-local').textContent = zone === 'Asia/Colombo' ? `${colombo} Colombo time` : `${local} in ${zone}`;
+  $('#req-zone').textContent = zone === 'Asia/Colombo' ? 'You are on the house’s own clock.' : `${colombo} on the house’s clock in Colombo.`;
+  const refs = (picks || (state.passport && $('#passport').open ? [byRef(state.passport)] : state.tray.map(byRef))).map(s => `${s.ref} ${s.title}`).join(', ');
+  $('#req-send').href = wa(`Hello, from the website. I would like a viewing with a specialist on a video call.${refs ? ` Stones: ${refs}.` : ' No stone chosen yet, please walk me through the table.'} Day and time: ${colombo} Colombo time${zone === 'Asia/Colombo' ? '' : ` (${local} ${zone})`}. Please confirm.`);
 }
-startMotion();
+$('#req-day').addEventListener('change', () => times());
+$('#req-time').addEventListener('change', () => times());
+/* success is shown only once the door has actually been opened: the click on the real WhatsApp link */
+$('#req-send').addEventListener('click', () => { $('#request').dataset.sent = 'true'; });
+$$('[data-request]').forEach(b => b.addEventListener('click', () => request(b)));
+
+/* ───────── sheets: native dialog, Escape closes, focus returns to what opened it ───────── */
+function open(d) { if (d.open) return; d.showModal(); document.body.classList.add('sheet-open'); d.scrollTop = 0; const first = d.querySelector('.scroll'); if (first) first.scrollTop = 0; }
+for (const d of $$('dialog')) {
+  d.addEventListener('close', () => { document.body.classList.remove('sheet-open'); if (d.id === 'passport') state.passport = null; if (opener && opener.isConnected && document.body.contains(opener)) opener.focus(); });
+  d.addEventListener('click', e => { if (e.target === d) d.close(); });
+  d.querySelectorAll('[data-close], .x').forEach(b => b.addEventListener('click', () => d.close()));
+}
+/* "View with a specialist" inside the passport carries that stone, then closes the passport under the request */
+$('#pp-spec').addEventListener('click', () => { const keep = state.passport; $('#passport').close(); request($('#pp-spec'), keep ? [keep] : []); });
+
+/* ───────── the brand mark always reaches the top, even with #top already in the address ───────── */
+$$('[data-top]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0 }); history.replaceState(null, '', location.pathname + location.search); }));
+
+room(); tray();
+window.IslandCut.ready = true;

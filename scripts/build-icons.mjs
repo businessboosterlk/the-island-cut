@@ -3,8 +3,8 @@
 // Writes src/data/icons.json and public/assets/icons.svg. `--check` fails if either differs from the packages.
 // Follows ~/bb-websites/bswl/scripts/build-icons.mjs and ~/bb-websites/sastho/scripts/build-icons.mjs.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-const LINE = { arrow: 'arrow-right', down: 'chevron-down', check: 'check', close: 'x', shield: 'shield-check', video: 'video', report: 'file-text', truck: 'truck', bank: 'landmark', chat: 'message-circle', sun: 'sun', ruler: 'ruler', hand: 'hand', gem: 'gem', move: 'move-3d', up: 'arrow-up' };
-const BRAND = { whatsapp: 'whatsapp', instagram: 'instagram' };
+const LINE = { arrow: 'arrow-right', check: 'check', close: 'x', shield: 'shield-check', video: 'video', report: 'file-text', sun: 'sun', lamp: 'lamp', macro: 'zoom-in', rotate: 'rotate-cw', compare: 'columns-2', calendar: 'calendar', clock: 'clock', plus: 'plus', minus: 'minus', gem: 'gem', nophoto: 'image-off' };
+const BRAND = { whatsapp: 'whatsapp' };
 const inner = svg => svg.replace(/<!--[\s\S]*?-->/g, '').replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/\s*\n\s*/g, '').trim();
 const ver = p => JSON.parse(readFileSync(`node_modules/${p}/package.json`, 'utf8')).version;
 const out = { _source: { line: 'lucide-static ' + ver('lucide-static') + ' (ISC)', brand: 'simple-icons ' + ver('simple-icons') + ' (CC0-1.0)' }, line: {}, brand: {} };
@@ -15,7 +15,7 @@ const sprite = '<!-- Built by scripts/build-icons.mjs from ' + out._source.line 
   + Object.entries(out.line).map(([k, v]) => `<symbol id="${k}" viewBox="0 0 24 24">${v}</symbol>`).join('\n') + '\n'
   + Object.entries(out.brand).map(([k, v]) => `<symbol id="b-${k}" viewBox="0 0 24 24">${v}</symbol>`).join('\n') + '\n</svg>\n';
 // The favicon is the same licensed gem symbol on the brand square. Nobody draws it either.
-const favicon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1b3fa8"/><g transform="translate(12 12) scale(1.6667)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + out.line.gem + '</g></svg>\n';
+const favicon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#2a2724"/><g transform="translate(12 12) scale(1.6667)" fill="none" stroke="#f4efe7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + out.line.gem + '</g></svg>\n';
 const J = 'src/data/icons.json', S = 'public/assets/icons.svg', F = 'public/favicon.svg';
 if (process.argv.includes('--check')) {
   const bad = [[J, json], [S, sprite], [F, favicon]].filter(([f, want]) => !existsSync(f) || readFileSync(f, 'utf8') !== want).map(([f]) => f);
