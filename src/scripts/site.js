@@ -1,4 +1,5 @@
-// THE ISLAND CUT, the page's one script. Hero state, the viewing room, the tray, the passport and the request sheet.
+// THE ISLAND CUT, the page's one script. The turning ring, the viewing room, the tray, the passport, the request sheet,
+// the ring that comes apart, the builder and the box.
 // No framework, no three.js, no GSAP. Every door ends in a prefilled WhatsApp message that says "from the website".
 // The tray is saved on this device only (localStorage) and is never a reservation.
 import { url, icon } from './icon.js';
@@ -27,16 +28,67 @@ function picture(img, empty, s, sizes) {
   } else { img.hidden = true; img.removeAttribute('src'); img.removeAttribute('srcset'); img.alt = ''; empty.hidden = false; }
 }
 
-/* ───────── the hero: the stone, or the honest frame where the finished piece will go ───────── */
+/* ───────── scroll stages: a sticky stage inside a taller track. Progress is 0 at the top of the track and 1 once
+   the track has scrolled its travel. Read from the scroll and nothing else, so every stage is reversible. ───────── */
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+function progress(track, stage) {
+  const travel = track.offsetHeight - stage.offsetHeight; if (travel <= 0) return 0;
+  const top = parseFloat(getComputedStyle(stage).top) || 0;
+  return clamp((top - track.getBoundingClientRect().top) / travel, 0, 1);
+}
+function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; requestAnimationFrame(() => { q = false; fn(); }); } }; addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); return ask; }
+
+/* ───────── the hero: a ring that turns with the scroll. The poster is in the HTML; the frames load after it and are
+   drawn on a canvas; under reduced motion nothing loads and the poster stays. One set per device, chosen once. ───────── */
 {
-  const frame = $('#hero-frame'), img = $('#hero-img'), piece = $('#hero-piece'), cap = $('#hero-cap');
-  const CAP = cap.textContent;
-  $$('.hero .state button').forEach(b => b.addEventListener('click', () => {
-    const k = b.dataset.state; frame.dataset.state = k;
-    $$('.hero .state button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-    img.hidden = k !== 'stone'; piece.hidden = k === 'stone';
-    cap.textContent = k === 'stone' ? CAP : 'The finished piece is shown here only once it exists and has been photographed.';
-  }));
+  const track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), poster = $('#hero-poster'), canvas = $('#hero-canvas');
+  const words = $$('#hero-words li'), N = Number(turn.dataset.frames), set = innerWidth < 900 ? 480 : 800;
+  const frames = new Array(N).fill(null); let drawn = -1;
+  const ctx = canvas.getContext('2d');
+  const H = window.IslandCut.hero = { set, frames: N, loaded: 0, frame: 0, progress: 0, reduced: REDUCE };
+  function draw() {
+    const p = REDUCE ? 0 : progress(track, stage), i = Math.round(p * (N - 1));
+    H.progress = p; H.frame = i; turn.dataset.frame = String(i);
+    let j = i; while (j > 0 && !frames[j]) j--;
+    if (frames[j] && j !== drawn) {
+      if (canvas.width !== frames[j].naturalWidth) { canvas.width = frames[j].naturalWidth; canvas.height = frames[j].naturalHeight; }
+      ctx.drawImage(frames[j], 0, 0); drawn = j; canvas.hidden = false; poster.hidden = true;
+    }
+    let cur = 0; words.forEach((w, k) => { if (p >= Number(w.dataset.at)) cur = k; });
+    words.forEach((w, k) => { if (k === cur) w.setAttribute('aria-current', 'true'); else w.removeAttribute('aria-current'); });
+  }
+  if (!REDUCE) {
+    const ask = onScroll(draw);
+    frames.forEach((_, i) => { const im = new Image(); im.decoding = 'async'; im.onload = () => { frames[i] = im; H.loaded++; drawn = -1; ask(); }; im.src = url(`assets/motion/hero/${set}/${String(i + 1).padStart(3, '0')}.webp`); });
+    draw();
+  }
+}
+
+/* ───────── customise: the ring comes apart as the stage scrolls and goes back together on the way up ───────── */
+{
+  const track = $('#explode-track'), stage = $('#explode');
+  const E = window.IslandCut.explode = { p: 0 };
+  function put() { const p = REDUCE ? 1 : progress(track, stage); E.p = p; stage.style.setProperty('--p', p.toFixed(3)); stage.dataset.apart = String(p > 0.5); }
+  if (!REDUCE) onScroll(put);
+  put();
+}
+
+/* ───────── the box: a short real loop while it is on screen, the open shot and the door on the tap ───────── */
+{
+  const box = $('#box'), loop = $('#box-loop'), opened = $('#box-open'), tap = $('#box-tap'), reveal = $('#box-reveal');
+  const X = window.IslandCut.box = { playing: false, open: false };
+  const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => { /* a browser that refuses to play shows the poster, which is the same box */ }); };
+  if (!REDUCE && 'IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => {
+    if (X.open) return;
+    if (e.isIntersecting) { play(loop); X.playing = true; } else { loop.pause(); X.playing = false; }
+  }), { threshold: 0.25 }).observe(box);
+  tap.addEventListener('click', () => {
+    X.open = true; X.playing = false; box.dataset.open = 'true';
+    loop.pause(); loop.hidden = true; opened.hidden = false; if (!REDUCE) play(opened);
+    tap.hidden = true; reveal.hidden = false;
+    $('#close-request').focus({ preventScroll: true });
+  });
 }
 
 /* ───────── the viewing room ───────── */
@@ -148,6 +200,56 @@ $('#req-time').addEventListener('change', () => times());
 /* success is shown only once the door has actually been opened: the click on the real WhatsApp link */
 $('#req-send').addEventListener('click', () => { $('#request').dataset.sent = 'true'; });
 $$('[data-request]').forEach(b => b.addEventListener('click', () => request(b)));
+
+/* ───────── the builder: setting, stone, size, the details, then a name and a number. No price anywhere. The choices
+   ride into the WhatsApp message like the tray does, and are kept on this device only. ───────── */
+const B = P.builder, RING = 'island-cut-ring', ORDER = ['setting', 'stone', 'size', 'metal', 'band'];
+const STEPS = ['setting', 'stone', 'size', 'details', 'ready'];
+const ring = { setting: null, stone: null, size: null, metal: null, band: null, name: '', number: '' };
+try { const k = JSON.parse(localStorage.getItem(RING) || '{}'); for (const g of ORDER) if (B.groups[g].options.some(o => o.key === k[g])) ring[g] = k[g]; if (typeof k.name === 'string') ring.name = k.name.slice(0, 80); if (typeof k.number === 'string') ring.number = k.number.slice(0, 32); } catch { /* nothing kept */ }
+let step = 'setting';
+window.IslandCut.ring = ring;
+const optLabel = (g, k) => { const o = B.groups[g].options.find(o => o.key === k); return o ? o.label : null; };
+const keepRing = () => { try { localStorage.setItem(RING, JSON.stringify(ring)); } catch { /* private mode */ } };
+const digits = s => String(s).replace(/\D/g, '');
+const complete = () => ring.name.trim().length >= 2 && digits(ring.number).length >= 7;
+const missing = k => k === 'details' ? !(ring.metal && ring.band) : !ring[k];
+const groupHtml = (g, titled) => `<div class="group" data-group="${g}">${titled ? `<p class="glabel">${esc(B.groups[g].label)}</p>` : ''}<p class="ask">${esc(B.groups[g].ask)}</p><div class="opts">${B.groups[g].options.map(o => `<button type="button" class="opt" data-option="${g}:${o.key}" aria-pressed="${String(ring[g] === o.key)}"><strong>${esc(o.label)}</strong><span>${esc(o.why)}</span></button>`).join('')}</div></div>`;
+const summary = () => `<dl class="sum">${ORDER.map(g => `<div><dt>${esc(B.groups[g].label)}</dt><dd>${esc(optLabel(g, ring[g]) || 'Not chosen')}</dd><button type="button" class="chg" data-step="${g === 'metal' || g === 'band' ? 'details' : g}">Change</button></div>`).join('')}</dl>`;
+function ringText(kind) {
+  const parts = ORDER.map(g => `${B.groups[g].label}: ${optLabel(g, ring[g]) || 'not chosen'}`).join('. ');
+  return `Hello, from the website. My ring. ${parts}. Name: ${ring.name.trim()}. Number: ${ring.number.trim()}. ${kind === 'custom' ? 'Please make it fully custom with a specialist, starting from these choices.' : 'Please take it as it is and tell me the next step.'}`;
+}
+function doors() {
+  const ok = complete();
+  for (const a of $$('#bld-acts [data-door]')) { a.setAttribute('aria-disabled', String(!ok)); a.href = ok ? wa(ringText(a.dataset.door)) : '#'; }
+  const why = $('#bld-why'); if (why) why.textContent = ok ? 'Either door opens WhatsApp with your choices, your name and your number. Nothing is priced here. A person replies.' : 'Add your name and your number so a person can reply. Nothing is priced here.';
+}
+function build() {
+  const d = $('#builder'), i = STEPS.indexOf(step), body = $('#bld-body'), acts = $('#bld-acts');
+  d.dataset.step = step;
+  $('#bld-step').textContent = step === 'ready' ? 'Almost ready' : `Step ${i + 1} of 4`;
+  $('#bld-title').textContent = step === 'ready' ? 'Your ring is almost ready' : B.titles[step];
+  if (step === 'details') body.innerHTML = groupHtml('metal', true) + groupHtml('band', true);
+  else if (step === 'ready') body.innerHTML = `<div class="ready">${summary()}<div class="field"><label for="bld-name">Your name</label><input type="text" id="bld-name" autocomplete="name" maxlength="80" value="${esc(ring.name)}"></div><div class="field"><label for="bld-number">Your WhatsApp number</label><input type="text" id="bld-number" inputmode="tel" autocomplete="tel" maxlength="32" value="${esc(ring.number)}"></div><p class="note" id="bld-why"></p></div>`;
+  else body.innerHTML = groupHtml(step, false);
+  if (step === 'ready') acts.innerHTML = `<a class="door fill" data-door="asis" href="#" target="_blank" rel="noopener">${icon('b-whatsapp')}Send it as it is</a><a class="door" data-door="custom" href="#" target="_blank" rel="noopener">${icon('b-whatsapp')}Make it fully custom</a><button class="door quiet" type="button" data-back>Back</button>`;
+  else acts.innerHTML = `<button class="door fill" type="button" data-next${missing(step) ? ' disabled' : ''}>Next</button><button class="door quiet" type="button" ${i === 0 ? 'data-close>Not now' : 'data-back>Back'}</button>`;
+  $$('[data-option]', body).forEach(b => b.addEventListener('click', () => { const [g, k] = b.dataset.option.split(':'); ring[g] = k; keepRing(); $$(`[data-option^="${g}:"]`, body).forEach(x => x.setAttribute('aria-pressed', String(x === b))); const n = $('[data-next]', acts); if (n) n.disabled = missing(step); }));
+  $$('[data-step]', body).forEach(b => b.addEventListener('click', () => { step = b.dataset.step; build(); }));
+  const nx = $('[data-next]', acts); if (nx) nx.addEventListener('click', () => { if (missing(step)) return; step = STEPS[i + 1]; build(); });
+  const bk = $('[data-back]', acts); if (bk) bk.addEventListener('click', () => { step = STEPS[Math.max(0, i - 1)]; build(); });
+  const cl = $('[data-close]', acts); if (cl) cl.addEventListener('click', () => d.close());
+  if (step === 'ready') {
+    $('#bld-name').addEventListener('input', e => { ring.name = e.target.value; keepRing(); doors(); });
+    $('#bld-number').addEventListener('input', e => { ring.number = e.target.value; keepRing(); doors(); });
+    $$('[data-door]', acts).forEach(a => a.addEventListener('click', e => { if (!complete()) { e.preventDefault(); (ring.name.trim().length < 2 ? $('#bld-name') : $('#bld-number')).focus(); } }));
+    doors();
+  }
+  body.scrollTop = 0;
+}
+function builder(from) { opener = from || document.activeElement; step = 'setting'; build(); open($('#builder')); }
+$$('[data-build]').forEach(b => b.addEventListener('click', () => builder(b)));
 
 /* ───────── sheets: native dialog, Escape closes, focus returns to what opened it ───────── */
 function open(d) { if (d.open) return; d.showModal(); document.body.classList.add('sheet-open'); d.scrollTop = 0; const first = d.querySelector('.scroll'); if (first) first.scrollTop = 0; }

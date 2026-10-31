@@ -85,9 +85,17 @@ select,input[type=text]{width:100%;min-height:44px;padding:0 var(--s-3);border:1
 .links a{min-height:44px;display:inline-flex;align-items:center;border-bottom:1px solid transparent}
 @media (hover:hover){.links a:hover{color:var(--ink)}}
 
-/* HERO: the photograph is the fold */
-.hero{padding-top:var(--s-7);padding-bottom:var(--s-14)} /* longhands: a shorthand here wiped .wrap's side gutter (seen 30 Oct 2026) */
-.hero figure{margin:0 calc(-1 * var(--gutter)) var(--s-7);background:var(--white)}
+/* HERO: a ring that turns with the scroll. The stage sticks under the nav; the track gives it a CAPPED travel in px
+   (a scroll driven element must cap its travel, bb-web-learnings). dvh, never vh. Longhands on .hero: a padding
+   shorthand here wiped .wrap's side gutter (seen 30 Oct 2026). */
+.hero{--travel:720px;padding-top:0;padding-bottom:var(--s-10)}
+.hero .track{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top) + var(--travel))}
+.hero .scene{position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top));height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top));display:flex;flex-direction:column;justify-content:center;gap:var(--s-4);padding-top:var(--s-4);padding-bottom:var(--s-4)}
+.turn{margin:0;display:grid;justify-items:center;gap:var(--s-2)}
+.turn .box{height:min(30dvh,300px);width:100%;display:grid;place-items:center}
+.turn img,.turn canvas{height:100%;width:auto;max-width:100%;object-fit:contain}
+.turn img[hidden],.turn canvas[hidden]{display:none}
+.turn figcaption{font-size:var(--t-sm);color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:var(--s-2);flex-wrap:wrap;text-align:center}
 .frame{position:relative;background:var(--white);overflow:clip}
 /* the frame is a padding spacer, not aspect-ratio, and clips with overflow:clip, not hidden: as a grid item with overflow:hidden Chromium gave it a 0px height and painted the frame over the facts below (seen 30 Oct 2026 in the passport; overflow:clip is not a scroll container, so the row sizes to the spacer) */
 .frame::before{content:'';display:block;padding-top:66.667%}
@@ -97,11 +105,50 @@ select,input[type=text]{width:100%;min-height:44px;padding:0 var(--s-3);border:1
 .frame .empty p{max-width:30ch;font-size:15px}
 .frame .empty strong{display:block;font:500 var(--t-xl)/1.2 var(--display);color:var(--ink)}
 .frame [hidden]{display:none}
-.hero figcaption{padding:var(--s-3) var(--gutter) 0;font-size:var(--t-sm);color:var(--ink-2)}
 .hero .copy{text-align:center}
-.hero .copy h1,.hero .copy .lead{margin-left:auto;margin-right:auto}
-.hero .state{margin-top:var(--s-7)}
-.hero .state-note{margin-top:var(--s-2)}
+.hero .copy h1{margin-left:auto;margin-right:auto;font-size:clamp(38px,5.2vw,68px)}
+.hero .doors{flex-direction:row}
+.hero .doors .door{flex:1;padding:0 10px;min-width:0}
+/* the three lines beside the ring: one at a time on the phone (one grid cell), stacked on the desk */
+.words{display:grid;margin:var(--s-3) 0 var(--s-5);font:400 var(--t-lg)/1.35 var(--display);color:var(--ink-2)}
+.words li{grid-area:1/1;opacity:0}
+.words li[aria-current="true"]{opacity:1;color:var(--ink)}
+.hero .lead{margin:var(--s-6) auto 0;text-align:center}
+
+/* CUSTOMISE: a photograph cut into three layers on one origin, moved by transforms as the stage scrolls. --p is the
+   progress 0 to 1, set from the scroll and nothing else, so scrolling up puts the ring back together. */
+.explode{--travel:520px}
+.explode .track{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top) + var(--travel))}
+.explode .scene{position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top));display:grid;gap:var(--s-5);align-content:center;padding-top:var(--s-4);padding-bottom:var(--s-4);--p:0}
+.layers{position:relative;width:min(100%,360px);margin:0 auto}
+.layers::before{content:'';display:block;padding-top:96%}
+.layer{position:absolute;left:0;top:50%;width:100%;height:auto;transform:translateY(-50%)}
+.layer.l-stone{transform:translateY(calc(-50% - var(--p) * 30%));z-index:3}
+.layer.l-setting{z-index:2}
+.layer.l-band{transform:translateY(calc(-50% + var(--p) * 30%));z-index:1}
+.explode .beside{display:grid;gap:var(--s-5)}
+.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);text-align:center}
+.parts li{opacity:calc((var(--p) - .45) * 2.5);display:grid;gap:2px}
+.parts strong{font:500 var(--t-lg)/1.2 var(--display)}
+.parts span{font-size:var(--t-sm);color:var(--champagne)}
+.explode .cap,.close .cap{font-size:var(--t-sm);color:var(--ink-2);text-align:center;display:flex;gap:var(--s-2);justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:0}
+.explode .cap span:last-child,.close .cap span:last-child{max-width:60ch}
+.explode .doors{max-width:360px;margin:0 auto;width:100%}
+
+/* CLOSE: a real box turning in a short loop with one word on it. The tap swaps to the open shot and the door appears
+   in the same tick. The clips are played from the script only, never by an attribute, and never under reduced motion. */
+.close .boxstage{display:grid;gap:var(--s-5)}
+.box-frame{margin:0 calc(-1 * var(--gutter));background:var(--paper-2)}
+.box-frame::before{padding-top:56.25%}
+.box-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.box-frame video[hidden]{display:none}
+.lid{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;color:var(--ink)}
+.lid .word{font:400 clamp(44px,9vw,80px)/1 var(--display);letter-spacing:.02em}
+.lid[hidden]{display:none}
+.reveal{display:grid;gap:var(--s-4);text-align:center;justify-items:center}
+.reveal[hidden]{display:none}
+.reveal p{font:400 var(--t-xl)/1.3 var(--display);max-width:30ch}
+.reveal .doors{max-width:360px;width:100%}
 
 /* THE HOUSE SPEAKS ONCE */
 .house{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:var(--s-14) 0;text-align:center}
@@ -211,19 +258,63 @@ dialog .acts{padding:var(--s-4) var(--gutter) calc(var(--s-4) + env(safe-area-in
 .req .times strong{color:var(--ink);font-weight:500}
 .req .done{display:none;background:var(--paper-2);padding:var(--s-3) var(--s-4);border-radius:var(--r)}
 .req[data-sent="true"] .done{display:block}
+.bld .ask{color:var(--ink-2);font-size:15px}
+.bld .group{display:grid;gap:var(--s-3)}
+.bld .glabel{font:500 var(--t-lg)/1.2 var(--display)}
+.opts{display:grid;gap:var(--s-2)}
+.opt{display:grid;gap:2px;text-align:left;padding:var(--s-3) var(--s-4);border:1px solid var(--line);border-radius:var(--r);background:var(--white);min-height:44px}
+.opt strong{font-weight:500}
+.opt span{font-size:var(--t-sm);color:var(--ink-2)}
+.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--paper)}
+@media (hover:hover){.opt:hover{border-color:var(--ink-2)}.sum .chg:hover{color:var(--ink);border-color:var(--ink)}}
+.sum{display:grid}
+.sum div{display:grid;grid-template-columns:7ch 1fr auto;gap:var(--s-3);align-items:center;border-bottom:1px solid var(--line);padding:var(--s-2) 0}
+.sum dt{font-size:var(--t-sm);color:var(--ink-2)}
+.sum dd{font-size:16px}
+.sum .chg{min-height:44px;padding:0 var(--s-3);font-size:14px;font-weight:500;color:var(--ink-2);border:1px solid var(--line);border-radius:var(--r)}
+.bld .door[aria-disabled="true"],.bld .door[disabled]{opacity:.45;cursor:not-allowed}
+.bld .ready{display:grid;gap:var(--s-4)}
 @media (prefers-reduced-motion:no-preference){
   dialog[open]{animation:sheet-in var(--panel) var(--ease)}
   @keyframes sheet-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+}
+
+/* REDUCED MOTION: no travel, no sticking, the poster stays, the ring is shown apart with its three labels */
+@media (prefers-reduced-motion:reduce){
+  .hero .track,.explode .track{height:auto}
+  .hero .scene,.explode .scene{position:static;height:auto}
+  .explode .scene{--p:1}
+  .words li{grid-area:auto;opacity:1}
 }
 
 /* DESK */
 @media (min-width:900px){
   :root{--gutter:40px}
   .links{display:flex}
-  .hero{display:grid;grid-template-columns:5fr 7fr;gap:var(--s-12);align-items:center;padding-top:var(--s-10);padding-bottom:var(--s-20)}
-  .hero figure{order:2;margin:0}
+  .hero{--travel:900px;padding-bottom:var(--s-16)}
+  .hero .scene{display:grid;grid-template-columns:5fr 7fr;gap:var(--s-12);align-items:center;padding-top:0;padding-bottom:0}
+  .turn{order:2}
+  .turn .box{height:min(62dvh,640px)}
   .hero .copy{order:1;text-align:left}
-  .hero .copy h1,.hero .copy .lead{margin-left:0;margin-right:0}
+  .hero .copy h1{margin-left:0;margin-right:0}
+  .hero .doors .door{flex:0 0 auto;padding:0 18px}
+  .words{gap:var(--s-2);margin:var(--s-6) 0 var(--s-7)}
+  .words li{grid-area:auto;opacity:1;color:var(--ink-3)}
+  .words li[aria-current="true"]{color:var(--ink)}
+  .hero .lead{margin:0;text-align:left}
+  .explode{--travel:700px}
+  .explode .scene{grid-template-columns:5fr 7fr;gap:var(--s-12);align-items:center;height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top))}
+  .layers{order:2;width:min(100%,640px)}
+  .explode .beside{order:1;gap:var(--s-6)}
+  .parts{grid-template-columns:1fr;text-align:left;gap:var(--s-4)}
+  .parts strong{font-size:var(--t-2xl)}
+  .explode .cap,.close .cap{justify-content:flex-start;text-align:left}
+  .explode .doors{margin:0}
+  .box-frame{margin:0}
+  .close .boxstage{grid-template-columns:7fr 5fr;align-items:center;column-gap:var(--s-12)}
+  .close .box-frame{grid-row:1/3}
+  .reveal{text-align:left;justify-items:start}
+  .opts{grid-template-columns:1fr 1fr}
   .doors{flex-direction:row}
   .doors .door{width:auto;min-width:180px}
   .house p{font-size:32px}

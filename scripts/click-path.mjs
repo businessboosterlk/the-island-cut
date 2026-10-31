@@ -14,6 +14,9 @@ const QUICK = process.argv.includes('--quick');
 const R = [];
 const ok = (name, pass, seen = '') => { R.push({ name, pass: !!pass }); console.log((pass ? 'PASS  ' : 'FAIL  ') + name + (seen ? '   ' + String(seen).slice(0, 700) : '')); };
 const stones = JSON.parse(readFileSync('src/data/stones.json', 'utf8')).stones;
+const G = JSON.parse(readFileSync('src/data/builder.json', 'utf8')).groups;
+const STEPS = ['setting', 'stone', 'size', 'details', 'ready'];
+const last = g => G[g].options[G[g].options.length - 1].label;
 const WA = 'wa.me/' + SITE.whatsapp;
 const server = await serve(4613);
 const BASE = `http://localhost:4613${BP}/`;
@@ -22,11 +25,11 @@ const browser = await chromium.launch({ channel: 'chromium' });
 /* runs in the page before anything else: names every touchpoint, hears every real press */
 const INSTALL = () => {
   const TOUCH = 'a[href],button,select,input:not([type=hidden])';
-  const region = e => { for (const [sel, n] of [['.nav', 'nav'], ['.hero', 'hero'], ['#stones', 'stones'], ['#viewing', 'room'], ['#jewellery', 'jewellery'], ['#bespoke', 'bespoke'], ['#craft', 'craft'], ['#contact', 'contact'], ['.tray', 'tray'], ['#passport', 'passport'], ['#request', 'request'], ['.footer', 'footer']]) if (e.closest(sel)) return n; return 'page'; };
+  const region = e => { for (const [sel, n] of [['.nav', 'nav'], ['.hero', 'hero'], ['#stones', 'stones'], ['#viewing', 'room'], ['#jewellery', 'jewellery'], ['#customise', 'customise'], ['#bespoke', 'bespoke'], ['#craft', 'craft'], ['#close', 'close'], ['#contact', 'contact'], ['#builder', 'builder'], ['.tray', 'tray'], ['#passport', 'passport'], ['#request', 'request'], ['.footer', 'footer']]) if (e.closest(sel)) return n; return 'page'; };
   const dest = a => { const u = new URL(a.href, location.href); if (/wa\.me$/.test(u.host)) return 'to WhatsApp'; if (u.host !== location.host) return 'to ' + u.host; if (u.hash) return 'to ' + u.hash; return 'to ' + (u.pathname.split('/').pop() || 'index.html'); };
   const name = e => {
     const d = e.dataset;
-    for (const k of ['state', 'passport', 'room', 'compare', 'pick', 'view', 'remove']) if (k in d) return k + ' ' + d[k];
+    for (const k of ['passport', 'room', 'compare', 'pick', 'view', 'remove', 'build', 'option', 'step', 'door', 'box', 'next', 'back']) if (k in d) return k + ' ' + d[k];
     if ('close' in d) return 'close';
     if (e.id) return '#' + e.id;
     if (e.tagName === 'A') return dest(e);
@@ -40,7 +43,8 @@ const INSTALL = () => {
   document.addEventListener('click', hear, true); document.addEventListener('change', hear, true);
   window.__snap = () => { const g = id => document.getElementById(id) || {}; return JSON.stringify({
     hash: location.hash, y: Math.round(scrollY / 40),
-    hero: g('hero-frame').dataset ? g('hero-frame').dataset.state : '',
+    hero: g('turn').dataset ? g('turn').dataset.frame : '', explode: g('explode').dataset ? g('explode').dataset.apart : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
+    builder: (g('builder').open ? 'open ' : 'shut ') + g('builder').dataset.step + ' ' + [...document.querySelectorAll('#builder .opt[aria-pressed="true"]')].map(b => b.dataset.option).join(',') + ' doors:' + [...document.querySelectorAll('#builder [data-door]')].map(a => a.getAttribute('aria-disabled')).join(',') + ' next:' + ((document.querySelector('#builder [data-next]') || {}).disabled), chosen: document.querySelectorAll('#builder .opt[aria-pressed="true"], #builder .sum dd').length,
     room: g('room-ref').textContent + ' ' + ([...document.querySelectorAll('.tab[aria-selected="true"]')].map(t => t.dataset.view).join('')) + ' ' + (g('stage-empty').hidden ? 'photo' : 'panel'),
     tray: g('tray').dataset.on + ' ' + g('tray').dataset.open + ' ' + g('tray-refs').textContent + ' warn:' + !g('tray-warn').hidden, what: g('tray-what').textContent,
     hiddenRows: document.querySelectorAll('#cmp-body tr[hidden]').length, diff: g('diff').checked,
@@ -69,7 +73,7 @@ async function run(w, h, touch) {
   const seen = new Set();
   const note = async () => { (await page.evaluate(() => window.__kinds())).forEach(k => seen.add(k)); };
   const settle = () => settleOn(page);
-  const go = async (path = '') => { await page.goto(BASE + path, { waitUntil: 'load' }); await page.waitForFunction(() => window.IslandCut && window.IslandCut.ready); await page.evaluate(() => localStorage.removeItem('island-cut-tray')); await settle(); await sleep(200); await note(); };
+  const go = async (path = '') => { await page.goto(BASE + path, { waitUntil: 'load' }); await page.waitForFunction(() => window.IslandCut && window.IslandCut.ready); await page.evaluate(() => { localStorage.removeItem('island-cut-tray'); localStorage.removeItem('island-cut-ring'); }); await settle(); await sleep(200); await note(); };
   const point = async (sel, nth = 0) => {
     const e = page.locator(sel).nth(nth); await e.waitFor({ state: 'attached', timeout: 4000 });
     const reach = () => e.evaluate(n => { const r = n.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2; if (!(r.width > 0) || x < 0 || x > innerWidth || y < 0 || y > innerHeight) return null; const t = document.elementFromPoint(x, y); return t && (t === n || n.contains(t) || t.contains(n)) ? [x, y] : null; });
@@ -93,8 +97,6 @@ async function run(w, h, touch) {
   await page.evaluate(() => window.scrollTo(0, 1500)); await settle();
   { const b = await changed('nav brand mark goes to the top', '.nav .brand', 0, 'y'); ok(`${tag}: the top is the top`, b.y === 0, 'scrollY ' + b.y * 40); }
   /* THE HERO */
-  { const b = await changed('hero "The finished piece"', '.hero .state [data-state="piece"]', 0, 'hero'); ok(`${tag}: the second state is the honest empty frame`, b.hero === 'piece' && await page.evaluate(() => !document.getElementById('hero-piece').hidden && document.getElementById('hero-img').hidden), b.hero); }
-  await changed('hero "The stone"', '.hero .state [data-state="stone"]', 0, 'hero');
   await unhash(); { const b = await changed('hero "Explore gemstones"', '.hero .doors a[href="#stones"]', 0, 'hash'); ok(`${tag}: it lands on the stones`, b.hash === '#stones', b.hash); }
   await unhash(); { const b = await changed('hero "Create your piece"', '.hero .doors a[href="#bespoke"]', 0, 'hash'); ok(`${tag}: it lands on bespoke`, b.hash === '#bespoke', b.hash); }
   /* THE RECORDS: every button on every card, the passport's whole action bar */
@@ -143,6 +145,33 @@ async function run(w, h, touch) {
   /* JEWELLERY, BESPOKE, CRAFT, CONTACT */
   await unhash(); { const b = await changed('jewellery "Create your piece"', '#jewellery a[href="#bespoke"]', 0, 'hash'); ok(`${tag}: it lands on bespoke`, b.hash === '#bespoke', b.hash); }
   await outsideWA('bespoke "Create your piece"', '#bespoke-wa', 0, ['create a piece']);
+  /* CUSTOMISE AND THE BUILDER: both ways in, every option, Next through every step, Back, every Change, a name and a number, both doors out, the close mark, Not now */
+  { const b = await changed('customise "Build your ring"', '#customise-build', 0, 'builder'); ok(`${tag}: the builder opens on the setting with Next waiting`, b.builder.startsWith('open setting ') && b.builder.endsWith('next:true'), b.builder); }
+  await changed('builder "Not now"', '#builder [data-close]', 0, 'builder');
+  { const b = await changed('bespoke "Build your ring"', '#bespoke-build', 0, 'builder'); ok(`${tag}: open again on the setting`, b.builder.startsWith('open setting'), b.builder); }
+  for (const [st, groups] of Object.entries({ setting: ['setting'], stone: ['stone'], size: ['size'], details: ['metal', 'band'] })) {
+    for (const g of groups) for (const o of G[g].options) { const b = await changed(`builder ${st} "${o.label}"`, `#builder [data-option="${g}:${o.key}"]`, 0, 'builder'); ok(`${tag}: ${o.label} is the pressed ${g}`, b.builder.includes(`${g}:${o.key}`), b.builder); }
+    { const b = await changed(`builder "Next" after ${st}`, '#builder [data-next]', 0, 'builder'); ok(`${tag}: it moves on from ${st}`, !b.builder.startsWith(`open ${st} `), b.builder); }
+  }
+  { const b = J(await snap()); ok(`${tag}: the ready step holds five pressed choices and both doors wait`, b.builder.startsWith('open ready') && b.chosen === 5 && b.builder.includes('doors:true,true'), b.builder + ' chosen:' + b.chosen); }
+  { const b = await changed('builder "Back" from ready', '#builder [data-back]', 0, 'builder'); ok(`${tag}: back on the details`, b.builder.startsWith('open details'), b.builder); }
+  await changed('builder "Next" back to ready', '#builder [data-next]', 0, 'builder');
+  for (const st of ['setting', 'stone', 'size', 'details']) {
+    { const b = await changed(`builder "Change" the ${st}`, `#builder .chg[data-step="${st}"]`, 0, 'builder'); ok(`${tag}: it goes to the ${st} with the choice still pressed`, b.builder.startsWith(`open ${st} `) && b.builder.includes(st === 'details' ? 'metal:' : `${st}:`), b.builder); }
+    for (let i = STEPS.indexOf(st); i < 4; i++) await changed(`builder "Next" from ${STEPS[i]} back to ready`, '#builder [data-next]', 0, 'builder');
+  }
+  await page.fill('#bld-name', 'Test Person'); await page.fill('#bld-number', '0771234567'); await sleep(150); await note();
+  { const b = J(await snap()); ok(`${tag}: a name and a number open both doors`, b.builder.includes('doors:false,false'), b.builder); }
+  const chosen = ['Setting: ' + last('setting'), 'Stone: ' + last('stone'), 'Size: ' + last('size'), 'Metal: ' + last('metal'), 'Band: ' + last('band'), 'Test Person', '0771234567'];
+  await outsideWA('builder "Send it as it is"', '#builder [data-door="asis"]', 0, [...chosen, 'as it is']);
+  await outsideWA('builder "Make it fully custom"', '#builder [data-door="custom"]', 0, [...chosen, 'fully custom']);
+  await changed('builder close mark', '#bld-close', 0, 'builder');
+  /* THE RING SURVIVES A RELOAD on this device */
+  await page.reload({ waitUntil: 'load' }); await page.waitForFunction(() => window.IslandCut && window.IslandCut.ready); await settle(); await note();
+  { const b = await changed('customise "Build your ring" after a reload', '#customise-build', 0, 'builder'); ok(`${tag}: the choices are still pressed after a reload`, b.builder.includes('setting:' + G.setting.options[G.setting.options.length - 1].key), b.builder); await tap('#bld-close'); }
+  /* THE BOX: the tap opens it on the ring and the door appears at the same moment; the door opens the request */
+  { const b = await changed('box tap "Yours"', '#box-tap', 0, 'box'); ok(`${tag}: the box is open and the door is shown`, b.box === 'true false', b.box); }
+  { const b = await changed('box "Request a time"', '#close-request', 0, 'request'); ok(`${tag}: the request opens from the box`, b.request.startsWith('open'), b.request.slice(0, 40)); await tap('#req-close'); }
   { const b = await changed('contact "Request a time"', '#spec-time', 0, 'request'); ok(`${tag}: the request opens`, b.request.startsWith('open'), b.request.slice(0, 40)); await tap('#req-close'); }
   await outsideWA('contact "WhatsApp a specialist"', '#spec-wa', 0, ['specialist']);
   /* THE FOOTER */

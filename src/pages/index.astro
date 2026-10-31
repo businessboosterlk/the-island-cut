@@ -1,20 +1,25 @@
 ---
 // THE ISLAND CUT, one page. The photograph is the fold, the house speaks once, the stones are records on a table.
-// Phase 1 of look/BRIEF-10-FEATURES.md: hero with two states (1), the viewing room (2), the comparison tray (4),
-// the passport (6) and a request based viewing with a specialist (7). Every real world value is in src/config.js.
+// Phase 1 of look/BRIEF-10-FEATURES.md: the viewing room (2), the comparison tray (4), the passport (6) and a request
+// based viewing with a specialist (7). Phase 2 (31 Oct 2026, the seven reference clips): a ring that turns with the
+// scroll in the hero, a ring that comes apart into its three choices, a ring builder with no price, and a ring box
+// that opens on a tap. Every clip and photograph in those parts is licensed stock, labelled Sample, listed in
+// public/assets/SOURCES.md. Every real world value is in src/config.js.
 // Every record on the page is a sample and says so. Every door ends in a prefilled WhatsApp message.
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import { SITE, LINKS, VIEWS, wa } from '../config.js';
 import { url } from '../scripts/icon.js';
 import data from '../data/stones.json';
+import builder from '../data/builder.json';
 const stones = data.stones;
 const first = stones[0];
 const photo = s => s.photo ? { src: url(`assets/photos/${s.photo.file}-1600.webp`), srcset: `${url(`assets/photos/${s.photo.file}-800.webp`)} 800w, ${url(`assets/photos/${s.photo.file}-1600.webp`)} 1600w` } : null;
 const size = s => `${s.mm[0]} by ${s.mm[1]} by ${s.mm[2]} mm`;
 const facts = s => `${s.carat.toFixed(2)} ct, ${size(s)}, ${s.treatment.value.toLowerCase()}`;
 const askText = s => `Hello, from the website. I am asking about stone ${s.ref} (${s.title}, ${s.carat.toFixed(2)} ct).`;
-const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones };
+const motion = f => url(`assets/motion/${f}`);
+const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones, builder };
 ---
 <Layout>
 <header class="nav"><div class="wrap in">
@@ -24,26 +29,27 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 </div></header>
 
 <main id="top">
-<section class="wrap hero" aria-label="A stone and the piece it could become">
-  <figure>
-    <div class="frame" id="hero-frame" data-state="stone">
-      <img id="hero-img" src={photo(first).src} srcset={photo(first).srcset} sizes="(min-width:900px) 58vw, 100vw" alt={first.photo.alt} width={first.photo.w} height={first.photo.h} style={`object-position:${first.photo.focus}`} fetchpriority="high">
-      <div class="empty" id="hero-piece" hidden>
-        <Icon name="nophoto" />
-        <strong>No finished piece photographed yet</strong>
-        <p>When a piece is made around this stone it is photographed and shown here as its own product. Nothing is drawn or generated to fill the frame.</p>
+<section class="wrap hero" id="hero" aria-label="A ring that turns as you scroll">
+  <div class="track" id="hero-track"><div class="scene" id="hero-stage">
+    <figure class="turn" id="turn" data-frames="60" data-frame="0">
+      <div class="box">
+        <img id="hero-poster" src={motion('hero/poster-480.webp')} srcset={`${motion('hero/poster-480.webp')} 480w, ${motion('hero/poster-800.webp')} 800w`} sizes="(min-width:900px) 50vw, 100vw" alt="A rose gold solitaire ring, sample footage" width="480" height="409" fetchpriority="high">
+        <canvas id="hero-canvas" width="480" height="409" aria-hidden="true" hidden></canvas>
       </div>
+      <figcaption id="hero-cap"><span class="tag">Sample footage</span><span>A licensed clip of a solitaire ring, standing in for the house's own piece.</span></figcaption>
+    </figure>
+    <div class="copy">
+      <p class="eyebrow">{SITE.tagline}</p>
+      <h1>An extraordinary stone. A piece <em>entirely yours.</em></h1>
+      <ol class="words" id="hero-words" aria-label="What changes as the ring turns">
+        <li data-at="0" aria-current="true">The stone, chosen loose and in daylight.</li>
+        <li data-at="0.34">The setting, agreed on a drawing first.</li>
+        <li data-at="0.67">The piece, photographed beside its report.</li>
+      </ol>
+      <div class="doors"><a class="door fill" href="#stones">Explore gemstones</a><a class="door" href="#bespoke">Create your piece</a></div>
     </div>
-    <figcaption id="hero-cap">Sample photograph of a cut stone, licensed stock. The house's own stones take this place.</figcaption>
-  </figure>
-  <div class="copy">
-    <p class="eyebrow">{SITE.tagline}</p>
-    <h1>An extraordinary stone. A piece <em>entirely yours.</em></h1>
-    <p class="lead">{SITE.description}</p>
-    <div class="doors"><a class="door fill" href="#stones">Explore gemstones</a><a class="door" href="#bespoke">Create your piece</a></div>
-    <div class="seg state" role="group" aria-label="What you are looking at"><button type="button" data-state="stone" aria-pressed="true">The stone</button><button type="button" data-state="piece" aria-pressed="false">The finished piece</button></div>
-    <p class="note state-note">The finished piece appears once a matched piece is photographed. Until then the two are shown apart.</p>
-  </div>
+  </div></div>
+  <p class="lead">{SITE.description}</p>
 </section>
 
 <section class="house" aria-label="The house"><div class="wrap">
@@ -110,6 +116,26 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
   </div>
 </section>
 
+<section class="section explode" id="customise" aria-labelledby="customise-h"><div class="wrap">
+  <header><div><h2 id="customise-h">Every part of it, yours to choose</h2><p class="note">Scroll and the ring comes apart into the three choices you make. Scroll back and it is whole again.</p></div></header>
+  <div class="track" id="explode-track"><div class="scene" id="explode" data-apart="false" style="--p:0">
+    <div class="layers" role="img" aria-label="A ring in three parts: the stone, the setting and the band">
+      <img class="layer l-stone" src={motion('layers/stone.webp')} alt="" width="1000" height="603" loading="lazy">
+      <img class="layer l-setting" src={motion('layers/setting.webp')} alt="" width="1000" height="603" loading="lazy">
+      <img class="layer l-band" src={motion('layers/band.webp')} alt="" width="1000" height="603" loading="lazy">
+    </div>
+    <div class="beside">
+      <ul class="parts">
+        <li data-part="stone"><strong>The stone</strong><span>Yours to choose</span></li>
+        <li data-part="setting"><strong>The setting</strong><span>Yours to choose</span></li>
+        <li data-part="band"><strong>The band</strong><span>Yours to choose</span></li>
+      </ul>
+      <div class="doors"><button class="door fill" type="button" id="customise-build" data-build>Build your ring</button></div>
+      <p class="cap"><span class="tag">Sample photograph</span><span>A licensed photograph cut into three layers by hand. Nothing is drawn or generated.</span></p>
+    </div>
+  </div></div>
+</div></section>
+
 <section class="band section" id="bespoke" aria-labelledby="bespoke-h"><div class="wrap">
   <header><div><h2 id="bespoke-h">A piece built around your stone</h2><p class="note">Three steps, each one agreed with you before the next.</p></div></header>
   <ol class="steps">
@@ -117,7 +143,7 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
     <li><div><strong>Agree the piece</strong><p>Ring, pendant or earrings, the metal and the setting. A drawing is agreed before anything is made.</p></div></li>
     <li><div><strong>See it finished</strong><p>The piece is photographed beside its stone and its report before it leaves.</p></div></li>
   </ol>
-  <div class="doors" style="max-width:360px;margin-top:24px"><a class="door fill" id="bespoke-wa" href={wa('Hello, from the website. I would like to create a piece around a stone.')} target="_blank" rel="noopener"><Icon name="b-whatsapp" />Create your piece</a></div>
+  <div class="doors" style="margin-top:24px"><button class="door fill" type="button" id="bespoke-build" data-build>Build your ring</button><a class="door" id="bespoke-wa" href={wa('Hello, from the website. I would like to create a piece around a stone.')} target="_blank" rel="noopener"><Icon name="b-whatsapp" />Create your piece</a></div>
   <p class="note" style="margin-top:16px">The steps are shown as proposed. The house confirms each one before launch.</p>
 </div></section>
 
@@ -126,6 +152,22 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
   <div class="prose">
     <p>This paragraph is the house's to write: where its stones come from, who cuts them and how a piece is made. Nothing is written here on its behalf.</p>
     <p>No year, no cutter's name and no count appears on this page until the house gives it.</p>
+  </div>
+</section>
+
+<section class="wrap section close" id="close" aria-labelledby="close-h">
+  <header><div><h2 id="close-h">When it is ready, it comes to you in a box</h2><p class="note">Tap the box.</p></div></header>
+  <div class="boxstage" id="box" data-open="false">
+    <div class="frame box-frame">
+      <video id="box-loop" muted loop playsinline preload="none" poster={motion('box/box-loop.webp')} width="960" height="540" aria-label="A ring box, sample footage"><source src={motion('box/box-loop.mp4')} type="video/mp4"></video>
+      <video id="box-open" muted playsinline preload="none" poster={motion('box/box-open.webp')} width="960" height="540" aria-label="The box opens on the ring, sample footage" hidden><source src={motion('box/box-open.mp4')} type="video/mp4"></video>
+      <button class="lid" type="button" id="box-tap" data-box="open" aria-label="Open the box"><span class="word">Yours</span></button>
+    </div>
+    <div class="reveal" id="box-reveal" hidden>
+      <p>A time with a specialist, whenever you are ready.</p>
+      <div class="doors"><button class="door fill" type="button" id="close-request" data-request>Request a time</button></div>
+    </div>
+    <p class="cap"><span class="tag">Sample footage</span><span>Two licensed clips of a ring box. The reference turns a closed box and opens it in one shot. No free clip does both, so this demo loops the box and cuts to the open shot on the tap.</span></p>
   </div>
 </section>
 
@@ -187,6 +229,12 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
     <a class="door fill" id="req-send" href="#" target="_blank" rel="noopener"><Icon name="b-whatsapp" />Request a time</a>
     <button class="door quiet" type="button" data-close>Not now</button>
   </div>
+</div></dialog>
+
+<dialog id="builder" class="bld" aria-labelledby="bld-title" data-step="setting"><div class="sheet">
+  <div class="top"><div><p class="note" id="bld-step"></p><h2 id="bld-title"></h2></div><button class="x" type="button" id="bld-close" aria-label="Close the builder"><Icon name="close" /></button></div>
+  <div class="scroll" id="bld-body"></div>
+  <div class="acts" id="bld-acts"></div>
 </div></dialog>
 
 <script type="application/json" id="payload" set:html={JSON.stringify(payload)}></script>
