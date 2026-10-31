@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* LIVE PROOF. Opens the deployed address in a real browser at phone and desk, checks the page ran, the records are
-   on the table, every request answered, no console errors, the robots tag still says noindex, and writes
+   on the table, the hero scrubs, the ring comes apart, the box plays, the builder opens, every request answered, no console errors, the robots tag still says noindex, and writes
    evidence/live-*.png.
      node scripts/live.mjs [url]     default https://businessboosterlk.github.io/the-island-cut/ */
 import { chromium } from 'playwright';
@@ -34,6 +34,36 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   const H = await page.evaluate(() => document.documentElement.scrollHeight);
   for (let y = 0; y < H; y += 400) { await page.evaluate(v => window.scrollTo(0, v), y); await page.waitForTimeout(60); }
   await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(600);
+  /* phase 2: the motion ran on the live address, not only on the laptop */
+  const hero = await page.evaluate(async () => {
+    const ic = window.IslandCut.hero; const t0 = Date.now();
+    while (ic.loaded < ic.frames && Date.now() - t0 < 20000) await new Promise(r => setTimeout(r, 100));
+    const track = document.getElementById('hero-track'); const top = track.getBoundingClientRect().top + scrollY;
+    const travel = track.offsetHeight - track.firstElementChild.offsetHeight;
+    scrollTo({ top: top + travel * 0.55, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    const mid = ic.frame; scrollTo({ top: 0, behavior: 'instant' }); await new Promise(r => setTimeout(r, 300));
+    return { loaded: ic.loaded, frames: ic.frames, mid, start: ic.frame, canvas: !document.getElementById('hero-canvas').hidden };
+  });
+  check(hero.loaded === hero.frames, `${name}: hero frames loaded ${hero.loaded} of ${hero.frames}`);
+  check(hero.mid > 10 && hero.mid < 50 && hero.start < 3 && hero.canvas, `${name}: hero scrubs with scroll (frame ${hero.start} at the top, ${hero.mid} half way)`);
+  const ex = await page.evaluate(async () => {
+    const track = document.getElementById('explode-track'); const top = track.getBoundingClientRect().top + scrollY;
+    scrollTo({ top: top + track.offsetHeight - track.firstElementChild.offsetHeight, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    const apart = document.getElementById('explode').dataset.apart; const p = parseFloat(getComputedStyle(document.getElementById('explode')).getPropertyValue('--p'));
+    scrollTo({ top, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    return { apart, p, back: parseFloat(getComputedStyle(document.getElementById('explode')).getPropertyValue('--p')) };
+  });
+  check(ex.apart === 'true' && ex.p > 0.7 && ex.back < 0.15, `${name}: the ring comes apart on scroll (p ${ex.p.toFixed(2)}) and goes back (p ${ex.back.toFixed(2)})`);
+  const box = await page.evaluate(async () => {
+    document.getElementById('box').scrollIntoView({ block: 'center', behavior: 'instant' }); const t0 = Date.now();
+    const loop = document.getElementById('box-loop');
+    while ((loop.paused || loop.readyState < 2) && Date.now() - t0 < 15000) await new Promise(r => setTimeout(r, 100));
+    const a = loop.currentTime; await new Promise(r => setTimeout(r, 600)); return { playing: !loop.paused, moved: loop.currentTime - a, ready: loop.readyState };
+  });
+  check(box.playing && box.moved > 0.2, `${name}: the ring box loop plays on the live address (moved ${box.moved.toFixed(2)}s)`);
+  const bld = await page.evaluate(() => { document.getElementById('customise-build').click(); const d = document.getElementById('builder'); const open = d.open; d.close(); return open; });
+  check(bld, `${name}: the builder sheet opens from Create your piece`);
+  await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(400);
   check(bad.length === 0, `${name}: every request answered (${bad.length} failed${bad.length ? ': ' + bad.join(', ') : ''})`);
   check(errors.length === 0, `${name}: no console errors${errors.length ? ': ' + errors.join(' | ') : ''}`);
   await page.screenshot({ path: `evidence/live-${name}-hero.png` });
