@@ -41,7 +41,10 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
     /* 1 Nov pm (ChatGPT's layout, taken whole): the scroll picks the frame and the chapter, nothing plays on load. At the top
        frame 0 and the first chapter; half way about frame 30, the second chapter, the ring carried across (wave near 1);
        back at the top frame 0 and the first chapter again. */
-    const track = document.getElementById('hero-track'); const top = track.getBoundingClientRect().top + scrollY;
+    /* half way means p = 0.5 in the page's own progress(): the scene is sticky under the nav, so the travel starts when the
+       track's top reaches the scene's sticky top, not the page's top (the live gate read 0.57 as half way on 1 Nov pm). */
+    const track = document.getElementById('hero-track'); const sticky = parseFloat(getComputedStyle(track.firstElementChild).top) || 0;
+    const top = track.getBoundingClientRect().top + scrollY - sticky;
     const travel = track.offsetHeight - track.firstElementChild.offsetHeight;
     await new Promise(r => setTimeout(r, 400)); const start = ic.stage, startFrame = ic.frame;
     scrollTo({ top: top + travel * 0.5, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
