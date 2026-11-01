@@ -135,25 +135,45 @@ select,input[type=text]{width:100%;min-height:44px;padding:0 var(--s-3);border:1
 .frame .empty strong{display:block;font:500 var(--t-xl)/1.2 var(--display);color:var(--ink)}
 .frame [hidden]{display:none}
 
-/* CUSTOMISE: a photograph cut into three layers on one origin, moved by transforms as the stage scrolls. --p is the
-   progress 0 to 1, set from the scroll and nothing else, so scrolling up puts the ring back together. */
-.explode{--travel:520px}
-.explode .track{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top) + var(--travel))}
-.explode .scene{position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top));display:grid;gap:var(--s-5);align-content:center;padding-top:var(--s-4);padding-bottom:var(--s-4);--p:0}
-.layers{position:relative;width:min(100%,360px);margin:0 auto}
-.layers::before{content:'';display:block;padding-top:96%}
-.layer{position:absolute;left:0;top:50%;width:100%;height:auto;transform:translateY(-50%)}
-.layer.l-stone{transform:translateY(calc(-50% - var(--p) * 30%));z-index:3}
-.layer.l-setting{z-index:2}
-.layer.l-band{transform:translateY(calc(-50% + var(--p) * 30%));z-index:1}
-.explode .beside{display:grid;gap:var(--s-5)}
-.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);text-align:center}
-.parts li{opacity:calc((var(--p) - .45) * 2.5);display:grid;gap:2px}
-.parts strong{font:500 var(--t-lg)/1.2 var(--display)}
-.parts span{font-size:var(--t-sm);color:var(--champagne)}
-.explode .cap,.close .cap{font-size:var(--t-sm);color:var(--ink-2);text-align:center;display:flex;gap:var(--s-2);justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:0}
-.explode .cap span:last-child,.close .cap span:last-child{max-width:60ch}
-.explode .doors{max-width:360px;margin:0 auto;width:100%}
+/* CUSTOMISE (ChatGPT's "Every part. Your choice." of 1 Nov 2026, taken whole; his numbers kept, BB's laws on top): the ring
+   on a transparent film with nothing under it, the three labels hanging off the film's right edge at the height of their
+   parts, the eyebrow and the head above, the way on below. The scene sticks under the nav for --travel px of scroll and the
+   script picks the frame from --p; nothing here moves on its own, so scrolling up puts the ring back together. The film is
+   sized from its container (cqh, cqw) so it keeps the crop's ratio (872 by 1212) whichever way the screen limits it, and
+   the labels column is the film's own height, so a label's top in % is a height in the picture. Phone centred, desk left. */
+.customise{overflow:clip;--travel:620px;--film:.62;--w:872;--h:1212}
+.customise .track{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top) + var(--travel))}
+.customise .scene{--p:0;position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top));height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top));overflow:clip;display:flex;flex-direction:column;align-items:center;text-align:center;padding:var(--s-6) var(--gutter) calc(var(--s-5) + env(safe-area-inset-bottom))}
+.customise .head{width:100%}
+.customise .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:0 0 var(--s-4)}
+.customise h2{font:400 clamp(40px,12.5vw,49px)/1.04 var(--display);letter-spacing:-.05em;max-width:none}
+.customise h2 em{font-style:italic;color:var(--ink-2)}
+.pieces{position:relative;margin:var(--s-4) 0 0;flex:1 1 0;min-height:0;width:100%;container-type:size;display:flex;justify-content:center;align-items:center;pointer-events:none}
+.pieces .set{position:relative;display:flex;align-items:stretch;width:100%;height:min(100cqh,calc(100cqw * var(--film) * var(--h) / var(--w)))}
+.film{position:relative;flex:none;height:100%;aspect-ratio:var(--w) / var(--h)}
+.film .still,.film canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0}
+.film .still[aria-current="true"],.film canvas.ready{opacity:1}
+.labels{position:relative;flex:1 1 auto;min-width:0;margin-left:var(--s-3);text-align:left}
+.labels li{position:absolute;left:0;display:grid;gap:2px;white-space:nowrap;opacity:0}
+.labels li[data-on="true"]{opacity:1}
+.labels li[data-part="stone"]{top:8%}
+.labels li[data-part="setting"]{top:27%}
+.labels li[data-part="band"]{top:62%}
+.labels strong{font:500 14px/1.2 var(--body)}
+.labels small{font-size:11px;line-height:1.3;color:var(--ink-2)}
+.customise .foot{width:100%;margin-top:var(--s-4)}
+.customise .sub{font-size:16px;line-height:1.45;color:var(--ink-2);max-width:none;margin:0 0 var(--s-4)}
+.customise .action{display:flex;justify-content:space-between;align-items:center;gap:var(--s-3);width:100%;min-height:44px;border-top:1px solid var(--ink);border-radius:0;padding:var(--s-3) 0 0;font-size:16px;color:var(--ink);text-align:left}
+.customise .action .ic{width:20px;height:20px}
+.customise .row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:var(--s-2)}
+.customise .sample{font-size:11px;line-height:1.5;color:var(--ink-2);text-align:left;margin:0}
+#customise-still{flex:none;background:none;border:0;border-bottom:1px solid var(--line-2);border-radius:0;padding:0;min-height:44px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
+#customise-still:disabled{border-bottom-color:transparent;cursor:default}
+/* "Use a still": the track collapses to one screen and the scene no longer sticks */
+.customise[data-still="true"] .track{height:auto}
+.customise[data-still="true"] .scene{position:relative;top:0} /* top:0, or the sticky offset still shifts the relative scene down by the nav height and the foot slips under the next section (click-path, 1 Nov 2026 pm) */
+.close .cap{font-size:var(--t-sm);color:var(--ink-2);text-align:center;display:flex;gap:var(--s-2);justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:0}
+.close .cap span:last-child{max-width:60ch}
 
 /* CLOSE: a real box turning in a short loop with one word on it. The tap swaps to the open shot and the door appears
    in the same tick. The clips are played from the script only, never by an attribute, and never under reduced motion. */
@@ -301,8 +321,9 @@ dialog .acts{padding:var(--s-4) var(--gutter) calc(var(--s-4) + env(safe-area-in
 
 /* REDUCED MOTION: no travel, no sticking, the poster stays, the ring is shown apart with its three labels */
 @media (prefers-reduced-motion:reduce){
-  .explode .track{height:auto}
-  .explode .scene{position:static;height:auto;--p:1}
+  .customise .track{height:auto}
+  .customise .scene{position:relative;top:0}
+  .labels li{opacity:1}
   .hero .track{height:auto}
   .hero .scene{position:relative}
   .hero .chapter{visibility:hidden}
@@ -332,14 +353,22 @@ dialog .acts{padding:var(--s-4) var(--gutter) calc(var(--s-4) + env(safe-area-in
   .hero .chapter{display:flex}
   #hero-still{font-size:13px}
   .hero .sample{position:absolute;left:var(--gutter);right:var(--gutter);bottom:calc(24px + env(safe-area-inset-bottom));max-width:none;margin:0;text-align:center}
-  .explode{--travel:700px}
-  .explode .scene{grid-template-columns:5fr 7fr;gap:var(--s-12);align-items:center;height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top))}
-  .layers{order:2;width:min(100%,640px)}
-  .explode .beside{order:1;gap:var(--s-6)}
-  .parts{grid-template-columns:1fr;text-align:left;gap:var(--s-4)}
-  .parts strong{font-size:var(--t-2xl)}
-  .explode .cap,.close .cap{justify-content:flex-start;text-align:left}
-  .explode .doors{margin:0}
+  /* the desk: copy at the left gutter (eyebrow, head, then the sub and the way on under them), the ring large at the right with its labels */
+  .customise{--travel:760px;--film:.56}
+  .customise .scene{display:grid;grid-template-columns:minmax(0,34%) minmax(0,1fr);grid-template-rows:1fr 1fr;column-gap:var(--s-12);text-align:left;padding:var(--s-10) var(--gutter)}
+  .customise .head{grid-area:1/1;align-self:end;padding-bottom:var(--s-5)}
+  .customise .eyebrow{margin-bottom:var(--s-5)}
+  .customise h2{font-size:clamp(64px,6.6vw,104px);line-height:.92}
+  .pieces{grid-area:1/2/3/3;margin:0;height:100%;justify-content:flex-end}
+  .pieces .set{width:auto;justify-content:flex-end}
+  .labels{flex:none;width:200px;margin-left:var(--s-6)}
+  .labels strong{font-size:17px}
+  .labels small{font-size:13px}
+  .customise .foot{grid-area:2/1;align-self:start;margin:0}
+  .customise .sub{margin-bottom:var(--s-6)}
+  .customise .action{max-width:360px}
+  .customise .row{max-width:360px}
+  .close .cap{justify-content:flex-start;text-align:left}
   .box-frame{margin:0}
   .close .boxstage{grid-template-columns:7fr 5fr;align-items:center;column-gap:var(--s-12)}
   .close .box-frame{grid-row:1/3}

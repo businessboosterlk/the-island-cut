@@ -55,13 +55,17 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   check(hero.loaded === hero.frames && hero.frames === 60 && hero.stages === 3, `${name}: hero frames loaded ${hero.loaded} of ${hero.frames}, ${hero.stages} chapters`);
   check(hero.start === 0 && hero.mid === 1 && hero.number === '02' && hero.back === 0 && (hero.reduced || (hero.startFrame === 0 && hero.midFrame >= 28 && hero.midFrame <= 32 && hero.wave > 0.95 && hero.backFrame === 0)), `${name}: the scroll turns the ring and changes the chapter (chapter ${hero.start}, frame ${hero.startFrame} at the top; chapter ${hero.mid} "${hero.number}", frame ${hero.midFrame}, wave ${hero.wave} half way; chapter ${hero.back}, frame ${hero.backFrame} back at the top)`);
   const ex = await page.evaluate(async () => {
-    const track = document.getElementById('explode-track'); const top = track.getBoundingClientRect().top + scrollY;
-    scrollTo({ top: top + track.offsetHeight - track.firstElementChild.offsetHeight, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
-    const apart = document.getElementById('explode').dataset.apart; const p = parseFloat(getComputedStyle(document.getElementById('explode')).getPropertyValue('--p'));
+    const C = window.IslandCut.customise, track = document.getElementById('apart-track'), stage = document.getElementById('apart'); const top = track.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(stage).top);
+    scrollTo({ top: top + track.offsetHeight - stage.offsetHeight + 20, behavior: 'instant' }); const t0 = Date.now();
+    while (C.loaded < C.frames && !C.failed && Date.now() - t0 < 30000) await new Promise(r => setTimeout(r, 200));
+    await new Promise(r => setTimeout(r, 700));
+    const labels = () => document.querySelectorAll('#apart-labels li[data-on="true"]').length;
+    const settled = { frame: C.frame, settled: stage.dataset.settled, labels: labels() };
     scrollTo({ top, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
-    return { apart, p, back: parseFloat(getComputedStyle(document.getElementById('explode')).getPropertyValue('--p')) };
+    return { loaded: C.loaded, frames: C.frames, reduced: C.reduced, settled, back: { frame: C.frame, settled: stage.dataset.settled, labels: labels() } };
   });
-  check(ex.apart === 'true' && ex.p > 0.7 && ex.back < 0.15, `${name}: the ring comes apart on scroll (p ${ex.p.toFixed(2)}) and goes back (p ${ex.back.toFixed(2)})`);
+  check(ex.loaded === ex.frames && ex.frames === 60, `${name}: customise frames loaded ${ex.loaded} of ${ex.frames}`);
+  check(ex.settled.settled === 'true' && ex.settled.labels === 3 && ex.back.settled === 'false' && ex.back.labels === 0 && (ex.reduced || (ex.settled.frame === 59 && ex.back.frame === 0)), `${name}: the ring comes apart on scroll (frame ${ex.settled.frame}, ${ex.settled.labels} labels) and goes back (frame ${ex.back.frame}, ${ex.back.labels} labels)`);
   const box = await page.evaluate(async () => {
     document.getElementById('box').scrollIntoView({ block: 'center', behavior: 'instant' }); const t0 = Date.now();
     const loop = document.getElementById('box-loop');
@@ -69,8 +73,10 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
     const a = loop.currentTime; await new Promise(r => setTimeout(r, 600)); return { playing: !loop.paused, moved: loop.currentTime - a, ready: loop.readyState };
   });
   check(box.playing && box.moved > 0.2, `${name}: the ring box loop plays on the live address (moved ${box.moved.toFixed(2)}s)`);
-  const bld = await page.evaluate(() => { document.getElementById('customise-build').click(); const d = document.getElementById('builder'); const open = d.open; d.close(); return open; });
-  check(bld, `${name}: the builder sheet opens from Create your piece`);
+  const bld = await page.evaluate(() => { document.getElementById('bespoke-build').click(); const d = document.getElementById('builder'); const open = d.open; d.close(); return open; });
+  check(bld, `${name}: the builder sheet opens from Build your ring`);
+  const req = await page.evaluate(() => { document.getElementById('customise-begin').click(); const d = document.getElementById('request'); const open = d.open; d.close(); return open; });
+  check(req, `${name}: the request sheet opens from Begin your ring`);
   await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(400);
   check(bad.length === 0, `${name}: every request answered (${bad.length} failed${bad.length ? ': ' + bad.join(', ') : ''})`);
   check(errors.length === 0, `${name}: no console errors${errors.length ? ': ' + errors.join(' | ') : ''}`);

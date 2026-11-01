@@ -1,16 +1,19 @@
 # Where every picture and clip on this demo comes from
 
 Every file under `public/assets/` is labelled on the page because none of it is the house's own stone, ring or box.
-The sixty hero frames are GENERATED pictures, rendered in Blender (Thulaib's call on 31 Oct 2026, after the licensed
-footage hero was rejected on look twice, and again on 1 Nov when the ring that turns was chosen) and the page says so
-under them. Everything else is a real photograph or real footage under a
-free licence; nothing there is generated, drawn or rendered. The house's own photographs replace every file here before
+The sixty hero frames and the sixty customise frames are GENERATED pictures of one ring, rendered in Blender (Thulaib's
+call on 31 Oct 2026, after the licensed footage hero was rejected on look twice, and again on 1 Nov when the ring that
+turns was chosen; the customise frames followed that afternoon) and the page says so under them. Everything else is a
+real photograph or real footage under a free licence; nothing else is generated, drawn or rendered. The house's own photographs replace every file here before
 the site carries its name.
 
 ## Record photographs (`photos/`)
 
 Licensed stock photographs of loose stones standing in for the house's own records. Each is credited on its record
 in `src/data/stones.json` (`photo.credit`) and labelled "Sample data" on the card and in the passport.
+The Unsplash ones are under the Unsplash License (free to use, no attribution required, attribution given anyway on the
+record); the Pexels ones under the Pexels License. Neither licence lets a stock stone stand for a stone the house sells,
+which is one more reason the house's own photographs replace them.
 
 ## Hero frames (`motion/hero-ring/`)
 
@@ -22,15 +25,15 @@ in `src/data/stones.json` (`photo.credit`) and labelled "Sample data" on the car
 | On the page | The opening (clip 5, ChatGPT's layout of 1 Nov 2026 taken whole, read from the scroll): the ring sits on the paper at the top; as the visitor scrolls it turns a full circle, the scroll picking the frame, and is carried across the desk and back while three chapters of copy change and a counter runs 01 to 03; scrolling up turns it back. The poster stands in until every frame has decoded; reduced motion, data saver and "Use a still" keep the poster. Labelled "Generated sample". The real site shows the house's own ring photographed on a turntable, the same mechanism, no generation |
 | The rule | Generated pictures are a stand in for this demo only, approved for it by Thulaib on 31 Oct 2026 and carried into the turning ring on 1 Nov. They never stand for a real stone on a record, never go on a client's domain, and are replaced by the house's own photographs before launch |
 
-## Exploded ring layers (`motion/layers/`)
+## Customise frames (`motion/customise/`)
 
 | What | Detail |
 | --- | --- |
-| Source | Unsplash photograph KSDaYilI75Q, "Silver and green gemstone ring" by Sabrianna, https://unsplash.com/photos/silver-and-green-gemstone-ring-KSDaYilI75Q |
-| Licence | Unsplash License (free for commercial use, no permission needed, attribution appreciated and given) |
-| Shows | A white metal ring with an emerald cut dark blue stone in a halo of small stones on a pavé band |
-| Made | One photograph cut into three layers by hand drawn masks on the same origin: `stone.webp` (the centre stone, the prong tips fall into this layer), `setting.webp` (the halo), `band.webp` (the shank). `ring.webp` is the whole ring. All 1000px wide WebP with alpha. No layer is drawn: every pixel is the photograph |
-| On the page | The Customise section: scrolling pulls the three layers apart and labels each "yours to choose". Labelled Sample. For the real site the house's own ring would be photographed once, flat on, and cut the same way |
+| Source | The same ring as the hero, rendered sixty more times in Blender 5.2 (Cycles) by `scripts/render-customise.py`, a copy of the hero's `render-ring.py` with the ring design and the royal blue stone unchanged. No photograph, no reference image, nothing drawn by hand |
+| Files | `apart-760-000` to `apart-760-059` and `apart-480-000` to `apart-480-059` (the ring whole in the hero's pose for frames 0 to 11, the stone and the setting rising along the ring's own axis over 12 to 38, settled from 39 on; WebP with transparency, 760 and 480 px wide), `poster-whole-760` and `-480` (frame 0) and `poster-apart-760` and `-480` (frame 39). The 1600 px PNG renders are in `renders/customise/` (not committed) |
+| Made | Rendered at 1600 by 1600 with a transparent film and no shadow plate (nothing under the parts, Thulaib's word on 1 Nov 2026: "It should look like nothing. There shouldn't be any stuff. It should be a pure PNG."), then cropped to the union of the ink across the sixty and compressed by `scripts/customise-frames.sh` (ImageMagick). The 480 set, which the phone loads, counts against the 2 MB motion cap with the hero's set and the box clips |
+| On the page | The Customise section (ChatGPT's "Every part. Your choice." of 1 Nov 2026, taken whole, read from the scroll): one assembled ring; across one screen of scrolling the stone and the setting rise away from the band, the scroll picking the frame; the three labels rise one at a time once the parts have settled; scrolling up puts the ring back together and the labels go. The whole poster stands in until every frame has decoded; reduced motion, data saver and "Use a still" show the settled still with all three labels. Labelled "Generated sample". The real site shows the house's own ring photographed apart, the same mechanism, no generation |
+| The rule | Generated pictures are a stand in for this demo only (Thulaib, 31 Oct and 1 Nov 2026). They never stand for a real stone on a record, never go on a client's domain, and are replaced by the house's own photographs before launch |
 
 ## Ring box clips (`motion/box/`)
 
@@ -47,5 +50,6 @@ in `src/data/stones.json` (`photo.credit`) and labelled "Sample data" on the car
 
 Scouted and rejected: every clip that showed a hand holding the box throughout, a wedding pair, a proposal scene or
 a different box between the closed and open shots. Jacek Dylag's loose stone photograph (Unsplash agsdDgRW2Ps) was
-scouted for a stone plus empty mount pair and not used: no matching empty mount exists, so one ring photograph was cut
-into layers instead.
+scouted for a stone plus empty mount pair and not used: no matching empty mount exists. Sabrianna's Unsplash ring
+(KSDaYilI75Q) was cut into three layers by hand for the first Customise section (31 Oct) and retired on 1 Nov 2026 when the
+section was rebuilt on sixty generated frames of the hero's own ring.
