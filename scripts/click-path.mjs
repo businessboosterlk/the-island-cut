@@ -25,7 +25,7 @@ const browser = await chromium.launch({ channel: 'chromium' });
 /* runs in the page before anything else: names every touchpoint, hears every real press */
 const INSTALL = () => {
   const TOUCH = 'a[href],button,select,input:not([type=hidden])';
-  const region = e => { for (const [sel, n] of [['.nav', 'nav'], ['.hero', 'hero'], ['#stones', 'stones'], ['#viewing', 'room'], ['#jewellery', 'jewellery'], ['#customise', 'customise'], ['#bespoke', 'bespoke'], ['#craft', 'craft'], ['#close', 'close'], ['#contact', 'contact'], ['#builder', 'builder'], ['.tray', 'tray'], ['#passport', 'passport'], ['#request', 'request'], ['.footer', 'footer']]) if (e.closest(sel)) return n; return 'page'; };
+  const region = e => { for (const [sel, n] of [['.nav', 'nav'], ['.hero', 'hero'], ['#stones', 'stones'], ['#viewing', 'room'], ['#jewellery', 'jewellery'], ['#bespoke', 'bespoke'], ['#craft', 'craft'], ['#close', 'close'], ['#contact', 'contact'], ['#builder', 'builder'], ['.tray', 'tray'], ['#passport', 'passport'], ['#request', 'request'], ['.footer', 'footer']]) if (e.closest(sel)) return n; return 'page'; };
   const dest = a => { const u = new URL(a.href, location.href); if (/wa\.me$/.test(u.host)) return 'to WhatsApp'; if (u.host !== location.host) return 'to ' + u.host; if (u.hash) return 'to ' + u.hash; return 'to ' + (u.pathname.split('/').pop() || 'index.html'); };
   const name = e => {
     const d = e.dataset;
@@ -43,7 +43,7 @@ const INSTALL = () => {
   document.addEventListener('click', hear, true); document.addEventListener('change', hear, true);
   window.__snap = () => { const g = id => document.getElementById(id) || {}; return JSON.stringify({
     hash: location.hash, y: Math.round(scrollY / 40),
-    hero: g('turn').dataset ? g('turn').dataset.stage + ' ' + (g('hero-still').getAttribute ? g('hero-still').getAttribute('aria-pressed') : '') : '', apart: g('apart').dataset ? g('apart').dataset.settled + ' ' + (g('customise-still').getAttribute ? g('customise-still').getAttribute('aria-pressed') : '') : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
+    hero: g('turn').dataset ? g('turn').dataset.stage + ' ' + (g('hero-still').getAttribute ? g('hero-still').getAttribute('aria-pressed') : '') : '', apart: g('hero-stage').dataset ? g('hero-stage').dataset.settled + ' ' + document.querySelectorAll('#apart-labels li[data-on="true"]').length : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
     builder: (g('builder').open ? 'open ' : 'shut ') + g('builder').dataset.step + ' ' + [...document.querySelectorAll('#builder .opt[aria-pressed="true"]')].map(b => b.dataset.option).join(',') + ' doors:' + [...document.querySelectorAll('#builder [data-door]')].map(a => a.getAttribute('aria-disabled')).join(',') + ' next:' + ((document.querySelector('#builder [data-next]') || {}).disabled), chosen: document.querySelectorAll('#builder .opt[aria-pressed="true"], #builder .sum dd').length,
     room: g('room-ref').textContent + ' ' + ([...document.querySelectorAll('.tab[aria-selected="true"]')].map(t => t.dataset.view).join('')) + ' ' + (g('stage-empty').hidden ? 'photo' : 'panel'),
     tray: g('tray').dataset.on + ' ' + g('tray').dataset.open + ' ' + g('tray-refs').textContent + ' warn:' + !g('tray-warn').hidden, what: g('tray-what').textContent,
@@ -146,11 +146,10 @@ async function run(w, h, touch) {
   /* JEWELLERY, BESPOKE, CRAFT, CONTACT */
   await unhash(); { const b = await changed('jewellery "Create your piece"', '#jewellery a[href="#bespoke"]', 0, 'hash'); ok(`${tag}: it lands on bespoke`, b.hash === '#bespoke', b.hash); }
   await outsideWA('bespoke "Create your piece"', '#bespoke-wa', 0, ['create a piece']);
-  /* CUSTOMISE AND THE BUILDER: both ways in, every option, Next through every step, Back, every Change, a name and a number, both doors out, the close mark, Not now */
-  { const b = await changed('customise "Begin your ring"', '#customise-begin', 0, 'request'); ok(`${tag}: the request opens from the customise section with no stone chosen`, /^open .*No stone chosen yet/.test(b.request), b.request.slice(0, 60)); }
+  /* THE JOURNEY'S DOOR AND THE BUILDER: "Begin your ring" lives in the sixth stop's chapter, shown only at the end of the opening's track, so the gate scrolls there first; then both ways into the builder, every option, Next through every step, Back, every Change, a name and a number, both doors out, the close mark, Not now */
+  await page.evaluate(() => { const t = document.getElementById('hero-track'), s = document.getElementById('hero-stage'); window.scrollTo({ top: t.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(s).top) || 0) + t.offsetHeight - s.offsetHeight + 40, behavior: 'instant' }); }); await settle(); await sleep(900); await note();
+  { const b = await changed('journey "Begin your ring" at the sixth stop', '#journey-begin', 0, 'request'); ok(`${tag}: the request opens from the sixth stop with no stone chosen, the ring apart with its three labels behind it`, /^open .*No stone chosen yet/.test(b.request) && b.apart === 'true 3', b.request.slice(0, 60) + ' | ' + b.apart); }
   await changed('request "Not now"', '#request [data-close]', 0, 'request');
-  { const b = await changed('customise "Use a still"', '#customise-still', 0, 'apart'); ok(`${tag}: the still is on and the ring sits apart`, b.apart === 'true true', b.apart); }
-  { const b = await changed('customise "Take it apart with the scroll"', '#customise-still', 0, 'apart'); ok(`${tag}: the scroll is back and the ring whole`, b.apart === 'false false', b.apart); }
   { const b = await changed('bespoke "Build your ring"', '#bespoke-build', 0, 'builder'); ok(`${tag}: the builder opens on the setting with Next waiting`, b.builder.startsWith('open setting ') && b.builder.endsWith('next:true'), b.builder); }
   await changed('builder "Not now"', '#builder [data-close]', 0, 'builder');
   { const b = await changed('bespoke "Build your ring" again', '#bespoke-build', 0, 'builder'); ok(`${tag}: open again on the setting`, b.builder.startsWith('open setting'), b.builder); }

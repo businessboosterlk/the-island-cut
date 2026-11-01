@@ -39,19 +39,29 @@ function progress(track, stage) {
 }
 function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; requestAnimationFrame(() => { q = false; fn(); }); } }; addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); return ask; }
 
-/* ───────── the opening (ChatGPT's layout of 1 Nov 2026, taken whole): one ring, sixty frames, the scroll picks the frame.
-   p is the scroll's progress through the track (0 at the top, 1 at the end). The frame is round(p * 59), so the ring turns
-   a full circle over the travel and turns back on the way up. --w = sin(p * pi)^2 carries the ring across the desk and
-   back (CSS, his numbers). The chapter is the last `at` passed (0 below .34, 1 below .69, then 2), each landing with his
-   220 ms rise, and the counter's line is --p. Read from the scroll and nothing else (no timer, so a hidden tab cannot
-   strand it). The poster (frame 0) shows until all sixty have decoded, four at a time; a failed decode keeps the poster.
-   Under reduced motion, data saver or "Use a still": p is 0, the poster, the first chapter, the track one screen. ───────── */
+/* ───────── the journey. ChatGPT's opening of 1 Nov 2026, taken whole, is stops 1 to 3; Thulaib's six stops came that evening:
+   "we scroll 3 times and the ring moves to the side. When we scroll the 4th time, the ring drops down. Scroll the 5th time, then
+   the ring breaks once, and then scroll the 6th time, the whole ring breaks apart, but it has gone down." One ring, one sticky
+   scene. p is the scroll's progress through the track (0 at the top, 1 at the end) and s = p * 6 the stop. Stops 1 to 3: the
+   opening as it was, on ph = min(1, s / 3): frame round(ph * 59), --w = sin(ph * pi)^2 carrying the ring across the desk and back
+   (CSS, his numbers). Stop 4: frame 59 held while --drop eases 0 to 1 and the CSS lowers and shrinks the ring. Stop 5: the apart
+   frames 0 to break - 1 over the first 80% of the stop, then held (the stone alone rises out of the setting). Stop 6: break to the
+   last over the first 85%, then held (the setting lifts off the band) and the three labels rise one at a time with his 220 ms
+   rise, all gone the moment the scroll goes back. The apart canvas lies over the opening's canvas by the crop numbers (--ax,
+   --ay, --aw, --ah, from journey-frames.sh) and shows only from stop 5, where its frame 0 is the opening's frame 59 pixel for
+   pixel, so the swap cannot be seen. The chapter is the last `at` passed; the counter's line is --p. Read from the scroll and
+   nothing else (no timer, so a hidden tab cannot strand it). The poster (frame 0) shows until all sixty opening frames have
+   decoded, four at a time; the apart frames follow them. A failed decode keeps the poster (opening) or the opening's last frame
+   (apart). Under reduced motion, data saver or "Use a still": p is 0, the poster, the first chapter, the track one screen. ───────── */
 {
-  const hero = $('#hero'), track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), poster = $('#hero-poster'), canvas = $('#turntable'), chapters = $$('#hero-words li'), number = $('#chapter-number'), stillBtn = $('#hero-still');
+  const hero = $('#hero'), track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), poster = $('#hero-poster'), canvas = $('#turntable'), apart = $('#apart-canvas'), labelBox = $('#apart-labels'), labels = $$('#apart-labels li'), chapters = $$('#hero-words li'), number = $('#chapter-number'), stillBtn = $('#hero-still');
   const N = chapters.length, F = Number(turn.dataset.frames), at = chapters.map(c => Number(c.dataset.at)), base = turn.dataset.base;
+  const STOPS = +turn.dataset.stops || 6, HERO_STOPS = +turn.dataset.heroStops || 3, AF = +turn.dataset.apartFrames, BREAK = +turn.dataset.apartBreak, abase = turn.dataset.apart, AW = +turn.dataset.apartW / +turn.dataset.apartS, AH = +turn.dataset.apartH / +turn.dataset.apartS;
   const SAVE = !!(navigator.connection && navigator.connection.saveData);
-  const H = window.IslandCut.hero = { stages: N, frames: F, loaded: 0, frame: -1, poster: true, still: REDUCE || SAVE, failed: false, stage: 0, progress: 0, wave: 0, reduced: REDUCE };
-  const ctx = canvas.getContext('2d'); let frames = [], ready = false, last = -1;
+  const H = window.IslandCut.hero = { stages: N, stops: STOPS, frames: F, loaded: 0, frame: -1, poster: true, still: REDUCE || SAVE, failed: false, stage: 0, stop: 0, progress: 0, wave: 0, drop: 0, reduced: REDUCE, apart: { frames: AF, break: BREAK, loaded: 0, frame: -1, ready: false, failed: false, settled: false, labels: 0 } };
+  const A = H.apart;
+  const ctx = canvas.getContext('2d'), actx = apart.getContext('2d'); let frames = [], ready = false, last = -1, aframes = [], alast = -1, timers = [];
+  const smooth = u => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
   function show(i) {
     H.stage = i; turn.dataset.stage = String(i);
     if (chapters[i].getAttribute('aria-current') === 'true') return;
@@ -64,17 +74,43 @@ function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; r
     H.frame = i; H.poster = i < 0; canvas.classList.toggle('ready', i >= 0);
     if (i >= 0) poster.removeAttribute('aria-current'); else poster.setAttribute('aria-current', 'true');
   }
+  function drawApart(i) {
+    const on = i >= 0 && A.ready && !H.still;
+    if (on && i !== alast) { actx.clearRect(0, 0, apart.width, apart.height); actx.drawImage(aframes[i], 0, 0, apart.width, apart.height); alast = i; }
+    A.frame = on ? i : -1; apart.classList.toggle('ready', on); canvas.classList.toggle('under', on);
+  }
+  /* the labels sit beside the apart picture: its box, measured once the parts have settled, in the scene's own px */
+  function place() { const r = apart.getBoundingClientRect(), s = stage.getBoundingClientRect(); labelBox.style.setProperty('--lx', `${r.right - s.left}px`); labelBox.style.setProperty('--lt', `${r.top - s.top}px`); labelBox.style.setProperty('--lh', `${r.height}px`); }
+  function settle(on) {
+    if (on) place();
+    if (on === A.settled) return; A.settled = on; stage.dataset.settled = String(on);
+    timers.forEach(clearTimeout); timers = [];
+    if (!on) { labels.forEach(l => { l.dataset.on = 'false'; }); A.labels = 0; return; }
+    labels.forEach((l, k) => { timers.push(setTimeout(() => { l.dataset.on = 'true'; A.labels = k + 1; if (l.animate) l.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' }); }, k * 140)); });
+  }
   function put() {
-    const p = H.still ? 0 : progress(track, stage), w = Math.pow(Math.sin(p * Math.PI), 2); H.progress = p; H.wave = w;
-    stage.style.setProperty('--p', p.toFixed(3)); stage.style.setProperty('--w', w.toFixed(3));
+    const p = H.still ? 0 : progress(track, stage), s = p * STOPS, ph = clamp(s / HERO_STOPS, 0, 1), w = Math.pow(Math.sin(ph * Math.PI), 2), drop = smooth(s - HERO_STOPS);
+    H.progress = p; H.stop = Math.min(STOPS - 1, Math.floor(s)); H.wave = w; H.drop = drop;
+    stage.style.setProperty('--p', p.toFixed(3)); stage.style.setProperty('--w', w.toFixed(3)); stage.style.setProperty('--drop', drop.toFixed(3));
     let i = 0; at.forEach((v, k) => { if (p >= v) i = k; });
-    show(i); draw(p);
+    show(i); draw(ph);
+    let a = -1, b = 0;
+    if (s >= HERO_STOPS + 1) { const u = clamp((s - HERO_STOPS - 1) / .8, 0, 1); b = clamp((s - HERO_STOPS - 2) / .85, 0, 1); a = s < HERO_STOPS + 2 ? Math.round(u * (BREAK - 1)) : BREAK + Math.round(b * (AF - BREAK - 1)); }
+    drawApart(a); settle(!H.still && b >= 1);
+  }
+  async function loadApart() {
+    if (aframes.length || H.still) return;
+    const w = matchMedia('(min-width:900px)').matches ? +turn.dataset.desk : +turn.dataset.phone, pool = new Array(AF); aframes = pool; let next = 0;
+    apart.width = Math.round(w * AW); apart.height = Math.round(w * AH); alast = -1;
+    const worker = async () => { while (next < AF) { const k = next++; const im = new Image(); im.decoding = 'async'; im.src = `${abase}apart-${w}-${String(k).padStart(3, '0')}.webp`; await im.decode(); pool[k] = im; A.loaded++; } };
+    try { await Promise.all([0, 1, 2, 3].map(worker)); A.ready = true; put(); }
+    catch { aframes = []; A.ready = false; A.failed = true; A.loaded = 0; put(); }
   }
   async function load() {
     if (frames.length || H.still) return;
-    const w = matchMedia('(min-width:900px)').matches ? 800 : 480, pool = new Array(F); frames = pool; let next = 0;
+    const w = matchMedia('(min-width:900px)').matches ? +turn.dataset.desk : +turn.dataset.phone, pool = new Array(F); frames = pool; let next = 0;
     const worker = async () => { while (next < F) { const k = next++; const im = new Image(); im.decoding = 'async'; im.src = `${base}ring-${w}-${String(k).padStart(3, '0')}.webp`; await im.decode(); pool[k] = im; H.loaded++; } };
-    try { await Promise.all([0, 1, 2, 3].map(worker)); ready = true; put(); }
+    try { await Promise.all([0, 1, 2, 3].map(worker)); ready = true; put(); loadApart(); }
     catch { frames = []; ready = false; H.failed = true; H.loaded = 0; H.still = true; stillBtn.hidden = true; put(); }
   }
   function mode() {
@@ -84,61 +120,6 @@ function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; r
     put(); if (!H.still) load();
   }
   stillBtn.addEventListener('click', () => { H.still = !H.still; mode(); });
-  if (!REDUCE) onScroll(put);
-  mode();
-}
-
-/* ───────── customise (ChatGPT's "Every part. Your choice." of 1 Nov 2026, taken whole): the SAME ring, sixty frames on a
-   transparent film, the scroll picks the frame exactly as the hero does. Frames 0 to 11 are the whole ring, 12 to 38 the stone and
-   the setting rising, 39 on the settled separation. A label rises only once its part has settled (frame >= settle), one at a time
-   with his 220 ms rise, and every label goes at once the moment the ring starts back. The whole poster shows until the sixty have
-   decoded, loaded only once the section is near. Reduced motion, data saver, a failed decode and "Use a still" show the settled
-   still with every label up and one screen of track. Read from the scroll and nothing else. ───────── */
-{
-  const sec = $('#customise'), track = $('#apart-track'), stage = $('#apart'), fig = $('#pieces'), poster = $('#apart-poster'), canvas = $('#apart-canvas'), labels = $$('#apart-labels li'), stillBtn = $('#customise-still');
-  const F = +fig.dataset.frames, HOLD = +fig.dataset.hold || 12, SETTLE = +fig.dataset.settle, base = fig.dataset.base, RATIO = +fig.dataset.h / +fig.dataset.w;
-  const SAVE = !!(navigator.connection && navigator.connection.saveData);
-  const C = window.IslandCut.customise = { frames: F, settle: SETTLE, loaded: 0, frame: -1, poster: true, still: REDUCE || SAVE, failed: false, settled: false, progress: 0, labels: 0, reduced: REDUCE };
-  const ctx = canvas.getContext('2d'); let frames = [], ready = false, last = -1, timers = [], armed = false;
-  function posterOf(kind) { const d = fig.dataset.desk, ph = fig.dataset.phone; if (poster.dataset.kind === kind) return; poster.dataset.kind = kind; poster.srcset = `${base}poster-${kind}-${ph}.webp ${ph}w, ${base}poster-${kind}-${d}.webp ${d}w`; poster.src = `${base}poster-${kind}-${d}.webp`; poster.alt = kind === 'apart' ? 'Generated sample: the ring apart, the stone above, the setting below it, the band beneath' : 'Generated sample: an oval sapphire ring in yellow gold, whole'; }
-  function settle(on) {
-    if (on === C.settled) return; C.settled = on; stage.dataset.settled = String(on);
-    timers.forEach(clearTimeout); timers = [];
-    if (!on) { labels.forEach(l => { l.dataset.on = 'false'; }); C.labels = 0; return; }
-    labels.forEach((l, k) => {
-      const go = () => { l.dataset.on = 'true'; C.labels = k + 1; if (!C.still && l.animate) l.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' }); };
-      if (C.still) go(); else timers.push(setTimeout(go, k * 140));
-    });
-  }
-  function draw(p) {
-    const i = ready && !C.still ? Math.min(F - 1, Math.round(p * (F - 1))) : -1;
-    if (i >= 0 && i !== last) { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(frames[i], 0, 0, canvas.width, canvas.height); last = i; }
-    C.frame = i; C.poster = i < 0; canvas.classList.toggle('ready', i >= 0);
-    if (i >= 0) poster.removeAttribute('aria-current'); else poster.setAttribute('aria-current', 'true');
-    settle(C.still || i >= SETTLE);
-  }
-  function put() { const p = C.still ? 1 : progress(track, stage); C.progress = p; stage.style.setProperty('--p', p.toFixed(3)); draw(p); }
-  async function load() {
-    if (frames.length || C.still) return;
-    const w = matchMedia('(min-width:900px)').matches ? +fig.dataset.desk : +fig.dataset.phone, pool = new Array(F); frames = pool; let next = 0;
-    canvas.width = w; canvas.height = Math.round(w * RATIO); last = -1;
-    /* The ring holds whole for frames 0 to HOLD - 1 and holds settled from SETTLE to the end, so those files are the same picture:
-       fetch each held picture once and point every held frame at it (29 files of the sixty on the wire). */
-    const fileOf = k => k < HOLD ? 0 : k >= SETTLE ? SETTLE : k, held = {};
-    const worker = async () => { while (next < F) { const k = next++, f = fileOf(k); if (f !== k && held[f]) { pool[k] = await held[f]; C.loaded++; continue; } const im = new Image(); im.decoding = 'async'; im.src = `${base}apart-${w}-${String(f).padStart(3, '0')}.webp`; const done = im.decode().then(() => im); if (f !== k || f === 0 || f === SETTLE) held[f] = done; pool[k] = await done; C.loaded++; } };
-    try { await Promise.all([0, 1, 2, 3].map(worker)); ready = true; put(); }
-    catch { frames = []; ready = false; C.failed = true; C.loaded = 0; C.still = true; stillBtn.hidden = true; mode(); }
-  }
-  /* the frames are fetched once the section is within a screen of the viewport, never on load */
-  function arm() { if (armed) return; armed = true; if (!('IntersectionObserver' in window)) { load(); return; } const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '100% 0px' }); io.observe(sec); }
-  function mode() {
-    sec.dataset.still = String(C.still);
-    stillBtn.setAttribute('aria-pressed', String(C.still)); stillBtn.disabled = REDUCE;
-    stillBtn.textContent = REDUCE ? 'Reduced motion is on' : C.still ? 'Take it apart with the scroll' : 'Use a still';
-    posterOf(C.still ? 'apart' : 'whole');
-    put(); if (!C.still) arm();
-  }
-  stillBtn.addEventListener('click', () => { C.still = !C.still; mode(); });
   if (!REDUCE) onScroll(put);
   mode();
 }

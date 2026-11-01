@@ -27,21 +27,30 @@ const motion = f => url(`assets/motion/${f}`);
 // data saver and the "Use a still" control keep the poster. Three lines land at `at` of the travel. Labelled on the
 // page; the house's own photographs replace the frames.
 const FRAMES = 60;
-// ChatGPT's three chapters (its opening of 1 Nov 2026, taken whole on Thulaib's word that afternoon). Each lands at `at`
-// of the travel: below .34 the first, below .69 the second, then the third. The eyebrows are set in capitals by the CSS.
+// v4 (1 Nov 2026 pm): the sets are cut from 1600 px renders cropped to the ink; these are the widths of the two sets on disk
+// (scripts/hero-frames.sh DESK and PHONE). Change them here and there together.
+const SET = { desk: 1200, phone: 560 };
+// ChatGPT's three chapters (its opening of 1 Nov 2026, taken whole on Thulaib's word that afternoon) are the first three stops.
+// THE JOURNEY (Thulaib, 1 Nov 2026 pm: "we scroll 3 times and the ring moves to the side. When we scroll the 4th time, the ring
+// drops down. Scroll the 5th time, then the ring breaks once, and then scroll the 6th time, the whole ring breaks apart, but it
+// has gone down."): the same scene on a track of six stops. Stops 1 to 3 are the opening above, read on the first half of the
+// travel (the ring crosses the desk and comes back to the side, his carry). Stop 4 holds the last frame and the ring drops and
+// shrinks (CSS, --drop). Stops 5 and 6 are APART.frames more frames of the SAME ring from the opening's last pose, stone and
+// engraving at the opening's camera (scripts/render-journey.py): first the stone alone rises out of the setting, then the setting
+// lifts off the band. scripts/journey-frames.sh proves the seam (frame 0 trims to the opening's frame 59) and prints the crop
+// (`w`, `h`) and where the opening's own crop (`s` square) sits inside it (`x`, `y`): the page lays the two canvases over each
+// other from those four numbers, so the swap at stop 5 is invisible. Each chapter lands at `at` of the travel; ChatGPT's words
+// for the first four, the label words from its customise brief for the last two. Change the numbers here and there together.
+const STOPS = 6, HERO_STOPS = 3;
 const CHAPTERS = [
   { at: 0, eyebrow: 'The beginning', head: 'It begins<br>with <em>blue.</em>', intro: 'Loose stones. Personal commissions.<br>A closer look, before you choose.' },
-  { at: 0.34, eyebrow: 'A different perspective', head: 'Look a<br>little <em>closer.</em>', intro: 'The stone. The setting. The way they<br>come together. Every angle matters.' },
-  { at: 0.69, eyebrow: 'The next chapter', head: 'Make it<br><em>personal.</em>', intro: 'Begin with a stone you love.<br>Let the conversation shape the rest.' },
+  { at: 0.17, eyebrow: 'A different perspective', head: 'Look a<br>little <em>closer.</em>', intro: 'The stone. The setting. The way they<br>come together. Every angle matters.' },
+  { at: 0.345, eyebrow: 'The next chapter', head: 'Make it<br><em>personal.</em>', intro: 'Begin with a stone you love.<br>Let the conversation shape the rest.' },
+  { at: 0.5, eyebrow: 'Make it personal', head: 'Every part.<br><em>Your choice.</em>', intro: 'Start with a setting. Choose a stone.<br>We will help with the details.' },
+  { at: 0.667, eyebrow: 'The stone', head: 'First,<br>the <em>stone.</em>', intro: 'Yours to choose.' },
+  { at: 0.833, eyebrow: 'The setting and the band', head: 'Then<br>the <em>rest.</em>', intro: 'The setting, yours to choose.<br>The band, choose your metal.', door: true },
 ];
-// CUSTOMISE (ChatGPT's "Every part. Your choice." of 1 Nov 2026, taken whole, bb_pending 1036): the SAME ring rendered sixty
-// times by scripts/render-customise.py on a transparent film, nothing under it ("It should look like nothing. There shouldn't be
-// any stuff. It should be a pure PNG.", Thulaib, 1 Nov pm). Frames 0 to 11 are the whole ring in the hero's own pose, 12 to 38 the
-// stone and the setting rise along the ring's axis, 39 to 59 the settled separation. The scroll picks the frame as the hero does.
-// The sets are cut from the 1600 px renders cropped to the union of the ink (scripts/customise-frames.sh prints the crop); `w` and
-// `h` are that crop, `desk` and `phone` the widths of the two sets on disk. Frames 0 to `hold` minus one are one picture and frames
-// `settle` to 59 another, so the page fetches each held picture once (29 files of the 60). Change them here and there together.
-const APART = { frames: 60, hold: 12, settle: 39, desk: 760, phone: 480, w: 872, h: 1212 };
+const APART = { frames: 32, break: 16, desk: SET.desk, phone: SET.phone, w: 1247, h: 1401, x: 0, y: 154, s: 1247 };   /* from motion/journey/CROP.txt and ALIGN.txt (journey-frames.sh, 1 Nov 2026): crop 1247x1401, the hero square at 0,154 */
 const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones, builder };
 ---
 <Layout>
@@ -53,19 +62,26 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 
 <main id="top">
 <section class="hero" id="hero" aria-label="A study in blue" data-still="false">
-  <div class="track" id="hero-track"><div class="scene" id="hero-stage">
+  <div class="track" id="hero-track"><div class="scene" id="hero-stage" data-settled="false">
     <p class="edition" aria-hidden="true">{SITE.tagline}</p>
-    <ol class="chapters" id="hero-words" aria-label="Three chapters, one for each third of the scroll">
+    <ol class="chapters" id="hero-words" aria-label="Six stops, one for each sixth of the scroll">
       {CHAPTERS.map((c, i) => <li data-at={c.at} aria-current={i ? undefined : 'true'}>
         <p class="eyebrow">{c.eyebrow}</p>
         {i === 0 ? <h1 set:html={c.head} /> : <p class="h" set:html={c.head} />}
         <p class="intro" set:html={c.intro} />
+        {c.door && <button class="action" type="button" id="journey-begin" data-request>Begin your ring <Icon name="out" /></button>}
       </li>)}
     </ol>
-    <figure class="turn" id="turn" data-stages={CHAPTERS.length} data-frames={FRAMES} data-stage="0" data-base={motion('hero-ring/')} aria-label="Generated sample: a sapphire ring in yellow gold that turns as you scroll">
-      <img class="still" id="hero-poster" src={motion('hero-ring/poster-800.webp')} srcset={`${motion('hero-ring/poster-480.webp')} 480w, ${motion('hero-ring/poster-800.webp')} 800w`} sizes="(min-width:900px) 61vw, 100vw" alt="Generated sample: an oval sapphire ring in yellow gold, the stone held in four claws" width="800" height="800" fetchpriority="high" decoding="async" aria-current="true" />
-      <canvas id="turntable" width="800" height="800" aria-hidden="true"></canvas>
+    <figure class="turn" id="turn" data-stops={STOPS} data-hero-stops={HERO_STOPS} data-stages={CHAPTERS.length} data-frames={FRAMES} data-stage="0" data-base={motion('hero-ring/')} data-desk={SET.desk} data-phone={SET.phone} data-apart={motion('journey/')} data-apart-frames={APART.frames} data-apart-break={APART.break} data-apart-w={APART.w} data-apart-h={APART.h} data-apart-s={APART.s} aria-label="Generated sample: a sapphire ring in yellow gold that turns as you scroll, drops and comes apart into its stone, its setting and its band. Scrolling up puts it back together.">
+      <img class="still" id="hero-poster" src={motion(`hero-ring/poster-${SET.desk}.webp`)} srcset={`${motion(`hero-ring/poster-${SET.phone}.webp`)} ${SET.phone}w, ${motion(`hero-ring/poster-${SET.desk}.webp`)} ${SET.desk}w`} sizes="(min-width:900px) 61vw, 100vw" alt="Generated sample: an oval sapphire ring in yellow gold, the stone held in four claws" width={SET.desk} height={SET.desk} fetchpriority="high" decoding="async" aria-current="true" />
+      <canvas id="turntable" width={SET.desk} height={SET.desk} aria-hidden="true"></canvas>
+      <canvas id="apart-canvas" width={Math.round(APART.desk * APART.w / APART.s)} height={Math.round(APART.desk * APART.h / APART.s)} aria-hidden="true" style={`--ax:${(APART.x / APART.s).toFixed(4)};--ay:${(APART.y / APART.s).toFixed(4)};--aw:${(APART.w / APART.s).toFixed(4)};--ah:${(APART.h / APART.s).toFixed(4)}`}></canvas>
     </figure>
+    <ul class="labels" id="apart-labels" aria-label="The three parts you choose">
+      <li data-part="stone" data-on="false"><strong>The stone</strong><small>Yours to choose</small></li>
+      <li data-part="setting" data-on="false"><strong>The setting</strong><small>Yours to choose</small></li>
+      <li data-part="band" data-on="false"><strong>The band</strong><small>Choose your metal</small></li>
+    </ul>
     <div class="foot">
       <a class="continue" href="#house">Meet the house <Icon name="down" /></a>
       <div class="chapter" aria-hidden="true"><span id="chapter-number">01</span><span class="bar"><span id="hero-progress"></span></span><span>{String(CHAPTERS.length).padStart(2, '0')}</span></div>
@@ -137,33 +153,6 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
     <p>The house's finished pieces are photographed on the same ground as the stones, one piece to a frame, beside the stone and its report. None are on the page yet. Nothing is drawn or generated to fill the space.</p>
     <p><a class="door" href="#bespoke">Create your piece</a></p>
   </div>
-</section>
-
-<section class="customise" id="customise" aria-labelledby="customise-h" data-still="false">
-  <div class="track" id="apart-track"><div class="scene" id="apart" data-settled="false" style="--p:0">
-    <div class="head">
-      <p class="eyebrow">Make it personal</p>
-      <h2 id="customise-h">Every part.<br><em>Your choice.</em></h2>
-    </div>
-    <figure class="pieces" id="pieces" data-frames={APART.frames} data-hold={APART.hold} data-settle={APART.settle} data-base={motion('customise/')} data-desk={APART.desk} data-phone={APART.phone} data-w={APART.w} data-h={APART.h} aria-label="Generated sample: the ring comes apart into its stone, its setting and its band as you scroll. Scrolling up puts it back together.">
-      <div class="set">
-        <div class="film">
-          <img class="still" id="apart-poster" src={motion(`customise/poster-whole-${APART.desk}.webp`)} srcset={`${motion(`customise/poster-whole-${APART.phone}.webp`)} ${APART.phone}w, ${motion(`customise/poster-whole-${APART.desk}.webp`)} ${APART.desk}w`} sizes="(min-width:900px) 34vw, 62vw" alt="Generated sample: an oval sapphire ring in yellow gold, whole" width={APART.desk} height={Math.round(APART.desk * APART.h / APART.w)} loading="lazy" decoding="async" aria-current="true" />
-          <canvas id="apart-canvas" width={APART.desk} height={Math.round(APART.desk * APART.h / APART.w)} aria-hidden="true"></canvas>
-        </div>
-        <ul class="labels" id="apart-labels" aria-label="The three parts you choose">
-          <li data-part="stone" data-on="false"><strong>The stone</strong><small>Yours to choose</small></li>
-          <li data-part="setting" data-on="false"><strong>The setting</strong><small>Yours to choose</small></li>
-          <li data-part="band" data-on="false"><strong>The band</strong><small>Choose your metal</small></li>
-        </ul>
-      </div>
-    </figure>
-    <div class="foot">
-      <p class="sub">Start with a setting. Choose a stone.<br>We will help with the details.</p>
-      <button class="action" type="button" id="customise-begin" data-request>Begin your ring <Icon name="out" /></button>
-      <div class="row"><p class="sample">Generated sample. The house's own ring replaces this.</p><button type="button" id="customise-still" aria-pressed="false">Use a still</button></div>
-    </div>
-  </div></div>
 </section>
 
 <section class="band section" id="bespoke" aria-labelledby="bespoke-h"><div class="wrap">

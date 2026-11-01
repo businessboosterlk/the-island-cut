@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* LIVE PROOF. Opens the deployed address in a real browser at phone and desk, checks the page ran, the records are
-   on the table, the hero arrives on the scroll and swaps, the ring comes apart, the box plays, the builder opens, every request answered, no console errors, the robots tag still says noindex, and writes
+   on the table, the hero arrives on the scroll and swaps, the ring drops and comes apart at the end of the same track, the box plays, the builder opens, every request answered, no console errors, the robots tag still says noindex, and writes
    evidence/live-*.png.
      node scripts/live.mjs [url]     default https://businessboosterlk.github.io/the-island-cut/ */
 import { chromium } from 'playwright';
@@ -47,25 +47,30 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
     const top = track.getBoundingClientRect().top + scrollY - sticky;
     const travel = track.offsetHeight - track.firstElementChild.offsetHeight;
     await new Promise(r => setTimeout(r, 400)); const start = ic.stage, startFrame = ic.frame;
-    scrollTo({ top: top + travel * 0.5, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    /* the opening is now stops 1 to 3 of six (1 Nov 2026 evening), so its half way is p = 0.25 of the whole track */
+    scrollTo({ top: top + travel * 0.25, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
     const mid = ic.stage, midFrame = ic.frame, wave = Math.round(ic.wave * 100) / 100, number = document.getElementById('chapter-number').textContent;
     scrollTo({ top: 0, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
     return { loaded: ic.loaded, frames: ic.frames, stages: ic.stages, reduced: ic.reduced, start, startFrame, mid, midFrame, wave, number, back: ic.stage, backFrame: ic.frame };
   });
-  check(hero.loaded === hero.frames && hero.frames === 60 && hero.stages === 3, `${name}: hero frames loaded ${hero.loaded} of ${hero.frames}, ${hero.stages} chapters`);
+  check(hero.loaded === hero.frames && hero.frames === 60 && hero.stages === 6, `${name}: hero frames loaded ${hero.loaded} of ${hero.frames}, ${hero.stages} chapters`);
   check(hero.start === 0 && hero.mid === 1 && hero.number === '02' && hero.back === 0 && (hero.reduced || (hero.startFrame === 0 && hero.midFrame >= 28 && hero.midFrame <= 32 && hero.wave > 0.95 && hero.backFrame === 0)), `${name}: the scroll turns the ring and changes the chapter (chapter ${hero.start}, frame ${hero.startFrame} at the top; chapter ${hero.mid} "${hero.number}", frame ${hero.midFrame}, wave ${hero.wave} half way; chapter ${hero.back}, frame ${hero.backFrame} back at the top)`);
   const ex = await page.evaluate(async () => {
-    const C = window.IslandCut.customise, track = document.getElementById('apart-track'), stage = document.getElementById('apart'); const top = track.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(stage).top);
+    const ic = window.IslandCut.hero, A = ic.apart, track = document.getElementById('hero-track'), stage = document.getElementById('hero-stage'); const top = track.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(stage).top) || 0);
     scrollTo({ top: top + track.offsetHeight - stage.offsetHeight + 20, behavior: 'instant' }); const t0 = Date.now();
-    while (C.loaded < C.frames && !C.failed && Date.now() - t0 < 30000) await new Promise(r => setTimeout(r, 200));
+    while (A.loaded < A.frames && !A.failed && Date.now() - t0 < 30000) await new Promise(r => setTimeout(r, 200));
     await new Promise(r => setTimeout(r, 700));
     const labels = () => document.querySelectorAll('#apart-labels li[data-on="true"]').length;
-    const settled = { frame: C.frame, settled: stage.dataset.settled, labels: labels() };
+    const settled = { frame: A.frame, drop: Math.round(ic.drop * 100) / 100, settled: stage.dataset.settled, labels: labels(), number: document.getElementById('chapter-number').textContent };
     scrollTo({ top, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
-    return { loaded: C.loaded, frames: C.frames, reduced: C.reduced, settled, back: { frame: C.frame, settled: stage.dataset.settled, labels: labels() } };
+    const back = { frame: A.frame, hero: ic.frame, settled: stage.dataset.settled, labels: labels() };
+    scrollTo({ top: top + track.offsetHeight - stage.offsetHeight + 20, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    return { loaded: A.loaded, frames: A.frames, reduced: ic.reduced, settled, back };
   });
-  check(ex.loaded === ex.frames && ex.frames === 60, `${name}: customise frames loaded ${ex.loaded} of ${ex.frames}`);
-  check(ex.settled.settled === 'true' && ex.settled.labels === 3 && ex.back.settled === 'false' && ex.back.labels === 0 && (ex.reduced || (ex.settled.frame === 59 && ex.back.frame === 0)), `${name}: the ring comes apart on scroll (frame ${ex.settled.frame}, ${ex.settled.labels} labels) and goes back (frame ${ex.back.frame}, ${ex.back.labels} labels)`);
+  check(ex.loaded === ex.frames && ex.frames === 32, `${name}: journey frames loaded ${ex.loaded} of ${ex.frames}`);
+  check(ex.settled.settled === 'true' && ex.settled.labels === 3 && ex.settled.number === '06' && ex.back.settled === 'false' && ex.back.labels === 0 && (ex.reduced || (ex.settled.frame === 31 && ex.settled.drop === 1 && ex.back.frame === -1 && ex.back.hero === 0)), `${name}: the ring drops and comes apart at the end of the track (apart frame ${ex.settled.frame}, drop ${ex.settled.drop}, chapter ${ex.settled.number}, ${ex.settled.labels} labels) and goes back whole (apart frame ${ex.back.frame}, hero frame ${ex.back.hero}, ${ex.back.labels} labels)`);
+  const req = await page.evaluate(() => { document.getElementById('journey-begin').click(); const d = document.getElementById('request'); const open = d.open; d.close(); return open; });
+  check(req, `${name}: the request sheet opens from Begin your ring at the sixth stop`);
   const box = await page.evaluate(async () => {
     document.getElementById('box').scrollIntoView({ block: 'center', behavior: 'instant' }); const t0 = Date.now();
     const loop = document.getElementById('box-loop');
@@ -75,8 +80,6 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   check(box.playing && box.moved > 0.2, `${name}: the ring box loop plays on the live address (moved ${box.moved.toFixed(2)}s)`);
   const bld = await page.evaluate(() => { document.getElementById('bespoke-build').click(); const d = document.getElementById('builder'); const open = d.open; d.close(); return open; });
   check(bld, `${name}: the builder sheet opens from Build your ring`);
-  const req = await page.evaluate(() => { document.getElementById('customise-begin').click(); const d = document.getElementById('request'); const open = d.open; d.close(); return open; });
-  check(req, `${name}: the request sheet opens from Begin your ring`);
   await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(400);
   check(bad.length === 0, `${name}: every request answered (${bad.length} failed${bad.length ? ': ' + bad.join(', ') : ''})`);
   check(errors.length === 0, `${name}: no console errors${errors.length ? ': ' + errors.join(' | ') : ''}`);
