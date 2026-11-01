@@ -43,7 +43,7 @@ const INSTALL = () => {
   document.addEventListener('click', hear, true); document.addEventListener('change', hear, true);
   window.__snap = () => { const g = id => document.getElementById(id) || {}; return JSON.stringify({
     hash: location.hash, y: Math.round(scrollY / 40),
-    hero: g('turn').dataset ? g('turn').dataset.frame : '', explode: g('explode').dataset ? g('explode').dataset.apart : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
+    hero: g('turn').dataset ? g('turn').dataset.stage : '', explode: g('explode').dataset ? g('explode').dataset.apart : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
     builder: (g('builder').open ? 'open ' : 'shut ') + g('builder').dataset.step + ' ' + [...document.querySelectorAll('#builder .opt[aria-pressed="true"]')].map(b => b.dataset.option).join(',') + ' doors:' + [...document.querySelectorAll('#builder [data-door]')].map(a => a.getAttribute('aria-disabled')).join(',') + ' next:' + ((document.querySelector('#builder [data-next]') || {}).disabled), chosen: document.querySelectorAll('#builder .opt[aria-pressed="true"], #builder .sum dd').length,
     room: g('room-ref').textContent + ' ' + ([...document.querySelectorAll('.tab[aria-selected="true"]')].map(t => t.dataset.view).join('')) + ' ' + (g('stage-empty').hidden ? 'photo' : 'panel'),
     tray: g('tray').dataset.on + ' ' + g('tray').dataset.open + ' ' + g('tray-refs').textContent + ' warn:' + !g('tray-warn').hidden, what: g('tray-what').textContent,

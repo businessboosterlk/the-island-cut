@@ -3,7 +3,8 @@
 // Phase 1 of look/BRIEF-10-FEATURES.md: the viewing room (2), the comparison tray (4), the passport (6) and a request
 // based viewing with a specialist (7). Phase 2 (31 Oct 2026, the seven reference clips): a ring that turns with the
 // scroll in the hero, a ring that comes apart into its three choices, a ring builder with no price, and a ring box
-// that opens on a tap. Every clip and photograph in those parts is licensed stock, labelled Sample, listed in
+// that opens on a tap. The hero was rebuilt on 1 Nov 2026 on three GENERATED stills of one ring (Thulaib's call that
+// day), labelled Generated sample. Every other clip and photograph is licensed stock, labelled Sample. All listed in
 // public/assets/SOURCES.md. Every real world value is in src/config.js.
 // Every record on the page is a sample and says so. Every door ends in a prefilled WhatsApp message.
 import Layout from '../layouts/Layout.astro';
@@ -19,6 +20,14 @@ const size = s => `${s.mm[0]} by ${s.mm[1]} by ${s.mm[2]} mm`;
 const facts = s => `${s.carat.toFixed(2)} ct, ${size(s)}, ${s.treatment.value.toLowerCase()}`;
 const askText = s => `Hello, from the website. I am asking about stone ${s.ref} (${s.title}, ${s.carat.toFixed(2)} ct).`;
 const motion = f => url(`assets/motion/${f}`);
+// THE HERO (clip 5, rebuilt 1 Nov 2026): three generated stills of ONE ring. The first arrives large and tilted and
+// settles in the centre, then each scroll stage swaps the picture, no morph, and its line lands. The stage starts at
+// `at` of the scroll travel. Generated on 31 Oct 2026 in Canva, labelled on the page; the house's own photographs replace them.
+const STILLS = [
+  { file: 'lying', at: 0, alt: 'Generated sample: a sapphire ring in yellow gold, seen whole on a pale ground', line: 'The stone, chosen loose and in daylight.' },
+  { file: 'upright', at: 0.34, alt: 'Generated sample: the same ring square to the camera, the stone filling the frame', line: 'The setting, agreed on a drawing first.' },
+  { file: 'macro', at: 0.67, alt: 'Generated sample: the sapphire very close, every facet in view', line: 'Seen this close on a call, before anyone talks about money.' },
+];
 const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones, builder };
 ---
 <Layout>
@@ -29,22 +38,19 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 </div></header>
 
 <main id="top">
-<section class="wrap hero" id="hero" aria-label="A ring that turns as you scroll">
-  <div class="track" id="hero-track"><div class="scene" id="hero-stage">
-    <figure class="turn" id="turn" data-frames="60" data-frame="0">
+<section class="wrap hero" id="hero" aria-label="A ring that arrives, then is seen three ways">
+  <div class="track" id="hero-track"><div class="scene" id="hero-stage" data-entered="false">
+    <figure class="turn" id="turn" data-stages={STILLS.length} data-stage="0">
       <div class="box">
-        <img id="hero-poster" src={motion('hero/poster-480.webp')} srcset={`${motion('hero/poster-480.webp')} 480w, ${motion('hero/poster-800.webp')} 800w`} sizes="(min-width:900px) 50vw, 100vw" alt="A rose gold solitaire ring, sample footage" width="480" height="409" fetchpriority="high">
-        <canvas id="hero-canvas" width="480" height="409" aria-hidden="true" hidden></canvas>
+        {STILLS.map((s, i) => <img class="still" id={`hero-still-${i}`} src={motion(`hero-ai/${s.file}-800.webp`)} srcset={[480, 800, 1200, 1600].map(w => `${motion(`hero-ai/${s.file}-${w}.webp`)} ${w}w`).join(', ')} sizes="(min-width:900px) 56vw, 100vw" alt={s.alt} width="1456" height="1088" fetchpriority={i ? 'low' : 'high'} decoding="async" aria-current={i ? undefined : 'true'} />)}
       </div>
-      <figcaption id="hero-cap"><span class="tag">Sample footage</span><span>A licensed clip of a solitaire ring, standing in for the house's own piece.</span></figcaption>
+      <figcaption id="hero-cap"><span class="tag">Generated sample</span><span>Three pictures of one ring, until the house's own photographs arrive.</span></figcaption>
     </figure>
     <div class="copy">
       <p class="eyebrow">{SITE.tagline}</p>
       <h1>An extraordinary stone. A piece <em>entirely yours.</em></h1>
-      <ol class="words" id="hero-words" aria-label="What changes as the ring turns">
-        <li data-at="0" aria-current="true">The stone, chosen loose and in daylight.</li>
-        <li data-at="0.34">The setting, agreed on a drawing first.</li>
-        <li data-at="0.67">The piece, photographed beside its report.</li>
+      <ol class="words" id="hero-words" aria-label="What changes as the ring is seen three ways">
+        {STILLS.map((s, i) => <li data-at={s.at} aria-current={i ? undefined : 'true'}>{s.line}</li>)}
       </ol>
       <div class="doors"><a class="door fill" href="#stones">Explore gemstones</a><a class="door" href="#bespoke">Create your piece</a></div>
     </div>

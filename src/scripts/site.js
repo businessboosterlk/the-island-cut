@@ -1,4 +1,4 @@
-// THE ISLAND CUT, the page's one script. The turning ring, the viewing room, the tray, the passport, the request sheet,
+// THE ISLAND CUT, the page's one script. The ring that arrives and is seen three ways, the viewing room, the tray, the passport, the request sheet,
 // the ring that comes apart, the builder and the box.
 // No framework, no three.js, no GSAP. Every door ends in a prefilled WhatsApp message that says "from the website".
 // The tray is saved on this device only (localStorage) and is never a reservation.
@@ -39,29 +39,29 @@ function progress(track, stage) {
 }
 function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; requestAnimationFrame(() => { q = false; fn(); }); } }; addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); return ask; }
 
-/* ───────── the hero: a ring that turns with the scroll. The poster is in the HTML; the frames load after it and are
-   drawn on a canvas; under reduced motion nothing loads and the poster stays. One set per device, chosen once. ───────── */
+/* ───────── the hero (clip 5): one ring, three stills. The first arrives on its own (a CSS transition, started once the
+   still has loaded, so it is never seen half way) and only then do the words land. The scroll then picks the stage:
+   a different still, a different line, a slow drift of scale inside the stage. Read from the scroll and nothing else,
+   so scrolling up swaps back. Under reduced motion: no entrance, the upright still, every line shown. ───────── */
 {
-  const track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), poster = $('#hero-poster'), canvas = $('#hero-canvas');
-  const words = $$('#hero-words li'), N = Number(turn.dataset.frames), set = innerWidth < 900 ? 480 : 800;
-  const frames = new Array(N).fill(null); let drawn = -1;
-  const ctx = canvas.getContext('2d');
-  const H = window.IslandCut.hero = { set, frames: N, loaded: 0, frame: 0, progress: 0, reduced: REDUCE };
-  function draw() {
-    const p = REDUCE ? 0 : progress(track, stage), i = Math.round(p * (N - 1));
-    H.progress = p; H.frame = i; turn.dataset.frame = String(i);
-    let j = i; while (j > 0 && !frames[j]) j--;
-    if (frames[j] && j !== drawn) {
-      if (canvas.width !== frames[j].naturalWidth) { canvas.width = frames[j].naturalWidth; canvas.height = frames[j].naturalHeight; }
-      ctx.drawImage(frames[j], 0, 0); drawn = j; canvas.hidden = false; poster.hidden = true;
-    }
-    let cur = 0; words.forEach((w, k) => { if (p >= Number(w.dataset.at)) cur = k; });
-    words.forEach((w, k) => { if (k === cur) w.setAttribute('aria-current', 'true'); else w.removeAttribute('aria-current'); });
+  const track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), stills = $$('#turn .still'), words = $$('#hero-words li');
+  const N = stills.length, at = words.map(w => Number(w.dataset.at));
+  const H = window.IslandCut.hero = { stages: N, loaded: 0, stage: 0, progress: 0, entered: false, reduced: REDUCE };
+  const cur = (list, i) => list.forEach((el, k) => { if (k === i) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current'); });
+  function show(i) { cur(stills, i); cur(words, i); H.stage = i; turn.dataset.stage = String(i); }
+  function put() {
+    const p = progress(track, stage); H.progress = p;
+    let i = 0; at.forEach((a, k) => { if (p >= a) i = k; });
+    const span = (k => (k < N ? at[k] : 1) - at[i])(i + 1), local = span > 0 ? clamp((p - at[i]) / span, 0, 1) : 0;
+    show(i); turn.style.setProperty('--drift', (1 + (i === N - 1 ? 0.10 : 0.05) * local).toFixed(3));
   }
-  if (!REDUCE) {
-    const ask = onScroll(draw);
-    frames.forEach((_, i) => { const im = new Image(); im.decoding = 'async'; im.onload = () => { frames[i] = im; H.loaded++; drawn = -1; ask(); }; im.src = url(`assets/motion/hero/${set}/${String(i + 1).padStart(3, '0')}.webp`); });
-    draw();
+  function enter() { if (H.entered) return; H.entered = true; stage.dataset.entered = 'true'; }
+  stills.forEach(im => { const done = () => { H.loaded++; }; if (im.complete && im.naturalWidth) done(); else im.addEventListener('load', done, { once: true }); });
+  if (REDUCE) { show(1); H.progress = 0.5; enter(); }
+  else {
+    onScroll(put); put();
+    const go = () => { requestAnimationFrame(() => requestAnimationFrame(enter)); setTimeout(enter, 900); }; /* a hidden tab stalls animation frames (seen 1 Nov 2026): the timer makes sure the ring never stays stuck in its entrance pose */
+    if (stills[0].complete) go(); else { stills[0].addEventListener('load', go, { once: true }); stills[0].addEventListener('error', go, { once: true }); }
   }
 }
 
