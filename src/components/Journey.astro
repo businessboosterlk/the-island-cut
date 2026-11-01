@@ -1,0 +1,43 @@
+---
+import { url } from '../scripts/icon.js';
+import '../styles/journey.css';
+const chapters = [
+  ['A private beginning', 'It begins<br>with <em>blue.</em>', 'A loose stone. A world of possibilities.', 'centre'],
+  ['The stone', 'An extraordinary<br><em>beginning.</em>', 'Start with the colour that speaks to you.<br>See it closely. In your own time.', 'left'],
+  ['A different perspective', 'Look a<br>little <em>closer.</em>', 'The colour. The light. The way it turns.<br>Every angle tells you something.', 'right'],
+  ['Make it personal', 'Your colour.<br><em>Your character.</em>', 'From blue to a warmer possibility.<br>Now, let us take it apart.', 'left'],
+  ['Every part is a choice', 'Nothing generic.<br><em>Entirely yours.</em>', 'Choose the gemstone. Explore the setting.<br>Choose your metal. Add a name or a date.', 'right'],
+  ['Coming together', 'One stone.<br><em>Your story.</em>', 'The details find their place.<br>A piece begins to feel like yours.', 'left'],
+  ['A different angle', 'Made to be<br><em>looked at.</em>', 'A quiet turn. A different perspective.<br>A closer conversation about the details.', 'right'],
+  ['The finishing touch', 'A little more<br><em>personal.</em>', 'A name. A date. A few words.<br>Ask us about engraving your piece.', 'left'],
+  ['The next chapter', 'Imagine<br><em>opening yours.</em>', 'Your idea starts with a conversation.', 'centre'],
+];
+---
+<section id="hero" class="ring-story" aria-label="From a loose gemstone to your own ring" data-still="true" data-assets={url('assets/motion/')}>
+  <div class="story-tools"><a href="#story-customise">Explore the choices</a><button id="hero-still" type="button" aria-pressed="false">Use a still</button></div>
+  <div class="story-ring" id="story-ring" aria-hidden="true">
+    <img id="story-poster" src={url('assets/motion/hero-ring/poster-560.webp')} width="560" height="560" alt="" />
+    <canvas id="story-canvas" width="560" height="560"></canvas>
+    <canvas id="story-apart" width="560" height="629"></canvas>
+  </div>
+  {chapters.map(([eyebrow, head, intro, side], i) => <section class="story-chapter" id={i === 4 ? 'story-customise' : i === 8 ? 'story-finale' : `story-${i}`} data-side={side} data-chapter={i} aria-label={eyebrow}>
+    <div class="story-scene">
+    <span class="story-index" aria-hidden="true">{String(i + 1).padStart(2,'0')} / 09</span>
+    <div class="story-copy">
+      <p class="eyebrow">{eyebrow}</p>
+      {i === 0 ? <h1 set:html={head} /> : <h2 set:html={head} />}
+      <p class="story-intro" set:html={intro} />
+      {i === 4 && <ul class="story-choices"><li><span>01</span> The gemstone</li><li><span>02</span> The setting</li><li><span>03</span> The metal &amp; band</li><li><span>04</span> Your engraving</li></ul>}
+      {i === 4 && <button class="story-link" data-build type="button">Explore your ring options <span aria-hidden="true">↗</span></button>}
+      {i === 8 && <button class="door fill" data-build type="button">Customise yours</button>}
+      {i === 0 && <button class="story-link" id="story-open" type="button" aria-label="Open the gemstone box">Open the box <span aria-hidden="true">↓</span></button>}
+    </div>
+    {(i === 0 || i === 8) && <div class="story-bookend" aria-label={i === 0 ? 'Generated sample: a straight-on box opening on a blue sapphire' : 'Generated sample: the finished sapphire ring settling into its box'} role="img">
+      <img id={i === 0 ? 'opening-poster' : 'return-poster'} src={url(`assets/motion/bookends/${i === 0 ? 'opening-000' : 'return-023'}.webp`)} width="720" height="720" alt="" />
+      <canvas id={i === 0 ? 'opening-canvas' : 'return-canvas'} width="720" height="720" aria-hidden="true"></canvas>
+    </div>}
+    {i > 0 && i < 8 && <img class="chapter-still" src={url(`assets/motion/${i === 4 ? 'journey/apart-560-031' : 'hero-ring/poster-560'}.webp`)} alt="Generated sample ring" width="560" height={i === 4 ? 629 : 560} loading="lazy" />}
+    <p class="story-caption">{i === 4 ? 'Illustrative choices. Availability and engraving confirmed with the house.' : 'Generated design study · Not a stock or availability claim'}</p>
+    </div>
+  </section>)}
+</section>

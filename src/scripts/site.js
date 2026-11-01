@@ -3,6 +3,7 @@
 // No framework, no three.js, no GSAP. Every door ends in a prefilled WhatsApp message that says "from the website".
 // The tray is saved on this device only (localStorage) and is never a reservation.
 import { url, icon } from './icon.js';
+import { initJourney } from './journey.js';
 
 const P = JSON.parse(document.getElementById('payload').textContent);
 const STONES = P.stones, VIEWS = P.views, MAX = 3;
@@ -39,110 +40,7 @@ function progress(track, stage) {
 }
 function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; requestAnimationFrame(() => { q = false; fn(); }); } }; addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); return ask; }
 
-/* ───────── the journey. ChatGPT's opening of 1 Nov 2026, taken whole, is stops 1 to 3; Thulaib's six stops came that evening:
-   "we scroll 3 times and the ring moves to the side. When we scroll the 4th time, the ring drops down. Scroll the 5th time, then
-   the ring breaks once, and then scroll the 6th time, the whole ring breaks apart, but it has gone down." One ring, one sticky
-   scene. p is the scroll's progress through the track (0 at the top, 1 at the end) and s = p * 6 the stop. Stops 1 to 3: the
-   opening as it was, on ph = min(1, s / 3): frame round(ph * 59), --w = sin(ph * pi)^2 carrying the ring across the desk and back
-   (CSS, his numbers). Stop 4: frame 59 held while --drop eases 0 to 1 and the CSS lowers and shrinks the ring. Stop 5: the apart
-   frames 0 to break - 1 over the first 80% of the stop, then held (the stone alone rises out of the setting). Stop 6: break to the
-   last over the first 85%, then held (the setting lifts off the band) and the three labels rise one at a time with his 220 ms
-   rise, all gone the moment the scroll goes back. The apart canvas lies over the opening's canvas by the crop numbers (--ax,
-   --ay, --aw, --ah, from journey-frames.sh) and shows only from stop 5, where its frame 0 is the opening's frame 59 pixel for
-   pixel, so the swap cannot be seen. The chapter is the last `at` passed; the counter's line is --p. Read from the scroll and
-   nothing else (no timer, so a hidden tab cannot strand it). The poster (frame 0) shows until all sixty opening frames have
-   decoded, four at a time; the apart frames follow them. A failed decode keeps the poster (opening) or the opening's last frame
-   (apart). Under reduced motion, data saver or "Use a still": p is 0, the poster, the first chapter, the track one screen. ───────── */
-{
-  const hero = $('#hero'), track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), poster = $('#hero-poster'), canvas = $('#turntable'), apart = $('#apart-canvas'), labelBox = $('#apart-labels'), labels = $$('#apart-labels li'), chapters = $$('#hero-words li'), number = $('#chapter-number'), stillBtn = $('#hero-still');
-  const N = chapters.length, F = Number(turn.dataset.frames), at = chapters.map(c => Number(c.dataset.at)), base = turn.dataset.base;
-  const STOPS = +turn.dataset.stops || 6, HERO_STOPS = +turn.dataset.heroStops || 3, AF = +turn.dataset.apartFrames, BREAK = +turn.dataset.apartBreak, abase = turn.dataset.apart, AW = +turn.dataset.apartW / +turn.dataset.apartS, AH = +turn.dataset.apartH / +turn.dataset.apartS;
-  const SAVE = !!(navigator.connection && navigator.connection.saveData);
-  const H = window.IslandCut.hero = { stages: N, stops: STOPS, frames: F, loaded: 0, frame: -1, poster: true, still: REDUCE || SAVE, failed: false, stage: 0, stop: 0, progress: 0, wave: 0, drop: 0, reduced: REDUCE, apart: { frames: AF, break: BREAK, loaded: 0, frame: -1, ready: false, failed: false, settled: false, labels: 0 } };
-  const A = H.apart;
-  const ctx = canvas.getContext('2d'), actx = apart.getContext('2d'); let frames = [], ready = false, last = -1, aframes = [], alast = -1, timers = [];
-  const smooth = u => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
-  function show(i) {
-    H.stage = i; turn.dataset.stage = String(i);
-    if (chapters[i].getAttribute('aria-current') === 'true') return;
-    chapters.forEach((c, k) => { if (k === i) { c.setAttribute('aria-current', 'true'); if (!H.still && c.animate) c.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' }); } else c.removeAttribute('aria-current'); });
-    number.textContent = String(i + 1).padStart(2, '0');
-  }
-  function draw(p) {
-    const i = ready && !H.still ? Math.min(F - 1, Math.round(p * (F - 1))) : -1;
-    if (i >= 0 && i !== last) { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(frames[i], 0, 0, canvas.width, canvas.height); last = i; }
-    H.frame = i; H.poster = i < 0; canvas.classList.toggle('ready', i >= 0);
-    if (i >= 0) poster.removeAttribute('aria-current'); else poster.setAttribute('aria-current', 'true');
-  }
-  function drawApart(i) {
-    const on = i >= 0 && A.ready && !H.still;
-    if (on && i !== alast) { actx.clearRect(0, 0, apart.width, apart.height); actx.drawImage(aframes[i], 0, 0, apart.width, apart.height); alast = i; }
-    A.frame = on ? i : -1; apart.classList.toggle('ready', on); canvas.classList.toggle('under', on);
-  }
-  /* the labels sit beside the apart picture: its box, measured once the parts have settled, in the scene's own px */
-  function place() { const r = apart.getBoundingClientRect(), s = stage.getBoundingClientRect(); labelBox.style.setProperty('--lx', `${r.right - s.left}px`); labelBox.style.setProperty('--lt', `${r.top - s.top}px`); labelBox.style.setProperty('--lh', `${r.height}px`); }
-  function settle(on) {
-    if (on) place();
-    if (on === A.settled) return; A.settled = on; stage.dataset.settled = String(on);
-    timers.forEach(clearTimeout); timers = [];
-    if (!on) { labels.forEach(l => { l.dataset.on = 'false'; }); A.labels = 0; return; }
-    labels.forEach((l, k) => { timers.push(setTimeout(() => { l.dataset.on = 'true'; A.labels = k + 1; if (l.animate) l.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' }); }, k * 140)); });
-  }
-  function put() {
-    const p = H.still ? 0 : progress(track, stage), s = p * STOPS, ph = clamp(s / HERO_STOPS, 0, 1), w = Math.pow(Math.sin(ph * Math.PI), 2), drop = smooth(s - HERO_STOPS);
-    H.progress = p; H.stop = Math.min(STOPS - 1, Math.floor(s)); H.wave = w; H.drop = drop;
-    stage.style.setProperty('--p', p.toFixed(3)); stage.style.setProperty('--w', w.toFixed(3)); stage.style.setProperty('--drop', drop.toFixed(3));
-    let i = 0; at.forEach((v, k) => { if (p >= v) i = k; });
-    show(i); draw(ph);
-    let a = -1, b = 0;
-    if (s >= HERO_STOPS + 1) { const u = clamp((s - HERO_STOPS - 1) / .8, 0, 1); b = clamp((s - HERO_STOPS - 2) / .85, 0, 1); a = s < HERO_STOPS + 2 ? Math.round(u * (BREAK - 1)) : BREAK + Math.round(b * (AF - BREAK - 1)); }
-    drawApart(a); settle(!H.still && b >= 1);
-  }
-  async function loadApart() {
-    if (aframes.length || H.still) return;
-    const w = matchMedia('(min-width:900px)').matches ? +turn.dataset.desk : +turn.dataset.phone, pool = new Array(AF); aframes = pool; let next = 0;
-    apart.width = Math.round(w * AW); apart.height = Math.round(w * AH); alast = -1;
-    const worker = async () => { while (next < AF) { const k = next++; const im = new Image(); im.decoding = 'async'; im.src = `${abase}apart-${w}-${String(k).padStart(3, '0')}.webp`; await im.decode(); pool[k] = im; A.loaded++; } };
-    try { await Promise.all([0, 1, 2, 3].map(worker)); A.ready = true; put(); }
-    catch { aframes = []; A.ready = false; A.failed = true; A.loaded = 0; put(); }
-  }
-  async function load() {
-    if (frames.length || H.still) return;
-    const w = matchMedia('(min-width:900px)').matches ? +turn.dataset.desk : +turn.dataset.phone, pool = new Array(F); frames = pool; let next = 0;
-    /* v4 (1 Nov 2026 pm, main): the canvas takes the width of the set it draws, so a phone never holds a desk-sized backing store */
-    canvas.width = canvas.height = w; last = -1;
-    const worker = async () => { while (next < F) { const k = next++; const im = new Image(); im.decoding = 'async'; im.src = `${base}ring-${w}-${String(k).padStart(3, '0')}.webp`; await im.decode(); pool[k] = im; H.loaded++; } };
-    try { await Promise.all([0, 1, 2, 3].map(worker)); ready = true; put(); loadApart(); }
-    catch { frames = []; ready = false; H.failed = true; H.loaded = 0; H.still = true; stillBtn.hidden = true; put(); }
-  }
-  function mode() {
-    hero.dataset.still = String(H.still);
-    stillBtn.setAttribute('aria-pressed', String(H.still)); stillBtn.disabled = REDUCE;
-    stillBtn.textContent = REDUCE ? 'Reduced motion is on' : H.still ? 'Turn it with the scroll' : 'Use a still';
-    put(); if (!H.still) load();
-  }
-  stillBtn.addEventListener('click', () => { H.still = !H.still; mode(); });
-  if (!REDUCE) onScroll(put);
-  mode();
-}
-
-/* ───────── the box: a short real loop while it is on screen, the open shot and the door on the tap ───────── */
-{
-  const box = $('#box'), loop = $('#box-loop'), opened = $('#box-open'), tap = $('#box-tap'), reveal = $('#box-reveal');
-  const X = window.IslandCut.box = { playing: false, open: false };
-  const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => { /* a browser that refuses to play shows the poster, which is the same box */ }); };
-  if (!REDUCE && 'IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => {
-    if (X.open) return;
-    if (e.isIntersecting) { play(loop); X.playing = true; } else { loop.pause(); X.playing = false; }
-  }), { threshold: 0.25 }).observe(box);
-  tap.addEventListener('click', () => {
-    X.open = true; X.playing = false; box.dataset.open = 'true';
-    loop.pause(); loop.hidden = true; opened.hidden = false; if (!REDUCE) play(opened);
-    tap.hidden = true; reveal.hidden = false;
-    $('#close-request').focus({ preventScroll: true });
-  });
-}
-
+initJourney();
 /* ───────── the viewing room ───────── */
 function room(ref, view) {
   if (ref) state.room = ref; if (view) state.view = view;

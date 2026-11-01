@@ -8,6 +8,7 @@
 // public/assets/SOURCES.md. Every real world value is in src/config.js.
 // Every record on the page is a sample and says so. Every door ends in a prefilled WhatsApp message.
 import Layout from '../layouts/Layout.astro';
+import Journey from '../components/Journey.astro';
 import Icon from '../components/Icon.astro';
 import { SITE, LINKS, VIEWS, wa } from '../config.js';
 import { url } from '../scripts/icon.js';
@@ -20,37 +21,6 @@ const size = s => `${s.mm[0]} by ${s.mm[1]} by ${s.mm[2]} mm`;
 const facts = s => `${s.carat.toFixed(2)} ct, ${size(s)}, ${s.treatment.value.toLowerCase()}`;
 const askText = s => `Hello, from the website. I am asking about stone ${s.ref} (${s.title}, ${s.carat.toFixed(2)} ct).`;
 const motion = f => url(`assets/motion/${f}`);
-// THE HERO (clip 5, a turning ring since 1 Nov 2026 pm, Thulaib's call, bb_pending 1022): ONE ring rendered sixty
-// times in Blender at a changing angle, from BB's copy of the model that came back from ChatGPT with a true sapphire
-// material (scripts/render-ring.py). The scroll picks the frame, so the ring turns a full circle over the travel and
-// turns back on the way up. The first frame is the poster and stands in until all sixty have decoded; reduced motion,
-// data saver and the "Use a still" control keep the poster. Three lines land at `at` of the travel. Labelled on the
-// page; the house's own photographs replace the frames.
-const FRAMES = 60;
-// v4 (1 Nov 2026 pm): the sets are cut from 1600 px renders cropped to the ink; these are the widths of the two sets on disk
-// (scripts/hero-frames.sh DESK and PHONE). Change them here and there together.
-const SET = { desk: 1200, phone: 560 };
-// ChatGPT's three chapters (its opening of 1 Nov 2026, taken whole on Thulaib's word that afternoon) are the first three stops.
-// THE JOURNEY (Thulaib, 1 Nov 2026 pm: "we scroll 3 times and the ring moves to the side. When we scroll the 4th time, the ring
-// drops down. Scroll the 5th time, then the ring breaks once, and then scroll the 6th time, the whole ring breaks apart, but it
-// has gone down."): the same scene on a track of six stops. Stops 1 to 3 are the opening above, read on the first half of the
-// travel (the ring crosses the desk and comes back to the side, his carry). Stop 4 holds the last frame and the ring drops and
-// shrinks (CSS, --drop). Stops 5 and 6 are APART.frames more frames of the SAME ring from the opening's last pose, stone and
-// engraving at the opening's camera (scripts/render-journey.py): first the stone alone rises out of the setting, then the setting
-// lifts off the band. scripts/journey-frames.sh proves the seam (frame 0 trims to the opening's frame 59) and prints the crop
-// (`w`, `h`) and where the opening's own crop (`s` square) sits inside it (`x`, `y`): the page lays the two canvases over each
-// other from those four numbers, so the swap at stop 5 is invisible. Each chapter lands at `at` of the travel; ChatGPT's words
-// for the first four, the label words from its customise brief for the last two. Change the numbers here and there together.
-const STOPS = 6, HERO_STOPS = 3;
-const CHAPTERS = [
-  { at: 0, eyebrow: 'The beginning', head: 'It begins<br>with <em>blue.</em>', intro: 'Loose stones. Personal commissions.<br>A closer look, before you choose.' },
-  { at: 0.17, eyebrow: 'A different perspective', head: 'Look a<br>little <em>closer.</em>', intro: 'The stone. The setting. The way they<br>come together. Every angle matters.' },
-  { at: 0.345, eyebrow: 'The next chapter', head: 'Make it<br><em>personal.</em>', intro: 'Begin with a stone you love.<br>Let the conversation shape the rest.' },
-  { at: 0.5, eyebrow: 'Make it personal', head: 'Every part.<br><em>Your choice.</em>', intro: 'Start with a setting. Choose a stone.<br>We will help with the details.' },
-  { at: 0.667, eyebrow: 'The stone', head: 'First,<br>the <em>stone.</em>', intro: 'Yours to choose.' },
-  { at: 0.833, eyebrow: 'The setting and the band', head: 'Then<br>the <em>rest.</em>', intro: 'The setting, yours to choose.<br>The band, choose your metal.', door: true },
-];
-const APART = { frames: 32, break: 16, desk: SET.desk, phone: SET.phone, w: 1247, h: 1401, x: 0, y: 154, s: 1247 };   /* from motion/journey/CROP.txt and ALIGN.txt (journey-frames.sh, 1 Nov 2026): crop 1247x1401, the hero square at 0,154 */
 const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones, builder };
 ---
 <Layout>
@@ -61,36 +31,7 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 </div></header>
 
 <main id="top">
-<section class="hero" id="hero" aria-label="A study in blue" data-still="false">
-  <div class="track" id="hero-track"><div class="scene" id="hero-stage" data-settled="false">
-    <p class="edition" aria-hidden="true">{SITE.tagline}</p>
-    <ol class="chapters" id="hero-words" aria-label="Six stops, one for each sixth of the scroll">
-      {CHAPTERS.map((c, i) => <li data-at={c.at} aria-current={i ? undefined : 'true'}>
-        <p class="eyebrow">{c.eyebrow}</p>
-        {i === 0 ? <h1 set:html={c.head} /> : <p class="h" set:html={c.head} />}
-        <p class="intro" set:html={c.intro} />
-        {c.door && <button class="action" type="button" id="journey-begin" data-request>Begin your ring <Icon name="out" /></button>}
-      </li>)}
-    </ol>
-    <figure class="turn" id="turn" data-stops={STOPS} data-hero-stops={HERO_STOPS} data-stages={CHAPTERS.length} data-frames={FRAMES} data-stage="0" data-base={motion('hero-ring/')} data-desk={SET.desk} data-phone={SET.phone} data-apart={motion('journey/')} data-apart-frames={APART.frames} data-apart-break={APART.break} data-apart-w={APART.w} data-apart-h={APART.h} data-apart-s={APART.s} aria-label="Generated sample: a sapphire ring in yellow gold that turns as you scroll, drops and comes apart into its stone, its setting and its band. Scrolling up puts it back together.">
-      <img class="still" id="hero-poster" src={motion(`hero-ring/poster-${SET.desk}.webp`)} srcset={`${motion(`hero-ring/poster-${SET.phone}.webp`)} ${SET.phone}w, ${motion(`hero-ring/poster-${SET.desk}.webp`)} ${SET.desk}w`} sizes="(min-width:900px) 61vw, 100vw" alt="Generated sample: an oval sapphire ring in yellow gold, the stone held in four claws" width={SET.desk} height={SET.desk} fetchpriority="high" decoding="async" aria-current="true" />
-      <canvas id="turntable" width={SET.desk} height={SET.desk} aria-hidden="true"></canvas>
-      <canvas id="apart-canvas" width={Math.round(APART.desk * APART.w / APART.s)} height={Math.round(APART.desk * APART.h / APART.s)} aria-hidden="true" style={`--ax:${(APART.x / APART.s).toFixed(4)};--ay:${(APART.y / APART.s).toFixed(4)};--aw:${(APART.w / APART.s).toFixed(4)};--ah:${(APART.h / APART.s).toFixed(4)}`}></canvas>
-    </figure>
-    <ul class="labels" id="apart-labels" aria-label="The three parts you choose">
-      <li data-part="stone" data-on="false"><strong>The stone</strong><small>Yours to choose</small></li>
-      <li data-part="setting" data-on="false"><strong>The setting</strong><small>Yours to choose</small></li>
-      <li data-part="band" data-on="false"><strong>The band</strong><small>Choose your metal</small></li>
-    </ul>
-    <div class="foot">
-      <a class="continue" href="#house">Meet the house <Icon name="down" /></a>
-      <div class="chapter" aria-hidden="true"><span id="chapter-number">01</span><span class="bar"><span id="hero-progress"></span></span><span>{String(CHAPTERS.length).padStart(2, '0')}</span></div>
-      <button type="button" id="hero-still" aria-pressed="false">Use a still</button>
-    </div>
-    <p class="sample">Generated sample. The house's own photographs replace this.</p>
-  </div></div>
-</section>
-
+<Journey />
 <section class="house" id="house" aria-label="The house"><div class="wrap">
   <p>Every piece here begins with a stone, chosen loose, shown in daylight with its report in frame and only then set.</p>
   <small>The house's own words go here once they are given. Nothing above is a claim about its history.</small>
@@ -171,22 +112,6 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
   <div class="prose">
     <p>This paragraph is the house's to write: where its stones come from, who cuts them and how a piece is made. Nothing is written here on its behalf.</p>
     <p>No year, no cutter's name and no count appears on this page until the house gives it.</p>
-  </div>
-</section>
-
-<section class="wrap section close" id="close" aria-labelledby="close-h">
-  <header><div><h2 id="close-h">When it is ready, it comes to you in a box</h2><p class="note">Tap the box.</p></div></header>
-  <div class="boxstage" id="box" data-open="false">
-    <div class="frame box-frame">
-      <video id="box-loop" muted loop playsinline preload="none" poster={motion('box/box-loop.webp')} width="960" height="540" aria-label="A ring box, sample footage"><source src={motion('box/box-loop.mp4')} type="video/mp4"></video>
-      <video id="box-open" muted playsinline preload="none" poster={motion('box/box-open.webp')} width="960" height="540" aria-label="The box opens on the ring, sample footage" hidden><source src={motion('box/box-open.mp4')} type="video/mp4"></video>
-      <button class="lid" type="button" id="box-tap" data-box="open" aria-label="Open the box"><span class="word">Yours</span></button>
-    </div>
-    <div class="reveal" id="box-reveal" hidden>
-      <p>A time with a specialist, whenever you are ready.</p>
-      <div class="doors"><button class="door fill" type="button" id="close-request" data-request>Request a time</button></div>
-    </div>
-    <p class="cap"><span class="tag">Sample footage</span><span>Two licensed clips of a ring box. The reference turns a closed box and opens it in one shot. No free clip does both, so this demo loops the box and cuts to the open shot on the tap.</span></p>
   </div>
 </section>
 
