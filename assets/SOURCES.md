@@ -1,8 +1,9 @@
 # Where every picture and clip on this demo comes from
 
 Every file under `public/assets/` is labelled on the page because none of it is the house's own stone, ring or box.
-The three hero stills are GENERATED pictures (Thulaib's call on 31 Oct 2026, after the licensed footage hero was
-rejected on look twice) and the page says so under them. Everything else is a real photograph or real footage under a
+The sixty hero frames are GENERATED pictures, rendered in Blender (Thulaib's call on 31 Oct 2026, after the licensed
+footage hero was rejected on look twice, and again on 1 Nov when the ring that turns was chosen) and the page says so
+under them. Everything else is a real photograph or real footage under a
 free licence; nothing there is generated, drawn or rendered. The house's own photographs replace every file here before
 the site carries its name.
 
@@ -11,15 +12,15 @@ the site carries its name.
 Licensed stock photographs of loose stones standing in for the house's own records. Each is credited on its record
 in `src/data/stones.json` (`photo.credit`) and labelled "Sample data" on the card and in the passport.
 
-## Hero stills (`motion/hero-ai/`)
+## Hero frames (`motion/hero-ring/`)
 
 | What | Detail |
 | --- | --- |
-| Source | Three pictures generated in Canva (Business Booster's own account) on 31 Oct 2026 from written prompts, no reference image: one ring, an oval deep royal blue sapphire in a four prong yellow gold solitaire on a pale porcelain ground |
-| Files | `lying` (the ring at a slight tilt), `upright` (standing, facing the camera), `macro` (the stone very close). Each at 480, 800, 1200 and 1600 px wide, WebP. The 1456 by 1088 originals are in `~/Downloads/THE-ISLAND-CUT/HERO-AI/` |
-| Made | Exported from Canva at full size, each faded at its edges into the site's paper (#f4efe7) by a radial blend baked into the file, so the picture melts into the page without a mask in the CSS, then resized. Nothing was drawn or retouched by hand |
-| On the page | The hero (clip 5, read from the scroll): at the top the first still sits large and tilted at the screen's edge; as the visitor scrolls it settles into place and the whole screen moves with it, then each further stage swaps to the next still with its line. Labelled "Generated sample". The real site shows the house's own ring photographed three ways on a white sweep, the same mechanism, no generation |
-| The rule | Generated pictures are a stand in for this demo only, approved for it by Thulaib on 31 Oct 2026. They never stand for a real stone on a record, never go on a client's domain, and are replaced by the house's own photographs before launch |
+| Source | One ring modelled and rendered in Blender 5.2 (Cycles) by `scripts/render-ring.py`, Business Booster's copy of the model that came back from ChatGPT on 1 Nov 2026, with the stone re-made as a true sapphire (full transmission, the colour carried in the body, a clear coat, eight facet rows) and a soft shadow on the paper. No photograph, no reference image, nothing drawn by hand |
+| Files | `ring-800-000` to `ring-800-059` and `ring-480-000` to `ring-480-059` (sixty angles of the same ring, a full turn, at 800 and 480 px square, WebP with transparency) and `poster-800` and `poster-480` (frame 0). The 800 px PNG renders are in `renders/ring-v2/` (not committed) |
+| Made | Rendered at 800 by 800 with a transparent film and no shadow plate (the ring floats on the paper, as ChatGPT's did; a plate had made a box), then resized and compressed by `scripts/hero-frames.sh` (ImageMagick). The whole 480 set, which the phone loads, is under the 2 MB motion cap with everything else |
+| On the page | The opening (clip 5, ChatGPT's layout of 1 Nov 2026 taken whole, read from the scroll): the ring sits on the paper at the top; as the visitor scrolls it turns a full circle, the scroll picking the frame, and is carried across the desk and back while three chapters of copy change and a counter runs 01 to 03; scrolling up turns it back. The poster stands in until every frame has decoded; reduced motion, data saver and "Use a still" keep the poster. Labelled "Generated sample". The real site shows the house's own ring photographed on a turntable, the same mechanism, no generation |
+| The rule | Generated pictures are a stand in for this demo only, approved for it by Thulaib on 31 Oct 2026 and carried into the turning ring on 1 Nov. They never stand for a real stone on a record, never go on a client's domain, and are replaced by the house's own photographs before launch |
 
 ## Exploded ring layers (`motion/layers/`)
 
