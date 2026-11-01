@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* LIVE PROOF. Opens the deployed address in a real browser at phone and desk, checks the page ran, the records are
-   on the table, the hero arrives and swaps, the ring comes apart, the box plays, the builder opens, every request answered, no console errors, the robots tag still says noindex, and writes
+   on the table, the hero arrives on the scroll and swaps, the ring comes apart, the box plays, the builder opens, every request answered, no console errors, the robots tag still says noindex, and writes
    evidence/live-*.png.
      node scripts/live.mjs [url]     default https://businessboosterlk.github.io/the-island-cut/ */
 import { chromium } from 'playwright';
@@ -37,14 +37,20 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   /* phase 2: the motion ran on the live address, not only on the laptop */
   const hero = await page.evaluate(async () => {
     const ic = window.IslandCut.hero; const t0 = Date.now();
-    while ((ic.loaded < ic.stages || !ic.entered) && Date.now() - t0 < 20000) await new Promise(r => setTimeout(r, 100));
+    while (ic.loaded < ic.stages && Date.now() - t0 < 20000) await new Promise(r => setTimeout(r, 100));
+    /* 1 Nov pm: the arrival is read from the scroll, nothing plays on load. At the top the ring waits in its
+       arrival pose (entered false); a third of the way down it has settled (entered true); half way the second
+       still shows; back at the top it waits again. */
     const track = document.getElementById('hero-track'); const top = track.getBoundingClientRect().top + scrollY;
     const travel = track.offsetHeight - track.firstElementChild.offsetHeight;
+    await new Promise(r => setTimeout(r, 400)); const atTop = ic.entered;
+    scrollTo({ top: top + travel * 0.32, behavior: 'instant' }); await new Promise(r => setTimeout(r, 520));
+    const arrived = ic.entered, arrival = ic.arrival;
     scrollTo({ top: top + travel * 0.55, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
-    const mid = ic.stage; scrollTo({ top: 0, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
-    return { loaded: ic.loaded, stages: ic.stages, entered: ic.entered, mid, start: ic.stage };
+    const mid = ic.stage; scrollTo({ top: 0, behavior: 'instant' }); await new Promise(r => setTimeout(r, 520));
+    return { loaded: ic.loaded, stages: ic.stages, reduced: ic.reduced, atTop, arrived, arrival, back: ic.entered, mid, start: ic.stage };
   });
-  check(hero.loaded === hero.stages && hero.entered, `${name}: hero stills loaded ${hero.loaded} of ${hero.stages}, the entrance ran`);
+  check(hero.loaded === hero.stages && (hero.reduced || (!hero.atTop && hero.arrived && hero.arrival === 1 && !hero.back)), `${name}: hero stills loaded ${hero.loaded} of ${hero.stages}; the ring waits at the top, arrives on the scroll (a=${hero.arrival}) and waits again at the top`);
   check(hero.mid === 1 && hero.start === 0, `${name}: hero swaps with scroll (still ${hero.start} at the top, ${hero.mid} half way)`);
   const ex = await page.evaluate(async () => {
     const track = document.getElementById('explode-track'); const top = track.getBoundingClientRect().top + scrollY;
