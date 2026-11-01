@@ -109,6 +109,8 @@ function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; r
   async function load() {
     if (frames.length || H.still) return;
     const w = matchMedia('(min-width:900px)').matches ? +turn.dataset.desk : +turn.dataset.phone, pool = new Array(F); frames = pool; let next = 0;
+    /* v4 (1 Nov 2026 pm, main): the canvas takes the width of the set it draws, so a phone never holds a desk-sized backing store */
+    canvas.width = canvas.height = w; last = -1;
     const worker = async () => { while (next < F) { const k = next++; const im = new Image(); im.decoding = 'async'; im.src = `${base}ring-${w}-${String(k).padStart(3, '0')}.webp`; await im.decode(); pool[k] = im; H.loaded++; } };
     try { await Promise.all([0, 1, 2, 3].map(worker)); ready = true; put(); loadApart(); }
     catch { frames = []; ready = false; H.failed = true; H.loaded = 0; H.still = true; stillBtn.hidden = true; put(); }
