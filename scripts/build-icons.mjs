@@ -3,7 +3,7 @@
 // Writes src/data/icons.json and public/assets/icons.svg. `--check` fails if either differs from the packages.
 // Follows ~/bb-websites/bswl/scripts/build-icons.mjs and ~/bb-websites/sastho/scripts/build-icons.mjs.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-const LINE = { arrow: 'arrow-right', check: 'check', close: 'x', shield: 'shield-check', video: 'video', report: 'file-text', sun: 'sun', lamp: 'lamp', macro: 'zoom-in', rotate: 'rotate-cw', compare: 'columns-2', calendar: 'calendar', clock: 'clock', plus: 'plus', minus: 'minus', gem: 'gem', nophoto: 'image-off' };
+const LINE = { arrow: 'arrow-right', check: 'check', close: 'x', shield: 'shield-check', video: 'video', report: 'file-text', sun: 'sun', lamp: 'lamp', macro: 'zoom-in', rotate: 'rotate-cw', compare: 'columns-2', calendar: 'calendar', clock: 'clock', plus: 'plus', minus: 'minus', gem: 'gem', nophoto: 'image-off', down: 'arrow-down', out: 'arrow-up-right' };
 const BRAND = { whatsapp: 'whatsapp' };
 const inner = svg => svg.replace(/<!--[\s\S]*?-->/g, '').replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/\s*\n\s*/g, '').trim();
 const ver = p => JSON.parse(readFileSync(`node_modules/${p}/package.json`, 'utf8')).version;

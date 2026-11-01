@@ -37,21 +37,20 @@ for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900
   /* phase 2: the motion ran on the live address, not only on the laptop */
   const hero = await page.evaluate(async () => {
     const ic = window.IslandCut.hero; const t0 = Date.now();
-    while (ic.loaded < ic.stages && Date.now() - t0 < 20000) await new Promise(r => setTimeout(r, 100));
-    /* 1 Nov pm: the arrival is read from the scroll, nothing plays on load. At the top the ring waits in its
-       arrival pose (entered false); a third of the way down it has settled (entered true); half way the second
-       still shows; back at the top it waits again. */
+    while (ic.loaded < ic.frames && Date.now() - t0 < 30000) await new Promise(r => setTimeout(r, 100));
+    /* 1 Nov pm (ChatGPT's layout, taken whole): the scroll picks the frame and the chapter, nothing plays on load. At the top
+       frame 0 and the first chapter; half way about frame 30, the second chapter, the ring carried across (wave near 1);
+       back at the top frame 0 and the first chapter again. */
     const track = document.getElementById('hero-track'); const top = track.getBoundingClientRect().top + scrollY;
     const travel = track.offsetHeight - track.firstElementChild.offsetHeight;
-    await new Promise(r => setTimeout(r, 400)); const atTop = ic.entered;
-    scrollTo({ top: top + travel * 0.32, behavior: 'instant' }); await new Promise(r => setTimeout(r, 520));
-    const arrived = ic.entered, arrival = ic.arrival;
-    scrollTo({ top: top + travel * 0.55, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
-    const mid = ic.stage; scrollTo({ top: 0, behavior: 'instant' }); await new Promise(r => setTimeout(r, 520));
-    return { loaded: ic.loaded, stages: ic.stages, reduced: ic.reduced, atTop, arrived, arrival, back: ic.entered, mid, start: ic.stage };
+    await new Promise(r => setTimeout(r, 400)); const start = ic.stage, startFrame = ic.frame;
+    scrollTo({ top: top + travel * 0.5, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    const mid = ic.stage, midFrame = ic.frame, wave = Math.round(ic.wave * 100) / 100, number = document.getElementById('chapter-number').textContent;
+    scrollTo({ top: 0, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));
+    return { loaded: ic.loaded, frames: ic.frames, stages: ic.stages, reduced: ic.reduced, start, startFrame, mid, midFrame, wave, number, back: ic.stage, backFrame: ic.frame };
   });
-  check(hero.loaded === hero.stages && (hero.reduced || (!hero.atTop && hero.arrived && hero.arrival === 1 && !hero.back)), `${name}: hero stills loaded ${hero.loaded} of ${hero.stages}; the ring waits at the top, arrives on the scroll (a=${hero.arrival}) and waits again at the top`);
-  check(hero.mid === 1 && hero.start === 0, `${name}: hero swaps with scroll (still ${hero.start} at the top, ${hero.mid} half way)`);
+  check(hero.loaded === hero.frames && hero.frames === 60 && hero.stages === 3, `${name}: hero frames loaded ${hero.loaded} of ${hero.frames}, ${hero.stages} chapters`);
+  check(hero.start === 0 && hero.mid === 1 && hero.number === '02' && hero.back === 0 && (hero.reduced || (hero.startFrame === 0 && hero.midFrame >= 28 && hero.midFrame <= 32 && hero.wave > 0.95 && hero.backFrame === 0)), `${name}: the scroll turns the ring and changes the chapter (chapter ${hero.start}, frame ${hero.startFrame} at the top; chapter ${hero.mid} "${hero.number}", frame ${hero.midFrame}, wave ${hero.wave} half way; chapter ${hero.back}, frame ${hero.backFrame} back at the top)`);
   const ex = await page.evaluate(async () => {
     const track = document.getElementById('explode-track'); const top = track.getBoundingClientRect().top + scrollY;
     scrollTo({ top: top + track.offsetHeight - track.firstElementChild.offsetHeight, behavior: 'instant' }); await new Promise(r => setTimeout(r, 400));

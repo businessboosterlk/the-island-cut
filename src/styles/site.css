@@ -74,42 +74,57 @@ select,input[type=text]{width:100%;min-height:44px;padding:0 var(--s-3);border:1
 @media (prefers-reduced-motion:no-preference){
   .door,.chip,.seg button,.tab{transition:transform var(--press) var(--ease),background-color var(--select) var(--ease),color var(--select) var(--ease),border-color var(--select) var(--ease)}
   .door:active,.chip:active,.seg button:active,.tab:active{transform:scale(.985)}
-  .turn .box{transform:translate(calc((1 - var(--a)) * var(--ex)),calc((1 - var(--a)) * var(--ey))) rotate(calc((1 - var(--a)) * var(--er))) scale(calc(1 + (1 - var(--a)) * var(--es)))}
-  .turn{transform:translateY(calc(var(--p) * -40px))}
-  .hero .copy{transform:translateY(calc(var(--p) * -72px))}
-  .turn .box,.turn,.hero .copy{transition:transform 120ms linear}
-  .turn .still{transition:opacity 220ms var(--ease)}
-  .words li{transition:opacity 420ms var(--ease)}
+  .turn{transition:transform 120ms linear}
+  .turn .still,.turn canvas{transition:opacity 220ms var(--ease)}
 }
 @media (hover:hover){.door:hover{border-color:var(--ink);color:var(--ink)}.door.fill:hover{color:var(--paper);background:#1b1917}.chip:hover{border-color:var(--ink-2)}}
 
 /* NAV */
 .nav{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
 .nav .in{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);gap:var(--s-4)}
-.brand{font:500 24px/1 var(--display);letter-spacing:.01em;min-height:44px;display:inline-flex;align-items:center}
+.brand{font:500 21px/1.1 var(--display);letter-spacing:.075em;text-transform:uppercase;min-height:44px;display:inline-flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.brand span{font:400 11px/1 var(--body);letter-spacing:.06em;margin-top:5px;color:var(--ink-2);white-space:nowrap} /* 11px, never ChatGPT's 7px: no text under 11px */
+.view{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;flex:none;min-height:44px;padding:0;border:0;border-bottom:1px solid var(--champagne);border-radius:0;background:none;font:inherit;font-size:13px;color:var(--ink);cursor:pointer}
+.view .ic{width:18px;height:18px}
 .links{display:none;gap:28px;font-size:15px;color:var(--ink-2)}
 .links a{min-height:44px;display:inline-flex;align-items:center;border-bottom:1px solid transparent}
 @media (hover:hover){.links a:hover{color:var(--ink)}}
 
-/* HERO (clip 5, scroll driven since 1 Nov 2026 pm): one ring, three stills. At the top of the page the ring WAITS in its
-   arrival pose, large and tilted, in from the corner, and its line is held back. The first 28% of the travel brings it to
-   rest (--a, eased in JS) and lands the line; scrolling back up puts it back. The copy and the ring rise at different rates
-   with the scroll (--p) so the whole screen moves, never a frozen stage. Each stage then SWAPS the still (a 220 ms cut,
-   no morph) and its line, with a slow drift of scale inside the stage. The stage sticks under the nav; the track gives it
-   a CAPPED travel in px (bb-web-learnings). dvh, never vh. The hero is NOT a .wrap: it bleeds to the screen edge with its
-   own gutter and overflow:clip (not hidden, which would break the sticky scene), so the arriving ring is cut by the
-   screen, never by a frame 48px inside it. The fade into the paper is BAKED into each still (SOURCES.md), no CSS mask.
-   On the desk the ring arrives from the right, its own column, never over the headline (Thulaib, 1 Nov 2026: brand and
-   headline at the left edge, the viewing door at the right edge, the effect on the scroll). */
-.hero{--travel:720px;--ex:-22%;--ey:-14%;--er:-9deg;--es:.45;padding:0 var(--gutter) var(--s-10);overflow:clip}
+/* THE OPENING (ChatGPT's layout of 1 Nov 2026, taken whole on Thulaib's word that afternoon, "follow what he did"): one ring in
+   sixty generated frames, floating on the paper with no plate, no box and no backdrop; three chapters of copy; a foot row with
+   the way on, a chapter counter and the still control; the sample line under it all. The scene sticks under the nav and the
+   track gives it a capped travel in px (bb-web-learnings; dvh, never vh). The scroll picks the frame, a full turn over the
+   travel and back on the way up, and sets --p (the counter's line) and --w, a sine wave that carries the ring across the
+   desk and sways it on the phone. Nothing plays on load. BB's laws on top of his layout: the copy at the screen's left
+   gutter under the brand mark on the desk (never 8% in), centred on the phone, the ring above the foot row on the phone
+   and never over it, Lucide arrows (never a text glyph, iOS paints it as an emoji), no text under 11px. */
+.hero{overflow:clip;--travel:900px}
 .hero .track{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top) + var(--travel))}
-.hero .scene{--p:0;--a:0;position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top));height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top));display:flex;flex-direction:column;justify-content:center;gap:var(--s-4);padding-top:var(--s-4);padding-bottom:var(--s-4)}
-.turn{margin:0;display:grid;justify-items:center;gap:var(--s-2)}
-.turn .box{height:min(38dvh,420px);width:100%;display:grid;place-items:center}
-.turn .still{grid-area:1/1;height:100%;width:auto;max-width:100%;object-fit:contain;opacity:0;transform:scale(var(--drift,1));transform-origin:50% 55%}
-.turn .still[aria-current="true"]{opacity:1}
-.scene[data-entered="false"] .words li{opacity:0}
-.turn figcaption{position:relative;z-index:1;font-size:var(--t-sm);color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:var(--s-2);flex-wrap:wrap;text-align:center}
+.hero .scene{--p:0;--w:0;position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top));height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top));overflow:clip;display:flex;flex-direction:column;align-items:center;text-align:center;padding:var(--s-6) var(--gutter) calc(var(--s-5) + env(safe-area-inset-bottom))}
+.hero .edition{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin-bottom:var(--s-6)}
+.hero .chapters{display:grid;width:100%;list-style:none;padding:0;margin:0}
+.hero .chapters li{grid-area:1/1}
+.hero .chapters li:not([aria-current="true"]){display:none}
+.hero .eyebrow{display:none;font-size:11px;letter-spacing:.19em;font-weight:500;text-transform:uppercase;color:var(--ink);margin:0 0 26px}
+.hero h1,.hero .h{font:400 72px/.88 var(--display);letter-spacing:-.045em;margin:0 0 16px;max-width:none}
+.hero .h em,.hero h1 em{font-style:italic}
+.hero .intro{font-size:16px;line-height:1.45;color:var(--ink-2)}
+.turn{position:relative;margin:0;flex:1 1 auto;min-height:0;width:100%;pointer-events:none;transform:translate(calc(var(--w) * 3%),calc(var(--w) * -2%)) scale(calc(1 - var(--w) * .06))}
+.turn .still,.turn canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0}
+.turn .still[aria-current="true"],.turn canvas.ready{opacity:1}
+.hero .foot{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:var(--s-4)}
+.hero .continue{display:inline-flex;align-items:center;gap:16px;min-height:44px;font-size:14px}
+.hero .continue .ic{width:20px;height:20px}
+.hero .chapter{display:none;align-items:center;gap:15px;font-size:11px;font-variant-numeric:tabular-nums}
+.hero .chapter .bar{display:block;width:110px;height:1px;background:var(--line)}
+.hero .chapter .bar span{display:block;width:100%;height:1px;background:var(--ink);transform-origin:left;transform:scaleX(var(--p))}
+#hero-still{background:none;border:0;border-bottom:1px solid var(--line-2);border-radius:0;padding:0;min-height:44px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
+#hero-still:disabled{border-bottom-color:transparent;cursor:default}
+.hero .sample{font-size:11px;line-height:1.5;color:var(--ink-2);max-width:300px;margin-top:var(--s-4)}
+/* "Use a still": the track collapses to one screen, the scene no longer sticks, the counter goes */
+.hero[data-still="true"] .track{height:auto}
+.hero[data-still="true"] .scene{position:relative}
+.hero[data-still="true"] .chapter{visibility:hidden}
 .frame{position:relative;background:var(--white);overflow:clip}
 /* the frame is a padding spacer, not aspect-ratio, and clips with overflow:clip, not hidden: as a grid item with overflow:hidden Chromium gave it a 0px height and painted the frame over the facts below (seen 30 Oct 2026 in the passport; overflow:clip is not a scroll container, so the row sizes to the spacer) */
 .frame::before{content:'';display:block;padding-top:66.667%}
@@ -119,15 +134,6 @@ select,input[type=text]{width:100%;min-height:44px;padding:0 var(--s-3);border:1
 .frame .empty p{max-width:30ch;font-size:15px}
 .frame .empty strong{display:block;font:500 var(--t-xl)/1.2 var(--display);color:var(--ink)}
 .frame [hidden]{display:none}
-.hero .copy{text-align:center}
-.hero .copy h1{margin-left:auto;margin-right:auto;font-size:clamp(38px,5.2vw,68px)}
-.hero .doors{flex-direction:row}
-.hero .doors .door{flex:1;padding:0 10px;min-width:0}
-/* the three lines beside the ring: one at a time on the phone (one grid cell), stacked on the desk */
-.words{display:grid;margin:var(--s-3) 0 var(--s-5);font:400 var(--t-lg)/1.35 var(--display);color:var(--ink-2)}
-.words li{grid-area:1/1;opacity:0}
-.words li[aria-current="true"]{opacity:1;color:var(--ink)}
-.hero .lead{margin:var(--s-6) auto 0;text-align:center}
 
 /* CUSTOMISE: a photograph cut into three layers on one origin, moved by transforms as the stage scrolls. --p is the
    progress 0 to 1, set from the scroll and nothing else, so scrolling up puts the ring back together. */
@@ -295,11 +301,11 @@ dialog .acts{padding:var(--s-4) var(--gutter) calc(var(--s-4) + env(safe-area-in
 
 /* REDUCED MOTION: no travel, no sticking, the poster stays, the ring is shown apart with its three labels */
 @media (prefers-reduced-motion:reduce){
-  .hero .track,.explode .track{height:auto}
-  .hero .scene,.explode .scene{position:static;height:auto}
-  .explode .scene{--p:1}
-  .words li{grid-area:auto;opacity:1}
-  .turn .still{transform:none}
+  .explode .track{height:auto}
+  .explode .scene{position:static;height:auto;--p:1}
+  .hero .track{height:auto}
+  .hero .scene{position:relative}
+  .hero .chapter{visibility:hidden}
 }
 
 /* DESK */
@@ -307,19 +313,25 @@ dialog .acts{padding:var(--s-4) var(--gutter) calc(var(--s-4) + env(safe-area-in
   :root{--gutter:48px}
   .nav .in{max-width:none}
   .links{display:flex}
-  .hero{--travel:900px;padding-bottom:var(--s-16)}
-  .hero{--ex:18%;--ey:-14%;--er:-7deg;--es:.3}
-  .hero .scene{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--s-12);align-items:center;padding-top:0;padding-bottom:0}
-  .turn{order:2}
-  .turn .box{height:min(66dvh,680px)}
-  @media (prefers-reduced-motion:no-preference){.turn{transform:translateY(calc(var(--p) * -56px))}.hero .copy{transform:translateY(calc(var(--p) * -112px))}}
-  .hero .copy{order:1;text-align:left}
-  .hero .copy h1{margin-left:0;margin-right:0;font-size:clamp(44px,5vw,76px)}
-  .hero .doors .door{flex:0 0 auto;padding:0 18px}
-  .words{gap:var(--s-2);margin:var(--s-6) 0 var(--s-7)}
-  .words li{grid-area:auto;opacity:1;color:var(--ink-3)}
-  .words li[aria-current="true"]{color:var(--ink)}
-  .hero .lead{margin:0;text-align:left}
+  .brand{font-size:27px;letter-spacing:.1em}
+  .brand span{letter-spacing:.2em;margin-top:7px}
+  .view{font-size:14px;gap:28px}
+  /* the desk is ChatGPT's absolute stage: copy at the left gutter (his 8% moved to BB's gutter), the second chapter at the right gutter, the ring at 41% carried left by --w */
+  .hero{--travel:1200px}
+  .hero .scene{display:block;text-align:left;padding:0}
+  .hero .edition{position:absolute;left:var(--gutter);top:36px;letter-spacing:.2em;margin:0}
+  .hero .chapters{position:absolute;inset:0;display:block;pointer-events:none}
+  .hero .chapters li{position:absolute;left:var(--gutter);top:26%;width:39%;z-index:2}
+  .hero .chapters li:nth-child(2){left:auto;right:var(--gutter);width:38%}
+  .hero .eyebrow{display:block}
+  .hero h1,.hero .h{font-size:clamp(82px,9vw,145px);line-height:.86;margin-bottom:30px}
+  .hero .intro{line-height:1.65}
+  .turn{position:absolute;flex:none;width:min(61vw,880px);height:auto;aspect-ratio:1;left:41%;top:50%;transform:translate(calc(var(--w) * -62%),-47%) scale(calc(1 - var(--w) * .12));will-change:transform}
+  .hero .foot{position:absolute;left:var(--gutter);right:var(--gutter);bottom:85px;width:auto;margin:0;z-index:3}
+  .hero .continue{gap:42px}
+  .hero .chapter{display:flex}
+  #hero-still{font-size:13px}
+  .hero .sample{position:absolute;left:var(--gutter);right:var(--gutter);bottom:calc(24px + env(safe-area-inset-bottom));max-width:none;margin:0;text-align:center}
   .explode{--travel:700px}
   .explode .scene{grid-template-columns:5fr 7fr;gap:var(--s-12);align-items:center;height:calc(100dvh - var(--nav-h) - env(safe-area-inset-top))}
   .layers{order:2;width:min(100%,640px)}

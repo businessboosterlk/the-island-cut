@@ -43,7 +43,7 @@ const INSTALL = () => {
   document.addEventListener('click', hear, true); document.addEventListener('change', hear, true);
   window.__snap = () => { const g = id => document.getElementById(id) || {}; return JSON.stringify({
     hash: location.hash, y: Math.round(scrollY / 40),
-    hero: g('turn').dataset ? g('turn').dataset.stage : '', explode: g('explode').dataset ? g('explode').dataset.apart : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
+    hero: g('turn').dataset ? g('turn').dataset.stage + ' ' + (g('hero-still').getAttribute ? g('hero-still').getAttribute('aria-pressed') : '') : '', explode: g('explode').dataset ? g('explode').dataset.apart : '', box: g('box').dataset ? g('box').dataset.open + ' ' + g('box-reveal').hidden : '',
     builder: (g('builder').open ? 'open ' : 'shut ') + g('builder').dataset.step + ' ' + [...document.querySelectorAll('#builder .opt[aria-pressed="true"]')].map(b => b.dataset.option).join(',') + ' doors:' + [...document.querySelectorAll('#builder [data-door]')].map(a => a.getAttribute('aria-disabled')).join(',') + ' next:' + ((document.querySelector('#builder [data-next]') || {}).disabled), chosen: document.querySelectorAll('#builder .opt[aria-pressed="true"], #builder .sum dd').length,
     room: g('room-ref').textContent + ' ' + ([...document.querySelectorAll('.tab[aria-selected="true"]')].map(t => t.dataset.view).join('')) + ' ' + (g('stage-empty').hidden ? 'photo' : 'panel'),
     tray: g('tray').dataset.on + ' ' + g('tray').dataset.open + ' ' + g('tray-refs').textContent + ' warn:' + !g('tray-warn').hidden, what: g('tray-what').textContent,
@@ -78,7 +78,7 @@ async function run(w, h, touch) {
     const e = page.locator(sel).nth(nth); await e.waitFor({ state: 'attached', timeout: 4000 });
     const reach = () => e.evaluate(n => { const r = n.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2; if (!(r.width > 0) || x < 0 || x > innerWidth || y < 0 || y > innerHeight) return null; const t = document.elementFromPoint(x, y); return t && (t === n || n.contains(t) || t.contains(n)) ? [x, y] : null; });
     let at = await reach();
-    if (!at) { await e.evaluate(n => n.scrollIntoView({ block: 'center', inline: 'center' })); await settle(); at = await reach(); }
+    if (!at) { await e.evaluate(n => n.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' }) /* instant: the page scrolls smoothly, and a long smooth scroll was still moving when the gate measured (1 Nov 2026 pm) */); await settle(); at = await reach(); }
     if (!at) throw new Error('nothing to press, or it is covered: ' + sel);
     return at;
   };
@@ -97,8 +97,9 @@ async function run(w, h, touch) {
   await page.evaluate(() => window.scrollTo(0, 1500)); await settle();
   { const b = await changed('nav brand mark goes to the top', '.nav .brand', 0, 'y'); ok(`${tag}: the top is the top`, b.y === 0, 'scrollY ' + b.y * 40); }
   /* THE HERO */
-  await unhash(); { const b = await changed('hero "Explore gemstones"', '.hero .doors a[href="#stones"]', 0, 'hash'); ok(`${tag}: it lands on the stones`, b.hash === '#stones', b.hash); }
-  await unhash(); { const b = await changed('hero "Create your piece"', '.hero .doors a[href="#bespoke"]', 0, 'hash'); ok(`${tag}: it lands on bespoke`, b.hash === '#bespoke', b.hash); }
+  await unhash(); { const b = await changed('hero "Meet the house"', '.hero .continue', 0, 'hash'); ok(`${tag}: it lands on the house`, b.hash === '#house', b.hash); }
+  { const b = await changed('hero "Use a still"', '#hero-still', 0, 'hero'); ok(`${tag}: the still is on`, / true$/.test(b.hero), b.hero); }
+  { const b = await changed('hero "Turn it with the scroll"', '#hero-still', 0, 'hero'); ok(`${tag}: the turn is back`, / false$/.test(b.hero), b.hero); }
   /* THE RECORDS: every button on every card, the passport's whole action bar */
   for (const s of stones) {
     const card = `.stone[data-ref="${s.ref}"]`;
@@ -180,13 +181,13 @@ async function run(w, h, touch) {
   { const b = await changed('footer brand mark goes to the top', '.footer .brand', 0, 'y'); ok(`${tag}: the footer brand mark reaches the top even with a hash in the address`, b.y === 0, 'scrollY ' + b.y * 40); }
   /* BACK ONCE AND BACK TWICE: two links followed, then the browser's own Back */
   await go();
-  await tap('.hero .doors a[href="#stones"]'); await tap('.footer .flinks a[href="#bespoke"]');
+  await tap('.hero .continue'); await tap('.footer .flinks a[href="#bespoke"]');
   const h2 = await page.evaluate(() => location.hash);
   await page.goBack({ waitUntil: 'commit' }).catch(() => null); await sleep(500);
   const h1 = await page.evaluate(() => location.hash);
   await page.goBack({ waitUntil: 'commit' }).catch(() => null); await sleep(500);
   const h0 = await page.evaluate(() => ({ hash: location.hash, ready: !!(window.IslandCut && window.IslandCut.ready), cards: document.querySelectorAll('.stone').length }));
-  ok(`${tag}: Back once returns from ${h2} to the section before it`, h1 === '#stones', `${h2} then ${h1}`);
+  ok(`${tag}: Back once returns from ${h2} to the section before it`, h1 === '#house', `${h2} then ${h1}`);
   ok(`${tag}: Back twice returns to the top with the page intact`, h0.hash === '' && h0.ready && h0.cards === stones.length, JSON.stringify(h0));
   /* THE TRAY SURVIVES A RELOAD on this device, and only this device */
   await page.evaluate(() => { document.querySelector('[data-compare="IC-106"]').click(); });

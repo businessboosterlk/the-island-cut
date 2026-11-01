@@ -3,8 +3,8 @@
 // Phase 1 of look/BRIEF-10-FEATURES.md: the viewing room (2), the comparison tray (4), the passport (6) and a request
 // based viewing with a specialist (7). Phase 2 (31 Oct 2026, the seven reference clips): a ring that turns with the
 // scroll in the hero, a ring that comes apart into its three choices, a ring builder with no price, and a ring box
-// that opens on a tap. The hero was rebuilt on 1 Nov 2026 on three GENERATED stills of one ring (Thulaib's call that
-// day), labelled Generated sample. Every other clip and photograph is licensed stock, labelled Sample. All listed in
+// that opens on a tap. The hero is ChatGPT's opening of 1 Nov 2026, taken whole: sixty GENERATED frames of one ring that turns with the
+// scroll (Thulaib's call that day), labelled Generated sample. Every other clip and photograph is licensed stock, labelled Sample. All listed in
 // public/assets/SOURCES.md. Every real world value is in src/config.js.
 // Every record on the page is a sample and says so. Every door ends in a prefilled WhatsApp message.
 import Layout from '../layouts/Layout.astro';
@@ -20,45 +20,54 @@ const size = s => `${s.mm[0]} by ${s.mm[1]} by ${s.mm[2]} mm`;
 const facts = s => `${s.carat.toFixed(2)} ct, ${size(s)}, ${s.treatment.value.toLowerCase()}`;
 const askText = s => `Hello, from the website. I am asking about stone ${s.ref} (${s.title}, ${s.carat.toFixed(2)} ct).`;
 const motion = f => url(`assets/motion/${f}`);
-// THE HERO (clip 5, rebuilt 1 Nov 2026): three generated stills of ONE ring. The first arrives large and tilted and
-// settles in the centre, then each scroll stage swaps the picture, no morph, and its line lands. The stage starts at
-// `at` of the scroll travel. Generated on 31 Oct 2026 in Canva, labelled on the page; the house's own photographs replace them.
-const STILLS = [
-  { file: 'lying', at: 0, alt: 'Generated sample: a sapphire ring in yellow gold, seen whole on a pale ground', line: 'The stone, chosen loose and in daylight.' },
-  { file: 'upright', at: 0.42, alt: 'Generated sample: the same ring square to the camera, the stone filling the frame', line: 'The setting, agreed on a drawing first.' },
-  { file: 'macro', at: 0.72, alt: 'Generated sample: the sapphire very close, every facet in view', line: 'Seen this close on a call, before anyone talks about money.' },
+// THE HERO (clip 5, a turning ring since 1 Nov 2026 pm, Thulaib's call, bb_pending 1022): ONE ring rendered sixty
+// times in Blender at a changing angle, from BB's copy of the model that came back from ChatGPT with a true sapphire
+// material (scripts/render-ring.py). The scroll picks the frame, so the ring turns a full circle over the travel and
+// turns back on the way up. The first frame is the poster and stands in until all sixty have decoded; reduced motion,
+// data saver and the "Use a still" control keep the poster. Three lines land at `at` of the travel. Labelled on the
+// page; the house's own photographs replace the frames.
+const FRAMES = 60;
+// ChatGPT's three chapters (its opening of 1 Nov 2026, taken whole on Thulaib's word that afternoon). Each lands at `at`
+// of the travel: below .34 the first, below .69 the second, then the third. The eyebrows are set in capitals by the CSS.
+const CHAPTERS = [
+  { at: 0, eyebrow: 'The beginning', head: 'It begins<br>with <em>blue.</em>', intro: 'Loose stones. Personal commissions.<br>A closer look, before you choose.' },
+  { at: 0.34, eyebrow: 'A different perspective', head: 'Look a<br>little <em>closer.</em>', intro: 'The stone. The setting. The way they<br>come together. Every angle matters.' },
+  { at: 0.69, eyebrow: 'The next chapter', head: 'Make it<br><em>personal.</em>', intro: 'Begin with a stone you love.<br>Let the conversation shape the rest.' },
 ];
 const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones, builder };
 ---
 <Layout>
 <header class="nav"><div class="wrap in">
-  <a class="brand" href="#top" data-top>{SITE.name}</a>
+  <a class="brand" href="#top" data-top>{SITE.name}<span>Gems &amp; personal commissions</span></a>
   <nav class="links" aria-label="Sections">{LINKS.map(l => <a href={l.href}>{l.label}</a>)}</nav>
-  <button class="door" type="button" id="nav-book" data-request>Book a viewing</button>
+  <button class="view" type="button" id="nav-book" data-request>Book a viewing <Icon name="out" /></button>
 </div></header>
 
 <main id="top">
-<section class="hero" id="hero" aria-label="A ring that arrives with the scroll, then is seen three ways">
-  <div class="track" id="hero-track"><div class="scene" id="hero-stage" data-entered="false">
-    <figure class="turn" id="turn" data-stages={STILLS.length} data-stage="0">
-      <div class="box">
-        {STILLS.map((s, i) => <img class="still" id={`hero-still-${i}`} src={motion(`hero-ai/${s.file}-800.webp`)} srcset={[480, 800, 1200, 1600].map(w => `${motion(`hero-ai/${s.file}-${w}.webp`)} ${w}w`).join(', ')} sizes="(min-width:900px) 56vw, 100vw" alt={s.alt} width="1456" height="1088" fetchpriority={i ? 'low' : 'high'} decoding="async" aria-current={i ? undefined : 'true'} />)}
-      </div>
-      <figcaption id="hero-cap"><span class="tag">Generated sample</span><span>Three pictures of one ring, until the house's own photographs arrive.</span></figcaption>
+<section class="hero" id="hero" aria-label="A study in blue" data-still="false">
+  <div class="track" id="hero-track"><div class="scene" id="hero-stage">
+    <p class="edition" aria-hidden="true">{SITE.tagline}</p>
+    <ol class="chapters" id="hero-words" aria-label="Three chapters, one for each third of the scroll">
+      {CHAPTERS.map((c, i) => <li data-at={c.at} aria-current={i ? undefined : 'true'}>
+        <p class="eyebrow">{c.eyebrow}</p>
+        {i === 0 ? <h1 set:html={c.head} /> : <p class="h" set:html={c.head} />}
+        <p class="intro" set:html={c.intro} />
+      </li>)}
+    </ol>
+    <figure class="turn" id="turn" data-stages={CHAPTERS.length} data-frames={FRAMES} data-stage="0" data-base={motion('hero-ring/')} aria-label="Generated sample: a sapphire ring in yellow gold that turns as you scroll">
+      <img class="still" id="hero-poster" src={motion('hero-ring/poster-800.webp')} srcset={`${motion('hero-ring/poster-480.webp')} 480w, ${motion('hero-ring/poster-800.webp')} 800w`} sizes="(min-width:900px) 61vw, 100vw" alt="Generated sample: an oval sapphire ring in yellow gold, the stone held in four claws" width="800" height="800" fetchpriority="high" decoding="async" aria-current="true" />
+      <canvas id="turntable" width="800" height="800" aria-hidden="true"></canvas>
     </figure>
-    <div class="copy">
-      <p class="eyebrow">{SITE.tagline}</p>
-      <h1>An extraordinary stone. A piece <em>entirely yours.</em></h1>
-      <ol class="words" id="hero-words" aria-label="What changes as the ring is seen three ways">
-        {STILLS.map((s, i) => <li data-at={s.at} aria-current={i ? undefined : 'true'}>{s.line}</li>)}
-      </ol>
-      <div class="doors"><a class="door fill" href="#stones">Explore gemstones</a><a class="door" href="#bespoke">Create your piece</a></div>
+    <div class="foot">
+      <a class="continue" href="#house">Meet the house <Icon name="down" /></a>
+      <div class="chapter" aria-hidden="true"><span id="chapter-number">01</span><span class="bar"><span id="hero-progress"></span></span><span>{String(CHAPTERS.length).padStart(2, '0')}</span></div>
+      <button type="button" id="hero-still" aria-pressed="false">Use a still</button>
     </div>
+    <p class="sample">Generated sample. The house's own photographs replace this.</p>
   </div></div>
-  <p class="lead">{SITE.description}</p>
 </section>
 
-<section class="house" aria-label="The house"><div class="wrap">
+<section class="house" id="house" aria-label="The house"><div class="wrap">
   <p>Every piece here begins with a stone, chosen loose, shown in daylight with its report in frame and only then set.</p>
   <small>The house's own words go here once they are given. Nothing above is a claim about its history.</small>
 </div></section>

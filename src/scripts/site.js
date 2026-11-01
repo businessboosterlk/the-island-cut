@@ -1,4 +1,4 @@
-// THE ISLAND CUT, the page's one script. The ring that arrives and is seen three ways, the viewing room, the tray, the passport, the request sheet,
+// THE ISLAND CUT, the page's one script. The ring that arrives and turns with the scroll, the viewing room, the tray, the passport, the request sheet,
 // the ring that comes apart, the builder and the box.
 // No framework, no three.js, no GSAP. Every door ends in a prefilled WhatsApp message that says "from the website".
 // The tray is saved on this device only (localStorage) and is never a reservation.
@@ -39,29 +39,53 @@ function progress(track, stage) {
 }
 function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; requestAnimationFrame(() => { q = false; fn(); }); } }; addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); return ask; }
 
-/* ───────── the hero (clip 5, scroll driven): one ring, three stills. At the top the first still waits in its arrival pose
-   (--a is 0) with its line held back; the first 28% of the travel eases it to rest (--a reaches 1, the line lands) and
-   scrolling back up puts it back. --p drives the slow rise of the copy and the ring, so the whole screen moves. The scroll
-   then picks the stage: a different still, a different line, a slow drift of scale inside the stage. Read from the scroll
-   and nothing else (no timer, no frame to wait on, so a hidden tab cannot strand it). Under reduced motion: at rest, the
-   upright still, every line shown. ───────── */
+/* ───────── the opening (ChatGPT's layout of 1 Nov 2026, taken whole): one ring, sixty frames, the scroll picks the frame.
+   p is the scroll's progress through the track (0 at the top, 1 at the end). The frame is round(p * 59), so the ring turns
+   a full circle over the travel and turns back on the way up. --w = sin(p * pi)^2 carries the ring across the desk and
+   back (CSS, his numbers). The chapter is the last `at` passed (0 below .34, 1 below .69, then 2), each landing with his
+   220 ms rise, and the counter's line is --p. Read from the scroll and nothing else (no timer, so a hidden tab cannot
+   strand it). The poster (frame 0) shows until all sixty have decoded, four at a time; a failed decode keeps the poster.
+   Under reduced motion, data saver or "Use a still": p is 0, the poster, the first chapter, the track one screen. ───────── */
 {
-  const track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), stills = $$('#turn .still'), words = $$('#hero-words li');
-  const N = stills.length, at = words.map(w => Number(w.dataset.at)), ARRIVE = 0.28;
-  const H = window.IslandCut.hero = { stages: N, loaded: 0, stage: 0, progress: 0, arrival: 0, entered: false, reduced: REDUCE };
-  const cur = (list, i) => list.forEach((el, k) => { if (k === i) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current'); });
-  function show(i) { cur(stills, i); cur(words, i); H.stage = i; turn.dataset.stage = String(i); }
-  function put() {
-    const p = REDUCE ? 0.5 : progress(track, stage); H.progress = p;
-    const u = REDUCE ? 1 : clamp(p / ARRIVE, 0, 1), a = 1 - Math.pow(1 - u, 3); H.arrival = a;
-    stage.style.setProperty('--p', p.toFixed(3)); stage.style.setProperty('--a', a.toFixed(3));
-    H.entered = a >= 1; stage.dataset.entered = String(H.entered);
-    let i = 0; at.forEach((v, k) => { if (p >= v) i = k; });
-    const span = (k => (k < N ? at[k] : 1) - at[i])(i + 1), local = span > 0 ? clamp((p - at[i]) / span, 0, 1) : 0;
-    show(i); turn.style.setProperty('--drift', (1 + (i === N - 1 ? 0.10 : 0.05) * local).toFixed(3));
+  const hero = $('#hero'), track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), poster = $('#hero-poster'), canvas = $('#turntable'), chapters = $$('#hero-words li'), number = $('#chapter-number'), stillBtn = $('#hero-still');
+  const N = chapters.length, F = Number(turn.dataset.frames), at = chapters.map(c => Number(c.dataset.at)), base = turn.dataset.base;
+  const SAVE = !!(navigator.connection && navigator.connection.saveData);
+  const H = window.IslandCut.hero = { stages: N, frames: F, loaded: 0, frame: -1, poster: true, still: REDUCE || SAVE, failed: false, stage: 0, progress: 0, wave: 0, reduced: REDUCE };
+  const ctx = canvas.getContext('2d'); let frames = [], ready = false, last = -1;
+  function show(i) {
+    H.stage = i; turn.dataset.stage = String(i);
+    if (chapters[i].getAttribute('aria-current') === 'true') return;
+    chapters.forEach((c, k) => { if (k === i) { c.setAttribute('aria-current', 'true'); if (!H.still && c.animate) c.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' }); } else c.removeAttribute('aria-current'); });
+    number.textContent = String(i + 1).padStart(2, '0');
   }
-  stills.forEach(im => { const done = () => { H.loaded++; }; if (im.complete && im.naturalWidth) done(); else im.addEventListener('load', done, { once: true }); });
-  if (REDUCE) put(); else { onScroll(put); put(); }
+  function draw(p) {
+    const i = ready && !H.still ? Math.min(F - 1, Math.round(p * (F - 1))) : -1;
+    if (i >= 0 && i !== last) { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(frames[i], 0, 0, canvas.width, canvas.height); last = i; }
+    H.frame = i; H.poster = i < 0; canvas.classList.toggle('ready', i >= 0);
+    if (i >= 0) poster.removeAttribute('aria-current'); else poster.setAttribute('aria-current', 'true');
+  }
+  function put() {
+    const p = H.still ? 0 : progress(track, stage), w = Math.pow(Math.sin(p * Math.PI), 2); H.progress = p; H.wave = w;
+    stage.style.setProperty('--p', p.toFixed(3)); stage.style.setProperty('--w', w.toFixed(3));
+    let i = 0; at.forEach((v, k) => { if (p >= v) i = k; });
+    show(i); draw(p);
+  }
+  async function load() {
+    if (frames.length || H.still) return;
+    const w = matchMedia('(min-width:900px)').matches ? 800 : 480, pool = new Array(F); frames = pool; let next = 0;
+    const worker = async () => { while (next < F) { const k = next++; const im = new Image(); im.decoding = 'async'; im.src = `${base}ring-${w}-${String(k).padStart(3, '0')}.webp`; await im.decode(); pool[k] = im; H.loaded++; } };
+    try { await Promise.all([0, 1, 2, 3].map(worker)); ready = true; put(); }
+    catch { frames = []; ready = false; H.failed = true; H.loaded = 0; H.still = true; stillBtn.hidden = true; put(); }
+  }
+  function mode() {
+    hero.dataset.still = String(H.still);
+    stillBtn.setAttribute('aria-pressed', String(H.still)); stillBtn.disabled = REDUCE;
+    stillBtn.textContent = REDUCE ? 'Reduced motion is on' : H.still ? 'Turn it with the scroll' : 'Use a still';
+    put(); if (!H.still) load();
+  }
+  stillBtn.addEventListener('click', () => { H.still = !H.still; mode(); });
+  if (!REDUCE) onScroll(put);
+  mode();
 }
 
 /* ───────── customise: the ring comes apart as the stage scrolls and goes back together on the way up ───────── */
