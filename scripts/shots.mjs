@@ -27,6 +27,8 @@ async function open(w, h, touch, scale = 2) {
 for (const [name, w, h, touch] of [['phone', 390, 844, true], ['desk', 1440, 900, false]]) {
   const { ctx, page } = await open(w, h, touch);
   await page.screenshot({ path: `evidence/${name}-hero.png` });
+  await page.evaluate(() => { const tr = document.getElementById('hero-track'), st = document.getElementById('hero-stage'); window.scrollTo(0, Math.round((tr.offsetHeight - st.offsetHeight) * 0.32)); }); await page.waitForTimeout(500);
+  await page.screenshot({ path: `evidence/${name}-hero-arrived.png` }); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(500);
   await page.screenshot({ path: `evidence/${name}-full.png`, fullPage: true });
   for (const id of ['stones', 'viewing', 'bespoke', 'contact']) { await page.evaluate(i => document.getElementById(i).scrollIntoView(), id); await page.waitForTimeout(400); await page.screenshot({ path: `evidence/${name}-${id}.png` }); }
   await page.evaluate(() => { for (const r of ['IC-101', 'IC-104', 'IC-106']) document.querySelector(`[data-compare="${r}"]`).click(); document.getElementById('tray-open').click(); }); await page.waitForTimeout(500);

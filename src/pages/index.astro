@@ -25,8 +25,8 @@ const motion = f => url(`assets/motion/${f}`);
 // `at` of the scroll travel. Generated on 31 Oct 2026 in Canva, labelled on the page; the house's own photographs replace them.
 const STILLS = [
   { file: 'lying', at: 0, alt: 'Generated sample: a sapphire ring in yellow gold, seen whole on a pale ground', line: 'The stone, chosen loose and in daylight.' },
-  { file: 'upright', at: 0.34, alt: 'Generated sample: the same ring square to the camera, the stone filling the frame', line: 'The setting, agreed on a drawing first.' },
-  { file: 'macro', at: 0.67, alt: 'Generated sample: the sapphire very close, every facet in view', line: 'Seen this close on a call, before anyone talks about money.' },
+  { file: 'upright', at: 0.42, alt: 'Generated sample: the same ring square to the camera, the stone filling the frame', line: 'The setting, agreed on a drawing first.' },
+  { file: 'macro', at: 0.72, alt: 'Generated sample: the sapphire very close, every facet in view', line: 'Seen this close on a call, before anyone talks about money.' },
 ];
 const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, stones, builder };
 ---
@@ -38,7 +38,7 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 </div></header>
 
 <main id="top">
-<section class="wrap hero" id="hero" aria-label="A ring that arrives, then is seen three ways">
+<section class="hero" id="hero" aria-label="A ring that arrives with the scroll, then is seen three ways">
   <div class="track" id="hero-track"><div class="scene" id="hero-stage" data-entered="false">
     <figure class="turn" id="turn" data-stages={STILLS.length} data-stage="0">
       <div class="box">

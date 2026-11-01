@@ -39,30 +39,29 @@ function progress(track, stage) {
 }
 function onScroll(fn) { let q = false; const ask = () => { if (!q) { q = true; requestAnimationFrame(() => { q = false; fn(); }); } }; addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); return ask; }
 
-/* ───────── the hero (clip 5): one ring, three stills. The first arrives on its own (a CSS transition, started once the
-   still has loaded, so it is never seen half way) and only then do the words land. The scroll then picks the stage:
-   a different still, a different line, a slow drift of scale inside the stage. Read from the scroll and nothing else,
-   so scrolling up swaps back. Under reduced motion: no entrance, the upright still, every line shown. ───────── */
+/* ───────── the hero (clip 5, scroll driven): one ring, three stills. At the top the first still waits in its arrival pose
+   (--a is 0) with its line held back; the first 28% of the travel eases it to rest (--a reaches 1, the line lands) and
+   scrolling back up puts it back. --p drives the slow rise of the copy and the ring, so the whole screen moves. The scroll
+   then picks the stage: a different still, a different line, a slow drift of scale inside the stage. Read from the scroll
+   and nothing else (no timer, no frame to wait on, so a hidden tab cannot strand it). Under reduced motion: at rest, the
+   upright still, every line shown. ───────── */
 {
   const track = $('#hero-track'), stage = $('#hero-stage'), turn = $('#turn'), stills = $$('#turn .still'), words = $$('#hero-words li');
-  const N = stills.length, at = words.map(w => Number(w.dataset.at));
-  const H = window.IslandCut.hero = { stages: N, loaded: 0, stage: 0, progress: 0, entered: false, reduced: REDUCE };
+  const N = stills.length, at = words.map(w => Number(w.dataset.at)), ARRIVE = 0.28;
+  const H = window.IslandCut.hero = { stages: N, loaded: 0, stage: 0, progress: 0, arrival: 0, entered: false, reduced: REDUCE };
   const cur = (list, i) => list.forEach((el, k) => { if (k === i) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current'); });
   function show(i) { cur(stills, i); cur(words, i); H.stage = i; turn.dataset.stage = String(i); }
   function put() {
-    const p = progress(track, stage); H.progress = p;
-    let i = 0; at.forEach((a, k) => { if (p >= a) i = k; });
+    const p = REDUCE ? 0.5 : progress(track, stage); H.progress = p;
+    const u = REDUCE ? 1 : clamp(p / ARRIVE, 0, 1), a = 1 - Math.pow(1 - u, 3); H.arrival = a;
+    stage.style.setProperty('--p', p.toFixed(3)); stage.style.setProperty('--a', a.toFixed(3));
+    H.entered = a >= 1; stage.dataset.entered = String(H.entered);
+    let i = 0; at.forEach((v, k) => { if (p >= v) i = k; });
     const span = (k => (k < N ? at[k] : 1) - at[i])(i + 1), local = span > 0 ? clamp((p - at[i]) / span, 0, 1) : 0;
     show(i); turn.style.setProperty('--drift', (1 + (i === N - 1 ? 0.10 : 0.05) * local).toFixed(3));
   }
-  function enter() { if (H.entered) return; H.entered = true; stage.dataset.entered = 'true'; }
   stills.forEach(im => { const done = () => { H.loaded++; }; if (im.complete && im.naturalWidth) done(); else im.addEventListener('load', done, { once: true }); });
-  if (REDUCE) { show(1); H.progress = 0.5; enter(); }
-  else {
-    onScroll(put); put();
-    const go = () => { requestAnimationFrame(() => requestAnimationFrame(enter)); setTimeout(enter, 900); }; /* a hidden tab stalls animation frames (seen 1 Nov 2026): the timer makes sure the ring never stays stuck in its entrance pose */
-    if (stills[0].complete) go(); else { stills[0].addEventListener('load', go, { once: true }); stills[0].addEventListener('error', go, { once: true }); }
-  }
+  if (REDUCE) put(); else { onScroll(put); put(); }
 }
 
 /* ───────── customise: the ring comes apart as the stage scrolls and goes back together on the way up ───────── */
