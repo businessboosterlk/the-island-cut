@@ -1,23 +1,25 @@
 # Where every picture and clip on this demo comes from
 
-Every file under `public/assets/` is a real photograph or real footage under a free licence. Nothing is generated,
-drawn or rendered. Every one is labelled Sample on the page because none of it is the house's own stone, ring or box.
-No AI image or video of a stone or a ring, ever.
+Every file under `public/assets/` is labelled on the page because none of it is the house's own stone, ring or box.
+The three hero stills are GENERATED pictures (Thulaib's call on 31 Oct 2026, after the licensed footage hero was
+rejected on look twice) and the page says so under them. Everything else is a real photograph or real footage under a
+free licence; nothing there is generated, drawn or rendered. The house's own photographs replace every file here before
+the site carries its name.
 
 ## Record photographs (`photos/`)
 
 Licensed stock photographs of loose stones standing in for the house's own records. Each is credited on its record
 in `src/data/stones.json` (`photo.credit`) and labelled "Sample data" on the card and in the passport.
 
-## Hero frame sequence (`motion/hero/480/`, `motion/hero/800/`, `motion/hero/poster.webp`)
+## Hero stills (`motion/hero-ai/`)
 
 | What | Detail |
 | --- | --- |
-| Source | Pixabay video 266081, "Solitaire, Ring, Gold" by GreenCardShow, https://pixabay.com/videos/solitaire-ring-gold-diamond-266081/ |
-| Licence | Pixabay Content License (free for commercial use, no attribution required, attribution given anyway) |
-| Shows | A rose gold solitaire ring turning on a stand against a red backdrop |
-| Made | 60 frames taken every eighth frame of the first 480, cropped to the ring, the red backdrop keyed to the site's paper, the putty stand under the band erased, bottom cropped. 480px set for phones, 800px set for desks, both WebP |
-| On the page | The hero: the ring turns as the page scrolls. Labelled Sample. The house's own ring would be filmed the same way, on a white sweep, no key needed |
+| Source | Three pictures generated in Canva (Business Booster's own account) on 31 Oct 2026 from written prompts, no reference image: one ring, an oval deep royal blue sapphire in a four prong yellow gold solitaire on a pale porcelain ground |
+| Files | `lying` (the ring at a slight tilt), `upright` (standing, facing the camera), `macro` (the stone very close). Each at 480, 800, 1200 and 1600 px wide, WebP. The 1456 by 1088 originals are in `~/Downloads/THE-ISLAND-CUT/HERO-AI/` |
+| Made | Exported from Canva at full size, each faded at its edges into the site's paper (#f4efe7) by a radial blend baked into the file, so the picture melts into the page without a mask in the CSS, then resized. Nothing was drawn or retouched by hand |
+| On the page | The hero (clip 5): the first still arrives large and tilted and settles in the centre, then each scroll stage swaps to the next still with its line. Labelled "Generated sample". The real site shows the house's own ring photographed three ways on a white sweep, the same mechanism, no generation |
+| The rule | Generated pictures are a stand in for this demo only, approved for it by Thulaib on 31 Oct 2026. They never stand for a real stone on a record, never go on a client's domain, and are replaced by the house's own photographs before launch |
 
 ## Exploded ring layers (`motion/layers/`)
 
