@@ -27,6 +27,9 @@ const motion = f => url(`assets/motion/${f}`);
 // data saver and the "Use a still" control keep the poster. Three lines land at `at` of the travel. Labelled on the
 // page; the house's own photographs replace the frames.
 const FRAMES = 60;
+// v4 (1 Nov 2026 pm): the sets are cut from 1600 px renders cropped to the ink; these are the widths of the two sets on disk
+// (scripts/hero-frames.sh DESK and PHONE). Change them here and there together.
+const SET = { desk: 1200, phone: 560 };
 // ChatGPT's three chapters (its opening of 1 Nov 2026, taken whole on Thulaib's word that afternoon). Each lands at `at`
 // of the travel: below .34 the first, below .69 the second, then the third. The eyebrows are set in capitals by the CSS.
 const CHAPTERS = [
@@ -54,9 +57,9 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
         <p class="intro" set:html={c.intro} />
       </li>)}
     </ol>
-    <figure class="turn" id="turn" data-stages={CHAPTERS.length} data-frames={FRAMES} data-stage="0" data-base={motion('hero-ring/')} aria-label="Generated sample: a sapphire ring in yellow gold that turns as you scroll">
-      <img class="still" id="hero-poster" src={motion('hero-ring/poster-800.webp')} srcset={`${motion('hero-ring/poster-480.webp')} 480w, ${motion('hero-ring/poster-800.webp')} 800w`} sizes="(min-width:900px) 61vw, 100vw" alt="Generated sample: an oval sapphire ring in yellow gold, the stone held in four claws" width="800" height="800" fetchpriority="high" decoding="async" aria-current="true" />
-      <canvas id="turntable" width="800" height="800" aria-hidden="true"></canvas>
+    <figure class="turn" id="turn" data-stages={CHAPTERS.length} data-frames={FRAMES} data-stage="0" data-base={motion('hero-ring/')} data-desk={SET.desk} data-phone={SET.phone} aria-label="Generated sample: a sapphire ring in yellow gold that turns as you scroll">
+      <img class="still" id="hero-poster" src={motion(`hero-ring/poster-${SET.desk}.webp`)} srcset={`${motion(`hero-ring/poster-${SET.phone}.webp`)} ${SET.phone}w, ${motion(`hero-ring/poster-${SET.desk}.webp`)} ${SET.desk}w`} sizes="(min-width:900px) 61vw, 100vw" alt="Generated sample: an oval sapphire ring in yellow gold, the stone held in four claws" width={SET.desk} height={SET.desk} fetchpriority="high" decoding="async" aria-current="true" />
+      <canvas id="turntable" width={SET.desk} height={SET.desk} aria-hidden="true"></canvas>
     </figure>
     <div class="foot">
       <a class="continue" href="#house">Meet the house <Icon name="down" /></a>
