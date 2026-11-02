@@ -1,5 +1,9 @@
 # THE ISLAND CUT — FINAL ANIMATION HANDOVER
 
+## Published status — 2 November 2026
+
+Source pushed to main at 9b464b8; production output pushed to gh-pages at 4dc2d65. The latest build includes viewport-height-aware ring and box sizing, a smaller final heading, and clearer CTA spacing. Browser checks confirmed the phone customisation composition and the completed phone finale with seated ring, visible headline, and unobstructed Customise yours CTA. Desktop opening, customisation and builder opening were also checked. Astro production build and JavaScript syntax passed. Earlier statements below saying nothing is committed/published or no phone check has occurred are historical and superseded by this status. The site remains an explicitly labelled concept with sample stock records; genuine inventory, business claims and photography still require the owner's input.
+
 ## Latest implementation update — 1 November, publication pass
 
 The owner resumed implementation here and then explicitly requested immediate publication to conserve weekly usage. This update supersedes the older work-in-progress status below.
