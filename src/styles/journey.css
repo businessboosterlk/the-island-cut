@@ -47,7 +47,12 @@
 .ring-story[data-still=true] .story-ring{display:none}
 .ring-story[data-still=true] .chapter-still{display:block;position:absolute;width:45%;height:65%;object-fit:contain;top:17%;right:4%}
 .ring-story[data-still=true] [data-side=right] .chapter-still{left:4%;right:auto}
-@media (max-width:899px){
+@media (min-width:760px){
+ /* A short reading beat, then a turn and descent into the customisation scene. */
+ .ring-story[data-still=false] .story-chapter[data-chapter="3"]{height:160svh}
+ .ring-story[data-still=false] .story-chapter[data-chapter="3"] .story-scene{position:sticky;top:var(--nav-h)}
+}
+@media (max-width:759px){
  .story-chapter{height:100svh;min-height:780px}
  .story-scene{height:calc(100svh - var(--nav-h));min-height:716px}
  .story-index{top:62px;left:6%}
