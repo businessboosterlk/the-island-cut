@@ -9,6 +9,7 @@
 // Every record on the page is a sample and says so. Every door ends in a prefilled WhatsApp message.
 import Layout from '../layouts/Layout.astro';
 import Journey from '../components/Journey.astro';
+import '../styles/atelier.css';
 import Icon from '../components/Icon.astro';
 import { SITE, LINKS, VIEWS, wa } from '../config.js';
 import { url } from '../scripts/icon.js';
@@ -32,18 +33,18 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 
 <main id="top">
 <Journey />
-<section class="house" id="house" aria-label="The house"><div class="wrap">
-  <p>Every piece here begins with a stone, chosen loose, shown in daylight with its report in frame and only then set.</p>
-  <small>The house's own words go here once they are given. Nothing above is a claim about its history.</small>
+<section class="house atelier-house" id="house" aria-label="The house"><div class="wrap">
+  <div data-atelier-reveal><span class="atelier-kicker">A more personal perspective</span><h2>First, the stone.<br>Then, <em>your story.</em></h2></div>
+  <div class="house-aside" data-atelier-reveal><p>Begin with a colour. Stay for the details. Explore a stone closely, then imagine the piece it could become.</p><a class="atelier-link" href="#stones">Explore the collection <Icon name="out" /></a><small>A design concept. Sample stones and illustrative pieces are clearly identified below.</small></div>
 </div></section>
 
 <section class="wrap section" id="stones" aria-labelledby="stones-h">
   <header>
-    <div><h2 id="stones-h">Stones on the table this week</h2><p class="note">{stones.length} sample records. The photographs are licensed stock standing in for the house's own stones. Every fact says where it came from.</p></div>
-    <p class="note">Nothing is priced on this page. Ask a specialist.</p>
+    <div><span class="atelier-kicker">01 / The collection</span><h2 id="stones-h">Find your <em>colour.</em></h2><p class="note">{stones.length} sample records, shown with licensed reference photographs. Explore the details, compare favourites, and ask for a closer look.</p></div>
+    <p class="collection-note">A starting point.<br>Never a stock or availability claim.</p>
   </header>
   <div class="stones">
-    {stones.map(s => <article class="stone" data-ref={s.ref}>
+    {stones.map(s => <article class="stone" data-ref={s.ref} data-atelier-reveal>
       <div class="frame">
         {s.photo ? <img src={photo(s).src} srcset={photo(s).srcset} sizes="(min-width:900px) 25vw, 100vw" alt={s.photo.alt} width={s.photo.w} height={s.photo.h} style={`object-position:${s.photo.focus}`} loading="lazy"> : <div class="empty"><Icon name="nophoto" /><strong>Not yet photographed</strong><p>This record has no picture until the stone is shot in daylight.</p></div>}
       </div>
@@ -63,7 +64,7 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 </section>
 
 <section class="band section" id="viewing" aria-labelledby="viewing-h"><div class="wrap">
-  <header><div><h2 id="viewing-h">The viewing room</h2><p class="note">Real light only. Every view is a photograph or a clip of this exact stone, never altered. Where a view has not been captured yet, it says so.</p></div></header>
+  <header data-atelier-reveal><div><span class="atelier-kicker">02 / A closer look</span><h2 id="viewing-h">Every angle.<br><em>Nothing overlooked.</em></h2><p class="note">The viewing room brings the available photographs and sample details together. Missing views are marked, never simulated.</p></div></header>
   <div class="room">
     <div class="picker" role="group" aria-label="Choose a stone">{stones.map((s, i) => <button type="button" class="chip" data-pick={s.ref} aria-pressed={i === 0 ? 'true' : 'false'}>{s.ref}</button>)}</div>
     <div>
@@ -89,39 +90,44 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 </div></section>
 
 <section class="wrap section" id="jewellery" aria-labelledby="jewellery-h">
-  <header><div><h2 id="jewellery-h">Finished pieces</h2><p class="note">Pieces made around a stone from the table.</p></div></header>
-  <div class="prose">
-    <p>The house's finished pieces are photographed on the same ground as the stones, one piece to a frame, beside the stone and its report. None are on the page yet. Nothing is drawn or generated to fill the space.</p>
-    <p><a class="door" href="#bespoke">Create your piece</a></p>
+  <figure class="atelier-ring-study" data-atelier-reveal><img src={motion('hero-ring/poster-1200.webp')} width="1200" height="1200" alt="Illustrative sapphire ring design in yellow gold" loading="lazy" /><figcaption>Generated design study · Not a finished piece or stock item</figcaption></figure>
+  <div class="atelier-jewel-copy" data-atelier-reveal>
+    <span class="atelier-kicker">03 / Personal commissions</span><h2 id="jewellery-h">Not off a shelf.<br><em>Around you.</em></h2>
+    <p>A ring, a pendant, a piece with a meaning only you know. Start with an idea and explore the stone, setting and metal together.</p>
+    <button class="atelier-link" type="button" data-build>Begin your design <Icon name="out" /></button>
+    <p class="note">The ring shown is an illustration. Actual finished-piece photographs and available options are to be confirmed by the house.</p>
   </div>
 </section>
 
 <section class="band section" id="bespoke" aria-labelledby="bespoke-h"><div class="wrap">
-  <header><div><h2 id="bespoke-h">A piece built around your stone</h2><p class="note">Three steps, each one agreed with you before the next.</p></div></header>
+  <header data-atelier-reveal><div><span class="atelier-kicker">04 / The proposed journey</span><h2 id="bespoke-h">From a possibility<br>to <em>something personal.</em></h2><p class="note">A considered conversation, one decision at a time.</p></div></header>
   <ol class="steps">
-    <li><div><strong>Choose the stone</strong><p>In daylight, on a video call, with its report in frame. Nothing is bought unseen.</p></div></li>
-    <li><div><strong>Agree the piece</strong><p>Ring, pendant or earrings, the metal and the setting. A drawing is agreed before anything is made.</p></div></li>
-    <li><div><strong>See it finished</strong><p>The piece is photographed beside its stone and its report before it leaves.</p></div></li>
+    <li data-atelier-reveal><div><strong>Find your stone.</strong><p>Explore colour, proportions and available documentation. Ask to see the stone in different light.</p></div></li>
+    <li data-atelier-reveal><div><strong>Make it yours.</strong><p>Discuss the setting, metal and personal details. Confirm the design and terms before commissioning.</p></div></li>
+    <li data-atelier-reveal><div><strong>See it come together.</strong><p>Agree how the finished piece will be reviewed, and confirm delivery arrangements directly with the house.</p></div></li>
   </ol>
   <div class="doors" style="margin-top:24px"><button class="door fill" type="button" id="bespoke-build" data-build>Build your ring</button><a class="door" id="bespoke-wa" href={wa('Hello, from the website. I would like to create a piece around a stone.')} target="_blank" rel="noopener"><Icon name="b-whatsapp" />Create your piece</a></div>
   <p class="note" style="margin-top:16px">The steps are shown as proposed. The house confirms each one before launch.</p>
 </div></section>
 
 <section class="wrap section" id="craft" aria-labelledby="craft-h">
-  <header><div><h2 id="craft-h">Our craft</h2></div></header>
-  <div class="prose">
-    <p>This paragraph is the house's to write: where its stones come from, who cuts them and how a piece is made. Nothing is written here on its behalf.</p>
-    <p>No year, no cutter's name and no count appears on this page until the house gives it.</p>
+  <header data-atelier-reveal><div><span class="atelier-kicker">05 / Considered details</span><h2 id="craft-h">Beauty,<br><em>with clarity.</em></h2><p class="note">The questions are part of choosing well.</p></div></header>
+  <div class="atelier-questions" data-atelier-reveal>
+    <details><summary><span>01</span> What should I ask about a stone?<i aria-hidden="true">+</i></summary><p>Ask about its weight, dimensions, treatment and available laboratory documentation. The sample passports on this site distinguish supplied information from details that are not documented.</p></details>
+    <details><summary><span>02</span> Can I see it in different light?<i aria-hidden="true">+</i></summary><p>Use the viewing room to explore the available views. If a photograph or rotation clip is missing, request it directly rather than relying on a simulated view.</p></details>
+    <details><summary><span>03</span> Where does a personal piece begin?<i aria-hidden="true">+</i></summary><p>The design builder creates a starting brief, not a purchase. Confirm the stone, setting, metal, engraving, price and production timing with the house before making a commitment.</p></details>
+    <details><summary><span>04</span> Are the pieces here available to buy?<i aria-hidden="true">+</i></summary><p>This is a concept site with sample records, licensed reference photographs and generated ring studies. It does not represent confirmed stock. Availability and all commercial details must be verified directly.</p></details>
   </div>
 </section>
 
 <section class="band section spec" id="contact" aria-labelledby="contact-h"><div class="wrap in">
-  <div><h2 id="contact-h">A specialist shows you these exact stones</h2><p>Choose up to three and a person turns each one in daylight on a call, report in frame. A viewing does not reserve a stone. Nothing is priced on this page.</p></div>
+  <div data-atelier-reveal><span class="atelier-kicker">Your next chapter</span><h2 id="contact-h">Let’s find<br><em>your stone.</em></h2><p>Bring a favourite colour, an occasion, or simply a question. Start a conversation about what comes next.</p><p class="note">A request is not a confirmed appointment or a reservation.</p></div>
   <div class="doors"><button class="door fill" type="button" id="spec-time" data-request>Request a time</button><a class="door" id="spec-wa" href={wa('Hello, from the website. I would like to speak to a specialist about the stones on the table.')} target="_blank" rel="noopener"><Icon name="b-whatsapp" />WhatsApp a specialist</a></div>
 </div></section>
 </main>
 
 <footer class="wrap footer">
+  <p class="atelier-signature" aria-hidden="true" data-atelier-reveal>The Island Cut</p>
   <a class="brand" href="#top" data-top>{SITE.name}</a>
   <nav class="flinks" aria-label="Sections">{LINKS.map(l => <a href={l.href}>{l.label}</a>)}<a id="foot-wa" href={wa('Hello, from the website. I have a question for the house.')} target="_blank" rel="noopener">WhatsApp</a></nav>
   <p class="fine">Working name, concept site by Business Booster, October 2026. The photographs are licensed stock standing in for the house's own stones. No price, no history and no report number on this page is real.</p>

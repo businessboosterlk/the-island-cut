@@ -1,0 +1,67 @@
+/* Editorial chapters after the cinematic journey. */
+.atelier-kicker{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px;color:var(--ink-2)}
+#house,#stones,#viewing,#jewellery,#bespoke,#craft,#contact{padding-top:clamp(72px,9vw,140px);padding-bottom:clamp(72px,9vw,140px)}
+#house h2,#stones h2,#viewing h2,#jewellery h2,#bespoke h2,#craft h2,#contact h2{font-size:clamp(44px,5.8vw,84px);font-weight:400;line-height:1.02;letter-spacing:-.035em}
+#house h2 em,#stones h2 em,#jewellery h2 em,#bespoke h2 em,#craft h2 em,#contact h2 em{color:#776e5c;font-weight:400}
+#house{text-align:left;background:#eae4d8}
+#house>.wrap{display:grid;gap:48px;align-items:center}
+#house .house-aside p{font:400 20px/1.65 var(--body);margin:0;max-width:36ch}
+#house small{font-size:12px;line-height:1.6;max-width:48ch;margin-top:26px}
+.atelier-link{display:inline-flex;align-items:center;justify-content:space-between;gap:48px;min-height:54px;border:0;border-bottom:1px solid var(--ink-2);background:none;color:var(--ink);padding:12px 0;margin-top:25px;font-size:15px;text-decoration:none}
+.atelier-link svg{transition:transform .35s ease}.atelier-link:hover svg{transform:translate(3px,-3px)}
+#stones>header{align-items:end;gap:36px;margin-bottom:50px}
+#stones .collection-note{font:italic 23px/1.4 var(--display);color:var(--ink-2);max-width:24ch}
+#stones .stones{gap:48px 32px}
+#stones .stone{border:0;background:transparent;overflow:visible}
+#stones .stone .frame{background:#e8e3da;overflow:hidden}
+#stones .stone .frame img{transition:transform .8s cubic-bezier(.2,.65,.25,1)}
+#stones .stone:hover .frame img{transform:scale(1.035)}
+#stones .stone .meta{padding:22px 0 0;gap:10px}
+#stones .stone h3{font-size:32px;font-weight:400}
+#stones .stone .row{gap:0;border-top:1px solid var(--line);margin-top:12px}
+#stones .stone .row button{border:0;border-bottom:1px solid transparent;transition:background .25s,border-color .25s}
+#stones .stone .row button:hover{border-bottom-color:var(--ink);background:#eae4d8}
+#viewing{background:#282a28;--ink:#f4efe7;--ink-2:#c5c0b5;--ink-3:#aaa799;--line:#50534c;color:var(--ink)}
+#viewing h2 em{color:#c5b598;font-weight:400}
+#viewing header{margin-bottom:44px}
+#viewing .door,#viewing button{color:var(--ink)}
+#viewing .door.fill,#viewing [aria-selected="true"],#viewing [aria-pressed="true"]{background:#e6ddcc;color:#282a28;border-color:#e6ddcc}
+#viewing .frame{background:#e9e4db;color:#36352e}
+#viewing .empty{color:#36352e}
+#viewing .note{color:var(--ink-2)}
+#viewing .stage{background:#30332f}
+#viewing .picker button:not([aria-pressed="true"]){background:transparent;border-color:#686b61;color:#e6e1d7}
+#viewing .status{background:#3a3e36;border-color:#686b61;color:#e6e1d7}
+#jewellery{display:grid;gap:48px;align-items:center}
+.atelier-ring-study{margin:0;position:relative;background:#ece7de;overflow:hidden}
+.atelier-ring-study img{display:block;width:100%;height:auto;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.atelier-ring-study:hover img{transform:rotate(-3deg) scale(1.035)}
+.atelier-ring-study figcaption{font-size:10px;line-height:1.5;padding:0 24px 24px;color:var(--ink-2)}
+.atelier-jewel-copy>p{max-width:38ch;margin-top:24px;line-height:1.7}
+.atelier-jewel-copy .note{font-size:12px}
+#bespoke{background:#eae4d8}
+#bespoke .steps{margin-top:48px;gap:36px}
+#bespoke .steps li{padding-top:25px;grid-template-columns:1fr;gap:24px}
+#bespoke .steps li::before{font-size:66px;color:#96866a}
+#bespoke .steps strong{font:400 30px/1.2 var(--display);margin-bottom:14px}
+#bespoke .steps p{line-height:1.7;max-width:34ch}
+#craft{display:grid;gap:48px}
+#craft>header{align-self:start;justify-content:flex-start;align-items:flex-start}
+.atelier-questions details{border-top:1px solid var(--line)}
+.atelier-questions details:last-child{border-bottom:1px solid var(--line)}
+.atelier-questions summary{list-style:none;display:flex;align-items:center;gap:18px;padding:27px 0;cursor:pointer;font-size:17px;line-height:1.5}
+.atelier-questions summary::-webkit-details-marker{display:none}
+.atelier-questions summary span{font-size:11px;letter-spacing:.1em;color:var(--ink-3)}
+.atelier-questions summary i{font-style:normal;font-size:24px;font-weight:300;margin-left:auto;transition:transform .3s}
+.atelier-questions details[open] summary i{transform:rotate(45deg)}
+.atelier-questions details p{padding:0 36px 28px;max-width:60ch;color:var(--ink-2);font-size:15px;line-height:1.8}
+#contact{background:#e4dccd}
+#contact h2{font-size:clamp(64px,9vw,128px)}
+#contact .in{align-items:end;gap:48px}
+#contact p{max-width:42ch;line-height:1.7;margin-top:24px}
+#contact .doors{flex-direction:column;align-items:stretch;min-width:230px}
+#contact .doors .door{padding:18px 24px;min-height:60px}
+.footer .atelier-signature{grid-column:1/-1;font:400 clamp(60px,13vw,180px)/1.15 var(--display);letter-spacing:-.055em;color:var(--ink);margin:0 0 30px;border-bottom:1px solid var(--line);padding:30px 0 45px;white-space:nowrap}
+.footer .fine{max-width:80ch;line-height:1.7}
+@media(min-width:760px){#house>.wrap{grid-template-columns:1.2fr 1fr;gap:8%}#stones .stones{grid-template-columns:repeat(2,minmax(0,1fr))}#jewellery{grid-template-columns:1.1fr 1fr;gap:8%}#craft{grid-template-columns:.8fr 1.2fr;gap:9%}#bespoke .steps{grid-template-columns:repeat(3,minmax(0,1fr))}#contact .in{display:grid;grid-template-columns:1.5fr 1fr}}
+@media(prefers-reduced-motion:reduce){.atelier-ring-study img,#stones .stone .frame img,.atelier-link svg,.atelier-questions summary i{transition:none!important;transform:none!important}}

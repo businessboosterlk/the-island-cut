@@ -86,6 +86,9 @@ for v in t.data.vertices:
     r = R_IN + .003 - (z + .006) / .012 * .016          # from a hair inside the wall to .013 proud of it
     v.co = (r * math.cos(a), TEXT_UP * y, r * math.sin(a))
 t.data.update(); t.data.materials.clear(); finish(t, engraved, False)
+# Retire the raised lettering; use a surface-bound inward-bump inscription.
+bpy.data.objects.remove(t, do_unlink=True)
+exec(compile(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'engrave-band.py')).read(), 'engrave-band.py', 'exec'))
 
 # Oval faceted centre stone, with table, crown, girdle and pavilion.
 verts = []; faces = []; n = 24

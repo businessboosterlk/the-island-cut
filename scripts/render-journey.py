@@ -102,6 +102,8 @@ for v in t.data.vertices:
     r = R_IN + .003 - (z + .006) / .012 * .016
     v.co = (r * math.cos(a), TEXT_UP * y, r * math.sin(a))
 t.data.update(); t.data.materials.clear(); finish(t, engraved, band_part, False)
+bpy.data.objects.remove(t, do_unlink=True)
+exec(compile(open(os.path.join(ROOT, 'engrave-band.py')).read(), 'engrave-band.py', 'exec'))
 
 verts = []; faces = []; n = 24
 levels = [(.46, 1.76), (.70, 1.68), (.88, 1.57), (1, 1.42), (1, 1.39), (.74, 1.24), (.40, 1.08), (.035, .99)]

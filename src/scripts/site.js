@@ -4,6 +4,7 @@
 // The tray is saved on this device only (localStorage) and is never a reservation.
 import { url, icon } from './icon.js';
 import { initJourney } from './journey.js';
+import { initAtelier } from './atelier.js';
 
 const P = JSON.parse(document.getElementById('payload').textContent);
 const STONES = P.stones, VIEWS = P.views, MAX = 3;
@@ -215,4 +216,5 @@ $('#pp-spec').addEventListener('click', () => { const keep = state.passport; $('
 $$('[data-top]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0 }); history.replaceState(null, '', location.pathname + location.search); }));
 
 room(); tray();
+initAtelier();
 window.IslandCut.ready = true;
