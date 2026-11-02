@@ -1,6 +1,6 @@
 /* Editorial chapters after the cinematic journey. */
 .atelier-kicker{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px;color:var(--ink-2)}
-#house,#stones,#viewing,#jewellery,#bespoke,#craft,#contact{padding-top:clamp(72px,9vw,140px);padding-bottom:clamp(72px,9vw,140px)}
+#house,#stones,#viewing,#jewellery,#bespoke,#craft,#contact{padding-top:clamp(48px,5vw,76px);padding-bottom:clamp(48px,5vw,76px)}
 #house h2,#stones h2,#viewing h2,#jewellery h2,#bespoke h2,#craft h2,#contact h2{font-size:clamp(44px,5.8vw,84px);font-weight:400;line-height:1.02;letter-spacing:-.035em}
 #house h2 em,#stones h2 em,#jewellery h2 em,#bespoke h2 em,#craft h2 em,#contact h2 em{color:#776e5c;font-weight:400}
 #house{text-align:left;background:#eae4d8}
@@ -14,6 +14,9 @@
 #stones .stones{gap:48px 32px}
 #stones .stone{border:0;background:transparent;overflow:visible}
 #stones .stone .frame{background:#e8e3da;overflow:hidden}
+#stones .stone .frame img{object-fit:contain;padding:0;filter:drop-shadow(0 18px 13px rgba(57,43,25,.12))}
+#stones .colour-disclaimer{font-size:12px;margin-top:24px;max-width:72ch}
+#house{display:none}
 #stones .stone .frame img{transition:transform .8s cubic-bezier(.2,.65,.25,1)}
 #stones .stone:hover .frame img{transform:scale(1.035)}
 #stones .stone .meta{padding:22px 0 0;gap:10px}
@@ -63,5 +66,5 @@
 #contact .doors .door{padding:18px 24px;min-height:60px}
 .footer .atelier-signature{grid-column:1/-1;font:400 clamp(60px,13vw,180px)/1.15 var(--display);letter-spacing:-.055em;color:var(--ink);margin:0 0 30px;border-bottom:1px solid var(--line);padding:30px 0 45px;white-space:nowrap}
 .footer .fine{max-width:80ch;line-height:1.7}
-@media(min-width:760px){#house>.wrap{grid-template-columns:1.2fr 1fr;gap:8%}#stones .stones{grid-template-columns:repeat(2,minmax(0,1fr))}#jewellery{grid-template-columns:1.1fr 1fr;gap:8%}#craft{grid-template-columns:.8fr 1.2fr;gap:9%}#bespoke .steps{grid-template-columns:repeat(3,minmax(0,1fr))}#contact .in{display:grid;grid-template-columns:1.5fr 1fr}}
+@media(min-width:760px){#house>.wrap{grid-template-columns:1.2fr 1fr;gap:8%}#stones .stones{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}#stones .stone h3{font-size:28px}#stones .stone .row button{font-size:12px;padding:0 3px}#jewellery{grid-template-columns:1.1fr 1fr;gap:8%}#craft{grid-template-columns:.8fr 1.2fr;gap:9%}#bespoke .steps{grid-template-columns:repeat(3,minmax(0,1fr))}#contact .in{display:grid;grid-template-columns:1.5fr 1fr}}
 @media(prefers-reduced-motion:reduce){.atelier-ring-study img,#stones .stone .frame img,.atelier-link svg,.atelier-questions summary i{transition:none!important;transform:none!important}}

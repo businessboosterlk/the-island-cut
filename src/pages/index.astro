@@ -40,8 +40,8 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
 
 <section class="wrap section" id="stones" aria-labelledby="stones-h">
   <header>
-    <div><span class="atelier-kicker">01 / The collection</span><h2 id="stones-h">Find your <em>colour.</em></h2><p class="note">{stones.length} sample records, shown with licensed reference photographs. Explore the details, compare favourites, and ask for a closer look.</p></div>
-    <p class="collection-note">A starting point.<br>Never a stock or availability claim.</p>
+    <div><span class="atelier-kicker">01 / Your palette</span><h2 id="stones-h">Find your <em>colour.</em></h2><p class="note">Four possibilities. One personal starting point.</p></div>
+    <p class="collection-note">Choose a colour.<br>Make it your own.</p>
   </header>
   <div class="stones">
     {stones.map(s => <article class="stone" data-ref={s.ref} data-atelier-reveal>
@@ -49,22 +49,21 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
         {s.photo ? <img src={photo(s).src} srcset={photo(s).srcset} sizes="(min-width:900px) 25vw, 100vw" alt={s.photo.alt} width={s.photo.w} height={s.photo.h} style={`object-position:${s.photo.focus}`} loading="lazy"> : <div class="empty"><Icon name="nophoto" /><strong>Not yet photographed</strong><p>This record has no picture until the stone is shot in daylight.</p></div>}
       </div>
       <div class="meta">
-        <div class="ref"><span>{s.ref}</span><span class="tag">Sample data</span></div>
+        <div class="ref"><span>{s.ref}</span><span class="tag">Colour study</span></div>
         <h3>{s.title}</h3>
-        <p class="facts">{facts(s)}</p>
-        <div class="statuses"><span class="status" data-s={s.lab.status}>{s.lab.status}</span><span class="status" data-s={s.origin.status}>Origin: {s.origin.status}</span></div>
         <div class="row">
-          <button type="button" data-passport={s.ref}>Passport</button>
-          <button type="button" data-room={s.ref}>Viewing room</button>
+          <button type="button" data-passport={s.ref}>Details</button>
+          <button type="button" data-room={s.ref}>Explore</button>
           <button type="button" data-compare={s.ref} aria-pressed="false">Compare</button>
         </div>
       </div>
     </article>)}
   </div>
+  <p class="note colour-disclaimer">Illustrative 3D colour studies, not inventory photographs. Details and availability must be confirmed with the house.</p>
 </section>
 
 <section class="band section" id="viewing" aria-labelledby="viewing-h"><div class="wrap">
-  <header data-atelier-reveal><div><span class="atelier-kicker">02 / A closer look</span><h2 id="viewing-h">Every angle.<br><em>Nothing overlooked.</em></h2><p class="note">The viewing room brings the available photographs and sample details together. Missing views are marked, never simulated.</p></div></header>
+  <header data-atelier-reveal><div><span class="atelier-kicker">02 / A closer look</span><h2 id="viewing-h">Compare.<br><em>Consider. Choose.</em></h2><p class="note">Explore the illustrative colour studies and sample specifications. Request actual photographs and documentation before choosing a stone.</p></div></header>
   <div class="room">
     <div class="picker" role="group" aria-label="Choose a stone">{stones.map((s, i) => <button type="button" class="chip" data-pick={s.ref} aria-pressed={i === 0 ? 'true' : 'false'}>{s.ref}</button>)}</div>
     <div>
@@ -116,7 +115,7 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
     <details><summary><span>01</span> What should I ask about a stone?<i aria-hidden="true">+</i></summary><p>Ask about its weight, dimensions, treatment and available laboratory documentation. The sample passports on this site distinguish supplied information from details that are not documented.</p></details>
     <details><summary><span>02</span> Can I see it in different light?<i aria-hidden="true">+</i></summary><p>Use the viewing room to explore the available views. If a photograph or rotation clip is missing, request it directly rather than relying on a simulated view.</p></details>
     <details><summary><span>03</span> Where does a personal piece begin?<i aria-hidden="true">+</i></summary><p>The design builder creates a starting brief, not a purchase. Confirm the stone, setting, metal, engraving, price and production timing with the house before making a commitment.</p></details>
-    <details><summary><span>04</span> Are the pieces here available to buy?<i aria-hidden="true">+</i></summary><p>This is a concept site with sample records, licensed reference photographs and generated ring studies. It does not represent confirmed stock. Availability and all commercial details must be verified directly.</p></details>
+    <details><summary><span>04</span> Are the pieces here available to buy?<i aria-hidden="true">+</i></summary><p>This is a concept site with sample records and generated gemstone and ring studies. It does not represent confirmed stock. Availability and all commercial details must be verified directly.</p></details>
   </div>
 </section>
 
@@ -130,7 +129,7 @@ const payload = { whatsapp: SITE.whatsapp, slots: SITE.slots, views: VIEWS, ston
   <p class="atelier-signature" aria-hidden="true" data-atelier-reveal>The Island Cut</p>
   <a class="brand" href="#top" data-top>{SITE.name}</a>
   <nav class="flinks" aria-label="Sections">{LINKS.map(l => <a href={l.href}>{l.label}</a>)}<a id="foot-wa" href={wa('Hello, from the website. I have a question for the house.')} target="_blank" rel="noopener">WhatsApp</a></nav>
-  <p class="fine">Working name, concept site by Business Booster, October 2026. The photographs are licensed stock standing in for the house's own stones. No price, no history and no report number on this page is real.</p>
+  <p class="fine">Working name, concept site by Business Booster. Gemstones and rings are generated design studies, not inventory photographs. Specifications are sample data, not verified stock or certification claims.</p>
 </footer>
 
 <aside class="tray" id="tray" data-on="false" data-open="false" aria-label="Stones to compare">

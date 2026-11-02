@@ -3,8 +3,8 @@ import { url } from '../scripts/icon.js';
 import '../styles/journey.css';
 const chapters = [
   ['A private beginning', 'It begins<br>with <em>blue.</em>', 'A loose stone. A world of possibilities.', 'centre'],
-  ['The stone', 'An extraordinary<br><em>beginning.</em>', 'Start with the colour that speaks to you.<br>See it closely. In your own time.', 'left'],
-  ['A different perspective', 'Look a<br>little <em>closer.</em>', 'The colour. The light. The way it turns.<br>Every angle tells you something.', 'right'],
+  ['Choose your stone', 'Start with<br><em>your colour.</em>', 'Explore blue, pink, golden and teal.<br>Save the colour that feels like you.', 'left'],
+  ['Look closer', 'See the<br><em>details.</em>', 'Compare sample stones and their details.<br>Request the views you want to see.', 'right'],
   ['Make it personal', 'Your colour.<br><em>Your character.</em>', 'From blue to a warmer possibility.<br>Now, let us take it apart.', 'left'],
   ['Every part is a choice', 'Nothing generic.<br><em>Entirely yours.</em>', 'Choose the gemstone. Explore the setting.<br>Choose your metal. Add a name or a date.', 'right'],
   ['Coming together', 'One stone.<br><em>Your story.</em>', 'The details find their place.<br>A piece begins to feel like yours.', 'left'],
@@ -29,6 +29,9 @@ const chapters = [
       <p class="story-intro" set:html={intro} />
       {i === 4 && <ul class="story-choices"><li><span>01</span> The gemstone</li><li><span>02</span> The setting</li><li><span>03</span> The metal &amp; band</li><li><span>04</span> Your engraving</li></ul>}
       {i === 4 && <button class="story-link" data-build type="button">Explore your ring options <span aria-hidden="true">↗</span></button>}
+      {i === 1 && <a class="story-link" href="#stones">Explore colours <span aria-hidden="true">↗</span></a>}
+      {i === 2 && <a class="story-link" href="#viewing">Take a closer look <span aria-hidden="true">↗</span></a>}
+      {i === 7 && <button class="story-link" data-build type="button">Plan your personal details <span aria-hidden="true">↗</span></button>}
       {i === 8 && <button class="door fill" data-build type="button">Customise yours</button>}
       {i === 0 && <button class="story-link" id="story-open" type="button" aria-label="Open the gemstone box">Open the box <span aria-hidden="true">↓</span></button>}
     </div>

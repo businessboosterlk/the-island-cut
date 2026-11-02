@@ -1,44 +1,44 @@
 {
   "meta": {
     "sample": true,
-    "note": "Sample records so the table, the viewing room, the tray and the passport can be seen working. Photographs are licensed stock standing in for the house's own stones, which must be shot on one ground. Every fact carries its status: Lab report, Seller disclosure or Not documented. No price, no report number, no cutter and no district is invented."
+    "note": "Sample records demonstrate the table, viewing room, tray and passport. Gemstone images are generated colour studies, not photographs of inventory. All specifications and status labels are sample data, not verified commercial claims."
   },
   "stones": [
     {
-      "ref": "IC-101", "title": "Blue, step cut", "colour": "Blue", "cut": "Step cut",
+      "ref": "IC-101", "title": "Sapphire blue", "colour": "Blue", "cut": "Oval",
       "carat": 2.14, "mm": [8.1, 6.2, 3.9],
       "treatment": { "value": "Unheated", "status": "Lab report" },
       "lab": { "value": "Report held by the house, number withheld in the demo", "status": "Lab report" },
       "origin": { "value": "Sri Lanka", "status": "Lab report" },
-      "photo": { "file": "tweezers", "w": 1600, "h": 1067, "alt": "A blue cut stone held in tweezers on a white ground", "credit": "Licensed stock photograph (Unsplash), not the house's stone", "focus": "62% 55%" },
+      "photo": { "file": "study-blue", "w": 1600, "h": 1600, "alt": "Illustrative oval blue gemstone, consistent studio view", "credit": "Generated colour study, not a photograph of inventory. Specifications are sample data.", "focus": "50% 50%" },
       "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
     },
     {
-      "ref": "IC-104", "title": "Pink, cushion", "colour": "Pink", "cut": "Cushion",
+      "ref": "IC-104", "title": "Rose pink", "colour": "Pink", "cut": "Oval",
       "carat": 1.46, "mm": [6.5, 6.1, 3.8],
       "treatment": { "value": "Unheated", "status": "Seller disclosure" },
       "lab": { "value": "No report yet", "status": "Not documented" },
       "origin": { "value": "Sri Lanka", "status": "Seller disclosure" },
-      "photo": { "file": "pink-cushion", "w": 1600, "h": 1067, "alt": "A pink cushion cut stone on a white ground", "credit": "Licensed stock photograph (Unsplash), not the house's stone", "focus": "50% 50%" },
+      "photo": { "file": "study-pink", "w": 1600, "h": 1600, "alt": "Illustrative oval pink gemstone, consistent studio view", "credit": "Generated colour study, not a photograph of inventory. Specifications are sample data.", "focus": "50% 50%" },
       "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
     },
     {
-      "ref": "IC-106", "title": "Yellow, step cut", "colour": "Yellow", "cut": "Step cut",
+      "ref": "IC-106", "title": "Golden yellow", "colour": "Yellow", "cut": "Oval",
       "carat": 3.05, "mm": [9.2, 7.4, 4.6],
       "treatment": { "value": "Heated", "status": "Seller disclosure" },
       "lab": { "value": "Report held by the house, number withheld in the demo", "status": "Lab report" },
       "origin": { "value": "Sri Lanka", "status": "Seller disclosure" },
-      "photo": { "file": "yellow-step", "w": 1600, "h": 1600, "alt": "A yellow step cut stone on a pale ground", "credit": "Licensed stock photograph (Unsplash), not the house's stone", "focus": "50% 50%" },
+      "photo": { "file": "study-gold", "w": 1600, "h": 1600, "alt": "Illustrative oval golden gemstone, consistent studio view", "credit": "Generated colour study, not a photograph of inventory. Specifications are sample data.", "focus": "50% 50%" },
       "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
     },
     {
-      "ref": "IC-108", "title": "Teal, oval", "colour": "Teal", "cut": "Oval",
+      "ref": "IC-108", "title": "Ocean teal", "colour": "Teal", "cut": "Oval",
       "carat": 1.92, "mm": [8.0, 6.1, 3.7],
       "treatment": { "value": "Not stated", "status": "Not documented" },
       "lab": { "value": "No report yet", "status": "Not documented" },
       "origin": { "value": "Not stated", "status": "Not documented" },
-      "photo": null,
-      "media": { "daylight": null, "indoor": null, "macro": null, "rotation": null }
+      "photo": { "file": "study-teal", "w": 1600, "h": 1600, "alt": "Illustrative oval teal gemstone, consistent studio view", "credit": "Generated colour study, not a photograph of inventory. Specifications are sample data.", "focus": "50% 50%" },
+      "media": { "daylight": "photo", "indoor": null, "macro": null, "rotation": null }
     }
   ]
 }

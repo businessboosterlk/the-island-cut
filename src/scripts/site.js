@@ -107,7 +107,7 @@ function passport(ref, from) {
   picture($('#pp-img'), $('#pp-empty'), s, '(min-width:900px) 560px, 100vw');
   $('#pp-cap').textContent = s.photo ? s.photo.credit : 'No photograph on this record yet.';
   $('#pp-dl').innerHTML = [['Reference', esc(s.ref)], ['Colour', esc(s.colour)], ['Cut', esc(s.cut)], ['Weight', ct(s)], ['Dimensions', size(s)], ['Treatment', `${esc(s.treatment.value)} ${status(s.treatment)}`], ['Lab report', `${esc(s.lab.value)} ${status(s.lab)}`], ['Provenance', `${esc(s.origin.value)} ${status(s.origin)}`]].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
-  $('#pp-views').innerHTML = VIEWS.map(v => `<li><span>${esc(v.label)}</span><span>${s.media[v.key] ? 'Captured, daylight photograph' : 'Not captured yet'}</span></li>`).join('');
+  $('#pp-views').innerHTML = VIEWS.map(v => `<li><span>${esc(v.label)}</span><span>${s.media[v.key] ? 'Generated illustration' : 'Not captured yet'}</span></li>`).join('');
   $('#pp-ask').href = wa(askText(s));
   $('#pp-compare').setAttribute('aria-pressed', String(state.tray.includes(ref)));
   open($('#passport'));

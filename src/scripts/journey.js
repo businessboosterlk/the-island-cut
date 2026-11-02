@@ -41,18 +41,18 @@ export function initJourney() {
   let x=R,y=local+m.scene*(mobile?.34:.5),s=size,kind='hero',f=0,af=-1;
   metrics.forEach((a,k)=>{a.copy.style.opacity=k===8?'0':'1';a.copy.style.transform='';a.copy.style.clipPath='';a.copy.style.pointerEvents=k===8?'none':'';});
   if(i===0){
-   const p=clamp(active/m.travel),openingEnd=m.travel*.27;
+   const p=clamp(active/m.travel),openingFraction=mobile?.27:.18,openingEnd=m.travel*openingFraction;
    // Carry formation all the way into the next chapter: no frozen tail.
-   const d=mobile?ease((p-.27)/.68):ease((active-openingEnd)/(m.height-openingEnd));
-   kind=p<=.27?'opening':'depart';f=p<=.27?15*ease(p/.27):35*d;
+   const d=mobile?ease((p-.27)/.68):ease((active-openingEnd)/(m.travel-openingEnd));
+   kind=p<=openingFraction?'opening':'depart';f=p<=openingFraction?15*ease(p/openingFraction):35*d;
    x=mix(.5,R,d);s=mix(Math.min(mobile?w:610,m.scene*.68),size,d);y=local+m.scene*mix(.66,mobile?.34:.5,d);
-   m.copy.style.opacity=String(1-ease((p-.06)/.2));m.copy.style.pointerEvents=p>.24?'none':'';
-   state.phase=p<=.27?'box-opening':'gem-formation';
+   m.copy.style.opacity=String(1-ease((p-.03)/(mobile?.2:.14)));m.copy.style.pointerEvents=p>.17?'none':'';
+   state.phase=p<=openingFraction?'box-opening':'gem-formation';
   }else if(i<=3){
    const positions=[R,L,R,L];x=mix(positions[i-1],positions[i],ease((u-.25)/.65));
    f=i===1?30*ease(u):i===2?mix(30,mobile?59:45,ease(u)):59;
    if(i===3){
-    const turn=mobile?ease(u):ease((u-.38)/.54);
+    const turn=mobile?ease(u):ease((u-.2)/.72);
     if(!mobile){x=mix(R,L,turn);f=mix(45,59,turn);}
     y+=Math.sin(Math.PI*turn)*m.scene*.06;s=size*mix(1,mobile?.85:.88,turn);
    }
@@ -71,7 +71,7 @@ export function initJourney() {
    f=i===5?mix(mobile?59:52,30,ease(u)):i===6?30*(1-ease(u)):mobile?0:8*Math.sin(Math.PI*ease(u));
    m.copy.style.opacity=String(1-ease((u-.42)/.43));state.phase='editorial-travel';
   }else{
-   const p=clamp(active/m.travel),landDistance=mobile?m.travel*.66:m.travel-m.scene*1.15,landing=ease(active/landDistance),reveal=mobile?ease((p-.72)/.23):ease((active-landDistance-m.scene*.08)/(m.scene*.72));
+   const p=clamp(active/m.travel),landDistance=mobile?m.travel*.66:m.travel*.48,landing=ease(active/landDistance),reveal=mobile?ease((p-.72)/.23):ease((active-landDistance-m.travel*.06)/(m.travel*.4));
    x=mix(R,.5,landing);s=mix(size,Math.min(mobile?w:610,m.scene*(mobile?.68:.62)),landing);
    kind='arrive';f=35*landing;y=Math.min(local,m.top+m.travel)+m.scene*mix(mobile?.34:.5,mobile?.74:.72,landing);
    m.copy.style.opacity=String(reveal);m.copy.style.transform='translateY('+((1-reveal)*140)+'px)';m.copy.style.clipPath='inset('+((1-reveal)*100)+'% 0 0 0)';m.copy.style.pointerEvents=reveal>.95?'':'none';
@@ -95,6 +95,6 @@ export function initJourney() {
  function mode(){story.dataset.still=String(state.still);button.setAttribute('aria-pressed',String(state.still));button.textContent=state.still?'Enable scroll animation':'Use a still';measure();if(!state.still){load('opening','bookends/opening-',24);load('hero','hero-ring/ring-'+(innerWidth<760?560:1200)+'-',60);load('depart','bridges/depart-',36);load('apart','journey/apart-'+(innerWidth<760?560:1200)+'-',32);}}
  button.addEventListener('click',()=>{state.still=!state.still;mode();});
  reduced.addEventListener('change',()=>{state.still=reduced.matches;mode();});
- document.getElementById('story-open').addEventListener('click',()=>{if(state.still){document.getElementById('opening-poster').src=base+'bookends/opening-015.webp';return;}window.scrollTo({top:story.getBoundingClientRect().top+scrollY-nav+metrics[0].travel*.27,behavior:'smooth'});});
+ document.getElementById('story-open').addEventListener('click',()=>{if(state.still){document.getElementById('opening-poster').src=base+'bookends/opening-015.webp';return;}window.scrollTo({top:story.getBoundingClientRect().top+scrollY-nav+metrics[0].travel*(mobile?.27:.18),behavior:'smooth'});});
  addEventListener('scroll',ask,{passive:true});addEventListener('resize',measure);document.fonts.ready.then(()=>{measure();const target=location.hash&&document.getElementById(location.hash.slice(1));if(target)target.scrollIntoView({behavior:'instant',block:'start'});});mode();
 }

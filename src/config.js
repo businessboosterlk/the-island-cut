@@ -25,7 +25,7 @@ export const LINKS = [
 ];
 // The four views the viewing room offers. Only media the house has captured is ever shown.
 export const VIEWS = [
-  { key: 'daylight', label: 'Daylight', icon: 'sun' },
+  { key: 'daylight', label: 'Colour study', icon: 'sun' },
   { key: 'indoor', label: 'Indoor light', icon: 'lamp' },
   { key: 'macro', label: 'Macro', icon: 'macro' },
   { key: 'rotation', label: 'Rotation', icon: 'rotate' },
