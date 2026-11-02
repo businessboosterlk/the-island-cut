@@ -26,7 +26,9 @@ export function initJourney() {
   let x=R,y=local+m.scene*(mobile?.34:.5),s=size,kind='hero',f=0,af=-1;
   metrics.forEach((a,k)=>{a.copy.style.opacity=k===8?'0':'1';a.copy.style.transform='';a.copy.style.clipPath='';a.copy.style.pointerEvents=k===8?'none':'';});
   if(i===0){
-   const p=clamp(active/m.travel),d=ease((p-.27)/.68);
+   const p=clamp(active/m.travel),openingEnd=m.travel*.27;
+   // Carry formation all the way into the next chapter: no frozen tail.
+   const d=mobile?ease((p-.27)/.68):ease((active-openingEnd)/(m.height-openingEnd));
    kind=p<=.27?'opening':'depart';f=p<=.27?15*ease(p/.27):35*d;
    x=mix(.5,R,d);s=mix(Math.min(mobile?w:610,m.scene*.68),size,d);y=local+m.scene*mix(.66,mobile?.34:.5,d);
    m.copy.style.opacity=String(1-ease((p-.06)/.2));m.copy.style.pointerEvents=p>.24?'none':'';
@@ -50,11 +52,19 @@ export function initJourney() {
    m.copy.style.opacity=String(1-ease((u-.42)/.43));state.phase='editorial-travel';
   }else{
    const p=clamp(active/m.travel),landing=ease(p/.66),reveal=ease((p-.72)/.23);
-   x=mix(R,.5,landing);s=mix(size,Math.min(mobile?w:610,m.scene*.68),landing);
-   kind='arrive';f=35*landing;y=Math.min(local,m.top+m.travel)+m.scene*mix(mobile?.34:.5,.74,landing);
+   x=mix(R,.5,landing);s=mix(size,Math.min(mobile?w:610,m.scene*(mobile?.68:.62)),landing);
+   kind='arrive';f=35*landing;y=Math.min(local,m.top+m.travel)+m.scene*mix(mobile?.34:.5,mobile?.74:.72,landing);
    m.copy.style.opacity=String(reveal);m.copy.style.transform='translateY('+((1-reveal)*140)+'px)';m.copy.style.clipPath='inset('+((1-reveal)*100)+'% 0 0 0)';m.copy.style.pointerEvents=reveal>.95?'':'none';
    state.phase=p<.66?'ring-seating':p<.72?'seated':'final-reveal';
   }
+  // Incoming editorial copy waits for the ring to clear its side. Apply the
+  // gate to every chapter (not just the active one) so reverse scroll matches.
+  if(!mobile)metrics.forEach((a,k)=>{
+   if(k===0||k===8)return;
+   const entry=ease((local-a.top+a.scene*.08)/(a.scene*.26));
+   a.copy.style.opacity=String(Number(a.copy.style.opacity)*entry);
+   a.copy.style.pointerEvents=Number(a.copy.style.opacity)>.9?'':'none';
+  });
   ring.style.width=ring.style.height=s+'px';ring.style.transform='translate3d('+(w*x-s/2)+'px,'+(y-s/2)+'px,0)';ring.style.opacity=local<story.offsetHeight?'1':'0';
   const drawn=paint(kind,f);canvas.style.opacity=drawn?'1':'0';poster.style.opacity=drawn?'0':'1';
   if(!drawn){const fallback=base+(kind==='opening'||kind==='depart'?'bookends/opening-000.webp':kind==='arrive'?'bookends/return-023.webp':'hero-ring/poster-560.webp');if(poster.getAttribute('src')!==fallback)poster.src=fallback;}
