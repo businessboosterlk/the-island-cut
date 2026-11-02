@@ -13,7 +13,7 @@ export function initJourney() {
   return pending[name];
  }
  function measure(){
-  mobile=innerWidth<900;w=story.clientWidth;nav=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||80;size=mobile?Math.min(w*.88,360):Math.min(w*.47,640);
+  mobile=innerWidth<900;w=story.clientWidth;nav=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||80;size=mobile?Math.min(w*.88,360):Math.min(w*.47,(innerHeight-nav)*.84,640);
   metrics=chapters.map(el=>{const scene=el.querySelector('.story-scene');return {top:el.offsetTop,height:el.offsetHeight,scene:scene.offsetHeight,travel:Math.max(0,el.offsetHeight-scene.offsetHeight),copy:el.querySelector('.story-copy')};});update();
  }
  function update(){
@@ -28,7 +28,7 @@ export function initJourney() {
   if(i===0){
    const p=clamp(active/m.travel),d=ease((p-.27)/.68);
    kind=p<=.27?'opening':'depart';f=p<=.27?15*ease(p/.27):35*d;
-   x=mix(.5,R,d);s=mix(mobile?w:610,size,d);y=local+m.scene*mix(.66,mobile?.34:.5,d);
+   x=mix(.5,R,d);s=mix(Math.min(mobile?w:610,m.scene*.68),size,d);y=local+m.scene*mix(.66,mobile?.34:.5,d);
    m.copy.style.opacity=String(1-ease((p-.06)/.2));m.copy.style.pointerEvents=p>.24?'none':'';
    state.phase=p<=.27?'box-opening':'gem-formation';
   }else if(i<=3){
@@ -50,8 +50,8 @@ export function initJourney() {
    m.copy.style.opacity=String(1-ease((u-.42)/.43));state.phase='editorial-travel';
   }else{
    const p=clamp(active/m.travel),landing=ease(p/.66),reveal=ease((p-.72)/.23);
-   x=mix(R,.5,landing);s=mix(size,mobile?w:610,landing);y=local+m.scene*mix(mobile?.34:.5,.66,landing);
-   kind='arrive';f=35*landing;y=Math.min(local,m.top+m.travel)+m.scene*mix(mobile?.34:.5,.72,landing);
+   x=mix(R,.5,landing);s=mix(size,Math.min(mobile?w:610,m.scene*.68),landing);
+   kind='arrive';f=35*landing;y=Math.min(local,m.top+m.travel)+m.scene*mix(mobile?.34:.5,.74,landing);
    m.copy.style.opacity=String(reveal);m.copy.style.transform='translateY('+((1-reveal)*140)+'px)';m.copy.style.clipPath='inset('+((1-reveal)*100)+'% 0 0 0)';m.copy.style.pointerEvents=reveal>.95?'':'none';
    state.phase=p<.66?'ring-seating':p<.72?'seated':'final-reveal';
   }
