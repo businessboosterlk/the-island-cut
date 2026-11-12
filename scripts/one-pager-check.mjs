@@ -92,15 +92,36 @@ for (const v of [{ name: 'desk-1440', width: 1440, height: 900, scale: 1 }, { na
     await page.keyboard.press('Home'); await settle(page);
   }
   say(boxes.size === 1, `${v.name} the picture box and caption never moved through every press`, `${boxes.size} position(s) seen: ${[...boxes].join(' ; ')}`);
+  // THE RING: the track is three screens, one text shows at a time, the stage stays pinned and it ends back on the first frame.
+  const track = await page.evaluate(() => { const e = document.querySelector('[data-ring]'); return { screens: Math.round(e.offsetHeight / innerHeight * 100) / 100, still: e.dataset.still }; });
+  say(track.still === 'false' && Math.abs(track.screens - 3) < .05, `${v.name} the ring track is three screens of scroll`, JSON.stringify(track));
+  const ringAt = async p => {
+    await page.evaluate(p => { const e = document.querySelector('[data-ring]'); window.scrollTo({ top: e.getBoundingClientRect().top + scrollY + (e.offsetHeight - innerHeight) * p, behavior: 'instant' }); }, p);
+    await page.waitForFunction(() => (document.querySelector('[data-ring]').dataset.loaded || '').split(' ').length === 2);
+    await page.waitForTimeout(600);
+    return page.evaluate(() => { const e = document.querySelector('[data-ring]'); return { step: e.dataset.step, frame: e.dataset.frame, apart: e.dataset.apart,
+      on: [...e.querySelectorAll('[data-step]')].filter(s => getComputedStyle(s).opacity === '1').map(s => s.querySelector('h2').textContent), pin: Math.round(e.querySelector('.pin').getBoundingClientRect().top) }; });
+  };
+  const rs = [];
+  for (const [i, p] of [.12, .5, .88].entries()) { rs.push(await ringAt(p)); await page.screenshot({ path: path.join(stills, `${v.name}-ring-${i + 1}.png`) }); }
+  say(rs.map(x => x.step).join('') === '123' && rs.every(x => x.on.length === 1 && x.pin === 0) && rs[1].apart !== '' && rs[0].apart === '' && rs[2].apart === '', `${v.name} ring: three steps, one text at a time, stage pinned, parts apart in step 2 only`, JSON.stringify(rs));
+  const ends = [await ringAt(0), await ringAt(1)];
+  say(ends[0].frame === '0' && ends[1].frame === '0', `${v.name} ring starts and ends on the first frame, the blue stone`, `start frame ${ends[0].frame}, end frame ${ends[1].frame}`);
+  const rows = await page.locator('.know dl div').count();
+  say(rows === 6, `${v.name} the knowledge list has six rows`, String(rows));
+  for (const [sel, name] of [['.know', 'know'], ['.pieces', 'pieces']]) { await page.locator(sel).evaluate(e => e.scrollIntoView({ behavior: 'instant', block: 'start' })); await page.waitForTimeout(250); await page.screenshot({ path: path.join(stills, `${v.name}-${name}.png`) }); }
   say(errors.length === 0, `${v.name} no script errors`, errors.join(' | ') || 'none');
   await ctx.close();
 
+  // (reduced motion below also turns the ring into a still with its three texts stacked)
   const calm = await browser.newContext({ viewport: { width: v.width, height: v.height }, reducedMotion: 'reduce' });
   const p2 = await calm.newPage();
   await p2.goto(url);
   await p2.waitForFunction(() => document.querySelector('[data-switch]').dataset.count);
   const dur = await p2.evaluate(() => getComputedStyle(document.querySelector('[data-slide]')).transitionDuration + ' / ' + getComputedStyle(document.querySelector('[data-cap]')).transitionDuration + ' / ' + getComputedStyle(document.documentElement).scrollBehavior);
   say(dur === '0s / 0s / auto', `${v.name} reduced motion means an instant swap`, dur);
+  const stillRing = await p2.evaluate(() => { const e = document.querySelector('[data-ring]'); return e.dataset.still + ' / ' + Math.round(e.offsetHeight / innerHeight * 10) / 10 + ' screens / ' + [...e.querySelectorAll('[data-step]')].filter(s => getComputedStyle(s).opacity === '1').length + ' texts showing'; });
+  say(stillRing.startsWith('true') && stillRing.endsWith('3 texts showing'), `${v.name} reduced motion makes the ring a still with all three texts`, stillRing);
   await calm.close();
 }
 await browser.close();
@@ -110,7 +131,7 @@ const text = fs.readFileSync(path.join(stills, 'text.txt'), 'utf8');
 const hs = spawnSync('python3', [path.join(os.homedir(), 'bb-consultancy/house_style.py'), path.join(stills, 'text.txt')], { encoding: 'utf8' });
 const hsFails = (hs.stdout || '').split('\n').filter(l => l.includes('[FAIL]'));
 say(hs.status === 0 && hsFails.length === 0 && /\[OK/.test(hs.stdout || ''), 'house style on the rendered words', hsFails.join(' | ') || 'every line OK');
-const banned = text.match(/sapphire trails|untreated|unheated|certif|\breport|\bcarat|\bct\b|LKR|Rs\.|\$|\bEst\b|since \d|light blue|pale blue|Sri Lankan origin/gi) || [];
+const banned = text.replace(/Natural does not mean untreated\./g, '').match(/sapphire trails|untreated|unheated|certif|\breport|\bcarat|\bct\b|LKR|\bRs\.|\$|\bEst\b|since \d|light blue|pale blue|Sri Lankan origin/gi) || [];
 say(banned.length === 0, 'no word the client has not confirmed (certificate, treatment, origin, price, weight, year)', banned.join(', ') || 'none found');
 const tagged = (text.match(/Generated sample/g) || []).length;
 say(tagged >= 2 && /generated samples/.test(text), 'the pictures are marked as generated samples', `${tagged} labels and the closing note`);

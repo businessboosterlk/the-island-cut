@@ -24,6 +24,24 @@ const PRODUCTS = [
   { file: 'p5-pendant', caption: 'Pear sapphire pendant' },
 ];
 
+// THE RING, three steps on about three screens of scroll. The frames and the words are the site's own ring journey
+// (src/components/Journey.astro, public/assets/motion/): the turn, the parts coming apart and the turn back to blue.
+// The site's nine chapter script is not used here: this page runs a short clock of its own over the same frames.
+const STEPS = [
+  ['Look closer', 'See the details.', 'A quiet turn. A different perspective.'],
+  ['Every part is a choice', 'Nothing generic. Entirely yours.', 'Choose the gemstone. Explore the setting. Choose your metal.'],
+  ['Coming together', 'One stone. Your story.', 'The details find their place. A piece begins to feel like yours.'],
+];
+// WHAT DECIDES A SAPPHIRE. General gem knowledge, each line checked against the client's own guide
+// (~/bb-consultancy/priyantha-gems/client-src/Made-Simple.txt). Nothing here describes this house's own stones.
+const KNOW = [
+  ['Colour', 'Usually the biggest part of the value. The best blues are strong and even without turning so dark that the stone loses its brightness.'],
+  ['Clarity', 'Inclusions are not automatically a fault. What matters is whether they dull the stone or weaken it.'],
+  ['Cut', 'How well the angles and proportions show the colour and send light back to the eye.'],
+  ['Weight', 'Size counts alongside quality. Weight hidden in an overly deep stone adds to the scale and not to what you see.'],
+  ['Treatment', 'Natural does not mean untreated. A natural sapphire may still have been heated and a buyer should always be told.'],
+  ['Origin', 'Where a stone was mined can influence its value. It is one factor among several and it is hard to establish, even for a laboratory.'],
+];
 const ic = raw => raw.replace(/<!--[\s\S]*?-->/, '').replace(/class="[^"]*"/, 'class="ic" aria-hidden="true" focusable="false"').replace('stroke-width="2"', 'stroke-width="1.5"').trim();
 const waBase = `https://wa.me/${SITE.whatsapp}?text=`;
 const wa = text => waBase + encodeURIComponent(text);
@@ -122,6 +140,66 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .switch[data-count="1"] .arrow,.switch[data-count="1"] .dots{visibility:hidden}
     @media (prefers-reduced-motion:reduce){.slide,.cap{transition:none}}
 
+    /* THE CLOSE-UP BAND: shown only when the close-up picture is in the folder, and never wider than the picture itself */
+    .closeup{background:#0b0b0b;color:#fff;display:grid;gap:28px;justify-items:center;text-align:center;padding:56px max(var(--g),env(safe-area-inset-right)) 60px max(var(--g),env(safe-area-inset-left))}
+    .closeup[hidden]{display:none}
+    .closeup figure{position:relative;width:min(100%,var(--w,640px))}
+    .closeup img{width:100%;height:auto}
+    .closeup .tag{display:block;margin-top:10px;font-size:11px;line-height:1;color:#b4b4b4;text-align:left}
+    .closeup .label{color:#b4b4b4}
+    .closeup h2{font:400 34px/1.06 var(--display);margin:10px 0 14px}
+    .closeup .text p:last-child{color:#d6d6d6;max-width:34ch;margin:0 auto}
+    /* THE RING: one pinned screen inside a track three screens tall. Without scripts or with reduced motion it is a still and three short texts */
+    .ring{position:relative;background:var(--paper);height:300svh}
+    .ring .pin{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:calc(8svh + env(safe-area-inset-top)) max(var(--g),env(safe-area-inset-right)) 44px max(var(--g),env(safe-area-inset-left))}
+    .ring .turn{position:relative;flex:0 0 auto;width:min(78vw,44svh,360px);aspect-ratio:1}
+    .ring .turn img,.ring .turn canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+    .ring .turn canvas{opacity:0}
+    .ring .turn [data-a]{top:-12.35%;height:112.35%}
+    .ring .steps{display:grid;width:100%;text-align:center}
+    .ring .step{grid-area:1/1;opacity:0;transition:opacity .4s var(--ease)}
+    .ring .step.on{opacity:1}
+    .ring h2{font:400 clamp(32px,9vw,48px)/1.04 var(--display);letter-spacing:-.005em;margin:8px 0 12px}
+    .ring .line{max-width:32ch;margin:0 auto}
+    .ring .note{position:absolute;left:var(--g);right:var(--g);bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;font-size:11px;color:var(--mid)}
+    .ring[data-still="true"]{height:auto}
+    .ring[data-still="true"] .pin{position:static;height:auto;padding-top:56px;padding-bottom:64px}
+    .ring[data-still="true"] .steps{gap:32px}
+    .ring[data-still="true"] .step{grid-area:auto;opacity:1}
+    @media (prefers-reduced-motion:reduce){.ring .step{transition:none}}
+    /* WHAT DECIDES A SAPPHIRE: a plain list with hairlines, term then line */
+    .know{background:var(--grey);padding:56px max(var(--g),env(safe-area-inset-right)) 60px max(var(--g),env(safe-area-inset-left))}
+    .know .head{text-align:center}
+    .know h2{font:400 34px/1.08 var(--display);letter-spacing:-.005em;margin:10px 0 12px}
+    .know .aside{font-size:13px;color:var(--mid)}
+    .know dl{margin:30px 0 0;border-bottom:1px solid var(--line)}
+    .know dl div{display:grid;gap:4px;padding:16px 0;border-top:1px solid var(--line)}
+    .know dt{font:500 23px/1.15 var(--display)}
+    .know dd{margin:0;font-size:15px;line-height:1.5;text-wrap:pretty}
+    @media (min-width:600px){
+      .ring .turn{width:min(60vw,50svh,480px)}
+      .know dl{max-width:640px;margin-left:auto;margin-right:auto}
+    }
+    @media (min-width:1100px){
+      .closeup{grid-template-columns:auto minmax(0,440px);justify-content:center;align-items:center;column-gap:72px;text-align:left;padding:112px var(--g)}
+      .closeup figure{width:min(52vw,var(--w,640px))}
+      .closeup h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
+      .closeup .text p:last-child{font-size:18px;margin:0}
+      .ring .pin{flex-direction:row;gap:7vw;padding:0 var(--g)}
+      .ring .turn{width:min(40vw,60svh,560px)}
+      .ring .steps{width:min(440px,34vw);text-align:left}
+      .ring h2{font-size:clamp(48px,4.6vw,68px);line-height:1;margin:14px 0 20px}
+      .ring .line{font-size:18px;margin:0}
+      .ring .note{text-align:left;bottom:26px}
+      .ring[data-still="true"] .pin{padding-top:112px;padding-bottom:112px}
+      .know{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px;align-items:start;padding:120px var(--g) 128px}
+      .know .head{text-align:left;max-width:440px}
+      .know h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
+      .know dl{margin:0;max-width:none}
+      .know dl div{grid-template-columns:170px minmax(0,1fr);column-gap:32px;align-items:baseline;padding:20px 0}
+      .know dt{font-size:27px}
+      .know dd{font-size:16px;max-width:56ch}
+    }
     /* THE CLOSE */
     .close{background:var(--grey);text-align:center;padding:64px max(var(--g),env(safe-area-inset-right)) calc(36px + env(safe-area-inset-bottom)) max(var(--g),env(safe-area-inset-left))}
     .close h2{font:400 clamp(36px,10vw,56px)/1.02 var(--display);letter-spacing:-.01em;margin:10px 0 28px}
@@ -210,6 +288,41 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   </div>
 </section>
 
+<section class="closeup" data-closeup hidden aria-labelledby="closeup-h">
+  <figure><img data-base="assets/one-pager/products/closeup" alt="A blue sapphire seen close, its facets catching the light" decoding="async"><span class="tag">Generated sample</span></figure>
+  <div class="text">
+    <p class="label">Up close</p>
+    <h2 id="closeup-h">The cut decides how the blue is seen.</h2>
+    <p>Angles and proportions send the light back through the stone. That is the work of our stonecutters.</p>
+  </div>
+</section>
+<section class="ring" id="ring" data-ring data-still="true" data-frames="assets/motion/" aria-label="From a loose stone to a ring, in three steps">
+  <div class="pin">
+    <div class="turn" aria-hidden="true">
+      <img data-poster src="assets/motion/hero-ring/ring-560-000.webp" width="560" height="560" alt="" loading="lazy" decoding="async">
+      <canvas data-c width="560" height="560"></canvas>
+      <canvas data-a width="560" height="629"></canvas>
+    </div>
+    <div class="steps">
+      {STEPS.map(([label, head, line], i) => (
+        <div class={i === 0 ? 'step on' : 'step'} data-step>
+          <p class="label">{label}</p>
+          <h2>{head}</h2>
+          <p class="line">{line}</p>
+        </div>
+      ))}
+    </div>
+    <p class="note">Generated sample. A design study, not a claim about stock or availability.</p>
+  </div>
+</section>
+<section class="know" aria-labelledby="know-h">
+  <div class="head">
+    <p class="label">How a sapphire is judged</p>
+    <h2 id="know-h">What makes one sapphire worth more than another</h2>
+    <p class="aside">General gem knowledge, not a description of any one stone.</p>
+  </div>
+  <dl>{KNOW.map(([term, line]) => <div><dt>{term}</dt><dd>{line}</dd></div>)}</dl>
+</section>
 <section class="pieces" id="pieces" aria-labelledby="pieces-h">
   <div class="text">
     <h2 id="pieces-h">Loose stones and finished pieces</h2>
@@ -326,6 +439,83 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     if (ok.length) live = ok;
     build();
   });
+})();
+</script>
+<script is:inline>
+(() => {
+  // THE CLOSE-UP: the band appears only when the picture is in the folder, at the picture's own width and no wider.
+  const band = document.querySelector('[data-closeup]');
+  if (band) {
+    const img = band.querySelector('img'), EXT = ['jpg', 'jpeg', 'png', 'webp'];
+    let k = 0;
+    const next = () => {
+      if (k >= EXT.length) { band.dataset.state = 'empty'; return; }
+      const src = img.dataset.base + '.' + EXT[k++], t = new Image();
+      t.onload = () => { img.src = src; img.width = t.naturalWidth; img.height = t.naturalHeight; band.style.setProperty('--w', t.naturalWidth + 'px'); band.hidden = false; band.dataset.state = 'ok'; };
+      t.onerror = next;
+      t.src = src;
+    };
+    next();
+  }
+  // THE RING: scroll is the only clock. Step 1 turns the ring, step 2 takes it apart and puts it back, step 3 turns it back to blue.
+  const el = document.querySelector('[data-ring]');
+  if (!el) return;
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  const c = el.querySelector('[data-c]'), a = el.querySelector('[data-a]'), poster = el.querySelector('[data-poster]');
+  const steps = [...el.querySelectorAll('[data-step]')];
+  const base = el.dataset.frames, px = innerWidth >= 760 ? 1200 : 560, sets = {};
+  let started = false, queued = false;
+  const clamp = v => Math.max(0, Math.min(1, v)), ease = v => { v = clamp(v); return v * v * (3 - 2 * v); };
+  const load = (name, path, n) => {
+    const imgs = []; let left = n;
+    for (let i = 0; i < n; i++) {
+      const im = new Image();
+      im.onload = () => { if (--left === 0) { sets[name] = imgs; el.dataset.loaded = Object.keys(sets).join(' '); ask(); } };
+      im.onerror = () => { el.dataset.still = 'true'; };
+      im.src = base + path + String(i).padStart(3, '0') + '.webp';
+      imgs.push(im);
+    }
+  };
+  const paint = (cv, imgs, f) => {
+    const n = Math.round(clamp(f / (imgs.length - 1)) * (imgs.length - 1)), im = imgs[n];
+    if (cv._n === n) return n;
+    if (cv.width !== im.naturalWidth || cv.height !== im.naturalHeight) { cv.width = im.naturalWidth; cv.height = im.naturalHeight; }
+    const x = cv.getContext('2d');
+    x.clearRect(0, 0, cv.width, cv.height); x.drawImage(im, 0, 0); cv._n = n;
+    return n;
+  };
+  const update = () => {
+    queued = false;
+    if (el.dataset.still === 'true') return;
+    const travel = el.offsetHeight - innerHeight, p = clamp(-el.getBoundingClientRect().top / travel);
+    const n = p < .3 ? 0 : p < .7 ? 1 : 2;
+    let f = 59, af = -1;
+    if (n === 0) f = 59 * ease(p / .3);
+    else if (n === 1) { const q = (p - .3) / .4; af = 31 * (q < .5 ? ease(q / .4) : 1 - ease((q - .6) / .4)); }
+    else f = 59 * (1 - ease((p - .7) / .26));
+    steps.forEach((s, i) => s.classList.toggle('on', i === n));
+    const split = af >= 0 && !!sets.apart;
+    if (sets.turn) el.dataset.frame = String(paint(c, sets.turn, f));
+    if (split) el.dataset.apart = String(paint(a, sets.apart, af)); else el.dataset.apart = '';
+    c.style.opacity = sets.turn && !split ? '1' : '0';
+    a.style.opacity = split ? '1' : '0';
+    poster.style.opacity = sets.turn ? '0' : '1';
+    el.dataset.step = String(n + 1);
+  };
+  const ask = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  const start = () => { if (started) return; started = true; load('turn', 'hero-ring/ring-' + px + '-', 60); load('apart', 'journey/apart-' + px + '-', 32); };
+  const mode = () => {
+    el.dataset.still = String(calm.matches);
+    if (calm.matches) { steps.forEach(s => s.classList.add('on')); return; }
+    steps.forEach((s, i) => s.classList.toggle('on', i === 0));
+    if ('IntersectionObserver' in window) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); start(); } }, { rootMargin: '100% 0px' }).observe(el);
+    else start();
+    ask();
+  };
+  calm.addEventListener('change', mode);
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask);
+  mode();
 })();
 </script>
 </body>
