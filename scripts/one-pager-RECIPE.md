@@ -61,14 +61,14 @@ No deploy. Putting it on the demo address needs Thulaib's yes first. The folder 
 
 ## 6. Finishing touches
 
-- The shared site stylesheet link is taken out of the built page | why: the build links the home page's bundle into every page and its cream theme and class rules would leak in | held by: `scripts/one-pager-pack.mjs`
-- Every path in the page is relative | why: the page must open from a folder with a double click | held by: `scripts/one-pager-pack.mjs` (fails on a path that starts at the site root)
-- The products folder here is a link to `~/Downloads/HOUSE-OF-PRIYANTHA-HERO/products/` | why: a new picture shows on the next refresh with no rebuild | held by: `scripts/one-pager-pack.mjs`
-- A missing picture shows a marked empty slot, or is left out once at least one picture exists | why: nothing is ever drawn or invented in a product's place | held by: the inline script in `src/pages/one-pager.astro`
-- Pictures are stacked in one fixed square and swapped by opacity | why: the page must not jump when the picture changes | held by: `scripts/one-pager-check.mjs` (one box position through every press)
-- Every picture carries "Generated sample" and the close says so again | why: the client must not take a generated picture for the house's own stock | held by: `scripts/one-pager-check.mjs`
-- No certificate, treatment, origin, price, weight or year words | why: the client has not confirmed them | held by: `scripts/one-pager-check.mjs`
-- Playwright launches the full Chromium build | why: the headless shell is not installed on the BB machine | held by: `scripts/one-pager-check.mjs`
+- The shared site stylesheet link is taken out of the built page | why: the build links the home page's bundle into every page and its cream theme and class rules would leak in | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-pack.mjs`
+- Every path in the page is relative | why: the page must open from a folder with a double click | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-pack.mjs` (fails on a path that starts at the site root)
+- The products folder here is a link to `~/Downloads/HOUSE-OF-PRIYANTHA-HERO/products/` | why: a new picture shows on the next refresh with no rebuild | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-pack.mjs`
+- A missing picture shows a marked empty slot and is left out once at least one picture exists | why: nothing is ever drawn or invented in a product's place | held by: `~/bb-websites/hop-hero/site/src/pages/one-pager.astro` (the inline script)
+- Pictures are stacked in one fixed square and swapped by opacity | why: the page must not jump when the picture changes | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-check.mjs` (one box position through every press)
+- Every picture carries "Generated sample" and the close says so again | why: the client must not take a generated picture for the house's own stock | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-check.mjs`
+- No certificate, treatment, origin, price, weight or year words | why: the client has not confirmed them | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-check.mjs`
+- Playwright launches the full Chromium build | why: the headless shell is not installed on the BB machine | held by: `~/bb-websites/hop-hero/site/scripts/one-pager-check.mjs`
 
 ## 7. Cast a copy
 
