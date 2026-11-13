@@ -166,3 +166,11 @@ html[data-gem-paused="true"] .finale .fl{animation-play-state:paused}
  /* The worth section has no picture now: its heading stays beside the list while the list is read. */
  .know .head{grid-row:1 / span 2;align-self:start;position:sticky;top:96px}
 }
+
+/* Nav name on a small hero (13 Nov, Finish 5): the white name must sit on the dark hair, and the hair is only as wide
+   as the hero is tall. Below 1440 wide or 880 tall the name goes on two lines and its size follows the hero height.
+   At 1440x900 and up nothing changes: one line at 19px. */
+@media (min-width:1100px) and (max-width:1439px),(min-width:1100px) and (max-height:879px){
+ .nav .brand{font-size:clamp(14px,calc(min(100svh,(100vw - 500px) / .98) * .0212),19px);line-height:1.14}
+ .nav .brand .by{display:block}
+}
