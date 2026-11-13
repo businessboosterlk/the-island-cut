@@ -46,6 +46,11 @@
     /* THE SWITCHING PIECES: every picture sits in one fixed box and only its opacity changes, so nothing moves */
     .pieces{background:var(--paper);display:flex;flex-direction:column;gap:36px;padding:56px max(var(--g),env(safe-area-inset-right)) 64px max(var(--g),env(safe-area-inset-left))}
     .pieces .text{text-align:center}
+    /* No product picture yet: the picture box is not shown at all and the words stand alone, centred */
+    .pieces:not(:has(.slide[data-state="ok"])){display:block}
+    .pieces:not(:has(.slide[data-state="ok"])) .switch{display:none}
+    .pieces:not(:has(.slide[data-state="ok"])) .text{text-align:center;max-width:560px;margin-inline:auto}
+    .pieces:not(:has(.slide[data-state="ok"])) .text p{margin-inline:auto}
     .pieces h2{font:400 34px/1.08 var(--display);letter-spacing:-.005em}
     .pieces .text p{font:400 20px/1.42 var(--display);max-width:30ch;margin:14px auto 26px}
     .pieces .text .btn{width:100%}
@@ -195,7 +200,7 @@
       .close .foot{grid-column:1/-1;margin-top:96px;grid-template-columns:auto 1fr;align-items:baseline;column-gap:32px}
       .close .foot p{text-align:right}
     }
-  </style><link rel="stylesheet" href="/the-island-cut/assets/app/style.CV8VG_L7.css"></head><body><header class="nav"><a class="brand" href="#top">House of Priyantha</a><div class="right"><nav class="links" aria-label="Sections"><a href="#pieces">Sapphires</a></nav><a class="door" href="#viewing"><span>Book a viewing</span></a></div></header><main id="top"><section class="hero" aria-label="The house"><div class="frame"><figure class="pic"><img src="assets/one-pager/hero-start.webp" width="1536" height="1024" alt="A woman in profile looks at an oval blue sapphire held between her finger and thumb" fetchpriority="high" decoding="async"></figure><span class="tag">Generated sample</span></div><div class="words"><p class="label">Master stonecutters of Ceylon</p><h1><span>It begins </span><span>with <em>blue.</em></span></h1><p class="sub">Sapphires cut by our own stonecutters, shown in daylight and lamplight before you decide.</p><div class="doors"><a class="btn solid" href="#pieces">Explore sapphires <svg
+  </style></head><body><header class="nav"><a class="brand" href="#top">House of Priyantha</a><div class="right"><nav class="links" aria-label="Sections"><a href="#pieces">Sapphires</a></nav><a class="door" href="#viewing"><span>Book a viewing</span></a></div></header><main id="top"><section class="hero" aria-label="The house"><div class="frame"><figure class="pic"><img src="assets/one-pager/hero-start.webp" width="1536" height="1024" alt="A woman in profile looks at an oval blue sapphire held between her finger and thumb" fetchpriority="high" decoding="async"></figure><span class="tag">Generated sample</span></div><div class="words"><p class="label">Master stonecutters of Ceylon</p><h1><span>It begins </span><span>with <em>blue.</em></span></h1><p class="sub">Sapphires cut by our own stonecutters, shown in daylight and lamplight before you decide.</p><div class="doors"><a class="btn solid" href="#pieces">Explore sapphires <svg
   class="ic" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
