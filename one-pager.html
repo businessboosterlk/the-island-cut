@@ -111,11 +111,11 @@
     @media (min-width:600px){.compare .btn{width:auto}.compare .cols{gap:20px;max-width:900px}.compare [data-col]{padding:16px;font-size:14px}.compare [data-col] b{font-size:21px;min-height:2.3em}}
 
     /* THE CLOSE-UP BAND: shown only when the close-up picture is in the folder. The band is the picture's own black and the stone is kept small (13 Nov), so no box edge shows and the facets stay sharp */
-    .closeup{background:#000;color:#fff;display:grid;gap:28px;justify-items:center;text-align:center;padding:44px max(var(--g),env(safe-area-inset-right)) 48px max(var(--g),env(safe-area-inset-left))}
+    .closeup{background:#000;color:#fff;display:grid;gap:44px;justify-items:center;text-align:center;margin:28px max(var(--g),env(safe-area-inset-right)) 44px max(var(--g),env(safe-area-inset-left));padding:44px 20px 44px}
     .closeup[hidden]{display:none}
     .closeup figure{position:relative;width:min(74vw,400px,var(--w,640px))}
     .closeup img{width:100%;height:auto;-webkit-mask-image:radial-gradient(ellipse 50% 50% at center,#000 93%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at center,#000 93%,transparent 100%)}
-    .closeup .tag{display:block;margin-top:14px;font-size:11px;line-height:1;color:#b4b4b4;text-align:center}
+    .closeup .tag{position:absolute;left:0;right:0;top:100%;margin-top:10px;font-size:11px;line-height:1;color:#b4b4b4;text-align:center}
     .closeup .label{color:#b4b4b4}
     .closeup h2{font:400 34px/1.06 var(--display);margin:10px 0 14px}
     .closeup .text p:last-child{color:#d6d6d6;max-width:34ch;margin:0 auto}
@@ -159,9 +159,9 @@
       .know .body{max-width:640px;margin-left:auto;margin-right:auto}
     }
     @media (min-width:1100px){
-      .closeup{grid-template-columns:auto minmax(0,440px);justify-content:center;align-items:center;column-gap:72px;text-align:left;padding:84px var(--g)}
+      .closeup{grid-template-columns:minmax(0,1fr) minmax(0,1fr);justify-items:center;align-items:center;column-gap:0;text-align:left;margin:64px var(--g) 84px;padding:88px 0}
+      .closeup .text{justify-self:start;width:min(480px,100% - var(--g))}
       .closeup figure{width:min(36vw,500px,var(--w,640px))}
-      .closeup .tag{text-align:left}
       .closeup h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
       .closeup .text p:last-child{font-size:18px;margin:0}
       .ring .pin{flex-direction:row;gap:7vw;padding:0 var(--g)}
