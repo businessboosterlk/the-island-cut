@@ -1,17 +1,38 @@
-/* Editorial flow: light surfaces, paired craftsmanship and a centred ring. */
-.story{padding:64px var(--g);gap:32px;background:#fff}
-.story figure{overflow:hidden}
-.story .text{padding:0}
-.story img{aspect-ratio:4/5;object-fit:cover}
+/* Editorial flow v2 (13 Nov): people cut into the white page, gemstone colour layers, a shorter ring and the gallery on the left. */
+html,.nav,.hero{background:#fff}
+.gemc{position:absolute;pointer-events:none}
+.hero .tag{left:12px;bottom:10px;color:#494949;background:rgba(255,255,255,.92);padding:4px 6px}
+.gempause{position:fixed;z-index:5;right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));min-height:36px;padding:0 12px;font:500 12px/1 var(--body);color:#494949;background:rgba(255,255,255,.94);border:1px solid var(--line);opacity:0;visibility:hidden;transition:opacity .2s var(--ease),visibility .2s}
+.gempause.on{opacity:1;visibility:visible}
+@media(pointer:coarse){.gempause{min-height:44px}}
+@media(hover:hover){.gempause:hover{border-color:var(--ink);color:var(--ink)}}
+
+/* PEOPLE AND CRAFT: each cut-out fills its section from top to bottom, so every cropped edge sits on a section edge or a screen edge. */
+.story{padding:0;gap:0;background:#fff;border-top:1px solid var(--line);grid-template-columns:minmax(0,1fr);align-items:center;--h:74vw}
+.story .text{padding:40px var(--g) 18px;text-align:center}
+.story .cut{order:2}
+.cut{position:relative;overflow:hidden;margin:0;height:var(--h);aspect-ratio:var(--ar,1.5);max-width:100%;justify-self:center}
+.cut.to-right{justify-self:end}
+.cut.to-left{justify-self:start}
+.gemfig{position:absolute;top:0;left:var(--x,0%);height:100%;aspect-ratio:3/2}
+.cut.mirror .gemfig{left:auto;right:0;transform:scaleX(-1)}
+.story .cut .gemfig img{display:block;width:100%;height:100%;max-width:none;aspect-ratio:auto;object-fit:fill}
 .story .tag{color:#494949;background:rgba(255,255,255,.92)}
-.craft-triptych{padding-top:72px;padding-bottom:72px}
-.craft-triptych .text{max-width:360px;justify-self:center;text-align:center}
-.craft-triptych .text p:last-child{margin-inline:auto}
-.craft-triptych .craft-detail img{object-position:50% 35%}
-.ring{background:#f6f5f2;height:210svh}
+.story.craft-triptych{grid-template-columns:auto auto;justify-content:space-between;--h:40.6vw}
+.craft-triptych .text{grid-column:1/-1;max-width:420px;justify-self:center;padding-bottom:28px}
+.craft-triptych .cut{justify-self:auto}
+.story.band{display:block}
+.story.band .text{padding:48px var(--g) 4px}
+.story.band .text p:last-child{margin-inline:auto}
+.story.band .cut{height:auto;aspect-ratio:1536/800;width:100%;max-width:none}
+.story.band .gemfig{width:100%;height:auto;top:-11%}
+
+.ring{background:#f6f5f2;height:175svh}
 .ring .pin{flex-direction:column;justify-content:center;gap:22px;padding:44px var(--g) 48px}
 .ring .turn{width:min(68vw,48svh,540px)}
-.ring .steps{width:min(660px,100%);text-align:center;min-height:150px}
+.ring .steps{width:min(660px,100%);text-align:center;min-height:170px}
+.ring .step{transition:opacity .14s linear}
+.ring .step.on{transition:opacity .3s var(--ease) .14s}
 .ring h2{font-size:clamp(36px,4.4vw,62px);margin:8px 0 12px}
 .ring .line{margin-inline:auto;max-width:42ch}
 .ring .note{text-align:center;font-size:10px}
@@ -21,27 +42,59 @@
 .room{padding:48px var(--g) 0;background:#f1f1f1}
 .room figure{max-width:1260px;overflow:hidden}
 .room img{aspect-ratio:16/9;object-position:center 45%}
+.story.plain{padding:64px var(--g);gap:32px;border-top:0}
+.story.plain figure{overflow:hidden}
+.story.plain .text{padding:0}
+.story.plain img{aspect-ratio:4/5;object-fit:cover}
+
+/* FINDER: the tiles are drawn on canvases so only the gemstone takes the chosen colour. */
+.show canvas{display:block;width:100%;aspect-ratio:1}
+.show canvas[hidden],.show .sw[hidden]{display:none}
+.show .sw{aspect-ratio:1;display:grid;place-items:center;background:#fff}
+.show .sw i{width:46%;aspect-ratio:1;background:var(--sw,#1e3f8f)}
+.show .tag+.tag{margin-top:4px}
+.finder .say b{color:var(--ink);box-shadow:inset 0 -3px 0 var(--sw,transparent)}
+
+@media(min-width:600px){
+ .hero .pic{position:relative;left:0;top:0}
+}
 @media(min-width:900px){
- .story{padding:88px max(var(--g),5vw);gap:7vw;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .story{grid-template-columns:minmax(0,1fr) minmax(0,1fr);--h:clamp(420px,40vw,620px)}
+ .story .cut{order:0}
+ .story.flip .cut{order:2}
+ .story .text,.story.flip .text,.story:not(.flip) .text{padding:48px var(--g);text-align:left;max-width:520px;justify-self:center}
  .story:not(.flip) figure{margin:0}
- .story .text,.story.flip .text,.story:not(.flip) .text{padding:0}
- .story img{height:clamp(420px,48vw,680px);aspect-ratio:4/5}
- .story.flip .text{padding-left:4vw}
- .story.craft-triptych{grid-template-columns:minmax(0,1fr) minmax(260px,.9fr) minmax(0,1fr);gap:3vw;padding:84px var(--g) 96px;align-items:center}
- .craft-triptych figure{margin:0!important}
- .craft-triptych img{height:clamp(360px,34vw,520px);aspect-ratio:3/4}
- .craft-triptych h2{font-size:clamp(38px,3.8vw,58px)}
- .craft-triptych .text p:last-child{font-size:21px;margin-inline:auto}
- .craft-triptych .craft-detail{margin-top:60px!important}
- .ring .turn{width:min(46svh,520px)}
+ .story.band .text,.story.band:not(.flip) .text{padding:72px var(--g) 0;text-align:center;max-width:none}
+ .story.band .text p:last-child{margin-inline:auto;max-width:40ch}
+ .story.plain{padding:88px max(var(--g),5vw);gap:7vw}
+ .story.plain img{height:clamp(420px,48vw,680px)}
  .pieces{padding:88px max(var(--g),5vw)}
  .know,.finder{padding-top:88px;padding-bottom:88px}
 }
-@media(max-width:899px){
- .craft-triptych{grid-template-columns:1fr 1fr;gap:24px 16px}
- .craft-triptych .text{grid-column:1/-1;grid-row:1;margin-bottom:8px}
- .craft-triptych figure{grid-row:2}
- .craft-triptych img{height:auto;aspect-ratio:3/4}
- .ring .steps{min-height:170px}
+@media(min-width:1100px){
+ .nav{mix-blend-mode:difference;color:#fff;background:none}
+ .nav .door{border-bottom-color:#fff}
+ .hero .pic{-webkit-mask-image:none;mask-image:none}
+ .hero .frame{left:0;top:0;height:var(--hh);width:calc(var(--hh) * 1.5)}
+ .hero .words{left:calc(var(--hh) * 1.02 + 36px)}
+ .hero .tag{left:var(--g);bottom:14px}
+ .story.craft-triptych{grid-template-columns:auto minmax(0,1fr) auto;--h:clamp(310px,28vw,540px)}
+ .craft-triptych .text{grid-column:auto;text-align:center;max-width:380px;padding:24px 16px;align-self:center}
+ .craft-triptych .text p:last-child{margin-inline:auto;font-size:21px}
+ .craft-triptych h2{font-size:clamp(38px,3.8vw,58px)}
+ /* GALLERY: picture and its controls on the left, the words on the right and centred against the picture alone. */
+ .pieces:has(.slide[data-state="ok"]){display:grid;grid-template-columns:48px minmax(0,min(520px,62svh)) 48px minmax(0,1fr);column-gap:28px;row-gap:18px;align-items:center}
+ .pieces:has(.slide[data-state="ok"]) .switch{display:contents}
+ .pieces .stage{grid-column:2;grid-row:1}
+ .pieces .arrow.prev{grid-column:1;grid-row:1}
+ .pieces .arrow.next{grid-column:3;grid-row:1}
+ .pieces .caps{grid-column:2;grid-row:2}
+ .pieces .dots{grid-column:2;grid-row:3}
+ .pieces .pass{grid-column:2;grid-row:4}
+ .pieces .text{grid-column:4;grid-row:1;align-self:center;justify-self:center;text-align:left;max-width:440px}
+ .pieces .compare{grid-column:1/-1;grid-row:5}
 }
-@media(prefers-reduced-motion:reduce){.ring[data-still="true"] .steps{min-height:0}}
+@media(max-width:899px){
+ .ring .steps{min-height:190px}
+}
+@media(prefers-reduced-motion:reduce){.ring[data-still="true"] .steps{min-height:0}.gempause{display:none}}
