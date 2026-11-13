@@ -713,7 +713,7 @@ window.HOP = (() => {
   const load = (name, path, n) => {
     const imgs = []; let left = n;
     for (let i = 0; i < n; i++) {
-      const im = new Image(); im.fetchPriority = 'low'; // the frames wait behind the page's own pictures
+      const im = new Image();
       im.onload = () => { if (--left === 0) { sets[name] = imgs; el.dataset.loaded = Object.keys(sets).join(' '); ask(); } };
       im.onerror = () => { el.dataset.still = 'true'; };
       im.src = base + path + String(i).padStart(3, '0') + '.webp';
@@ -755,7 +755,7 @@ window.HOP = (() => {
     el.dataset.colour = col[2] ? col[0] + '>' + col[1] : col[0];
   };
   const ask = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-  const start = () => { if (started) return; if (document.readyState !== 'complete') { addEventListener('load', start, { once: true }); return; } started = true; load('turn', 'hero-ring/ring-' + px + '-', 60); load('apart', 'journey/apart-' + px + '-', 32); };
+  const start = () => { if (started) return; started = true; load('turn', 'hero-ring/ring-' + px + '-', 60); load('apart', 'journey/apart-' + px + '-', 32); };
   const mode = () => {
     el.dataset.still = String(calm.matches);
     if (calm.matches) { steps.forEach(s => s.classList.add('on')); return; }
