@@ -1,0 +1,47 @@
+/* Editorial flow: light surfaces, paired craftsmanship and a centred ring. */
+.story{padding:64px var(--g);gap:32px;background:#fff}
+.story figure{overflow:hidden}
+.story .text{padding:0}
+.story img{aspect-ratio:4/5;object-fit:cover}
+.story .tag{color:#494949;background:rgba(255,255,255,.92)}
+.craft-triptych{padding-top:72px;padding-bottom:72px}
+.craft-triptych .text{max-width:360px;justify-self:center;text-align:center}
+.craft-triptych .text p:last-child{margin-inline:auto}
+.craft-triptych .craft-detail img{object-position:50% 35%}
+.ring{background:#f6f5f2;height:210svh}
+.ring .pin{flex-direction:column;justify-content:center;gap:22px;padding:44px var(--g) 48px}
+.ring .turn{width:min(68vw,48svh,540px)}
+.ring .steps{width:min(660px,100%);text-align:center;min-height:150px}
+.ring h2{font-size:clamp(36px,4.4vw,62px);margin:8px 0 12px}
+.ring .line{margin-inline:auto;max-width:42ch}
+.ring .note{text-align:center;font-size:10px}
+.lights{background:#f6f5f2}
+.lights .cmp{max-width:1040px}
+.lights .ends{max-width:1040px}
+.room{padding:48px var(--g) 0;background:#f1f1f1}
+.room figure{max-width:1260px;overflow:hidden}
+.room img{aspect-ratio:16/9;object-position:center 45%}
+@media(min-width:900px){
+ .story{padding:88px max(var(--g),5vw);gap:7vw;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .story:not(.flip) figure{margin:0}
+ .story .text,.story.flip .text,.story:not(.flip) .text{padding:0}
+ .story img{height:clamp(420px,48vw,680px);aspect-ratio:4/5}
+ .story.flip .text{padding-left:4vw}
+ .story.craft-triptych{grid-template-columns:minmax(0,1fr) minmax(260px,.9fr) minmax(0,1fr);gap:3vw;padding:84px var(--g) 96px;align-items:center}
+ .craft-triptych figure{margin:0!important}
+ .craft-triptych img{height:clamp(360px,34vw,520px);aspect-ratio:3/4}
+ .craft-triptych h2{font-size:clamp(38px,3.8vw,58px)}
+ .craft-triptych .text p:last-child{font-size:21px;margin-inline:auto}
+ .craft-triptych .craft-detail{margin-top:60px!important}
+ .ring .turn{width:min(46svh,520px)}
+ .pieces{padding:88px max(var(--g),5vw)}
+ .know,.finder{padding-top:88px;padding-bottom:88px}
+}
+@media(max-width:899px){
+ .craft-triptych{grid-template-columns:1fr 1fr;gap:24px 16px}
+ .craft-triptych .text{grid-column:1/-1;grid-row:1;margin-bottom:8px}
+ .craft-triptych figure{grid-row:2}
+ .craft-triptych img{height:auto;aspect-ratio:3/4}
+ .ring .steps{min-height:170px}
+}
+@media(prefers-reduced-motion:reduce){.ring[data-still="true"] .steps{min-height:0}}
