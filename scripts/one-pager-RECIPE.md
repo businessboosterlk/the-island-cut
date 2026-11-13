@@ -166,3 +166,5 @@ worn."), viewing table `s5-viewing`, close.
 
 Heights seen on the built page, 14 pictures in the folder: desk 1440 by 900 is 12720 px (14.1 screens), phone
 390 by 844 is 11262 px (13.3 screens), ring track 1890 and 1772 px, 0 hidden picture sections, no sideways scroll.
+
+- From 09:35 the close-up is an inset black panel on the white page, inside the page gutters, with white space above and below; its words start on the middle line like the story sections | why: a full width black band butted straight against the next photograph and Thulaib called the join ugly | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
