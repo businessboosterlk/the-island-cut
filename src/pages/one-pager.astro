@@ -308,6 +308,37 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       .lights .head p:last-child{font-size:22px}
       .room{padding-top:0}
     }
+    /* FIND YOUR SAPPHIRE: three taps write the enquiry; the sentence is the feature */
+    .finder{padding:64px max(var(--g),env(safe-area-inset-right)) 68px max(var(--g),env(safe-area-inset-left))}
+    .finder .head{text-align:center}
+    .finder h2{font:400 34px/1.08 var(--display);letter-spacing:-.005em;margin:10px 0 12px}
+    .finder .head p:last-child{font:400 19px/1.45 var(--display);max-width:30ch;margin:0 auto}
+    .finder fieldset{border:0;border-top:1px solid var(--line);margin:0;padding:18px 0 20px;min-width:0}
+    .finder .pick{margin-top:30px}
+    .finder legend{float:left;width:100%;padding:0;margin-bottom:12px;font-size:14px;color:var(--mid)}
+    .finder .opts{clear:both;display:flex;flex-wrap:wrap;gap:8px}
+    .finder .opt{position:relative}
+    .finder .opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+    .finder .opt span{display:flex;align-items:center;gap:10px;min-height:46px;padding:0 16px;border:1px solid var(--line);font-size:15px;transition:border-color .18s var(--ease),background-color .18s var(--ease),color .18s var(--ease)}
+    .finder .opt i{width:16px;height:16px;background:var(--sw);flex:none}
+    .finder .opt input:checked+span{border-color:var(--ink);background:var(--ink);color:#fff}
+    .finder .opt input:focus-visible+span{outline:2px solid var(--blue);outline-offset:2px}
+    @media (hover:hover){.finder .opt input:not(:checked):hover+span{border-color:var(--ink)}}
+    .finder .out{border-top:1px solid var(--ink);padding-top:22px}
+    .finder .out .label{margin:0 0 8px}
+    .finder .say{font:400 27px/1.18 var(--display);margin:0 0 22px;text-wrap:balance;min-height:2.4em}
+    .finder .say b{font-weight:400;color:var(--blue)}
+    .finder .btn{width:100%}
+    .finder .fine{font-size:12px;color:var(--mid);margin:14px 0 0}
+    @media (min-width:600px){.finder .pick{max-width:640px;margin-left:auto;margin-right:auto}.finder .btn{width:auto}}
+    @media (min-width:1100px){
+      .finder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:0;align-items:start;padding:120px var(--g) 128px}
+      .finder .head{text-align:left;max-width:440px}
+      .finder h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
+      .finder .head p:last-child{font-size:22px;margin:0}
+      .finder .pick{margin:0;max-width:none}
+      .finder .say{font-size:38px;line-height:1.1;margin-bottom:28px}
+    }
   </style>
 </head>
 <body>
@@ -394,6 +425,40 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     <p class="aside">General gem knowledge, not a description of any one stone.</p>
   </div>
   <dl>{KNOW.map(([term, line]) => <div><dt>{term}</dt><dd>{line}</dd></div>)}</dl>
+</section>
+<section class="finder" id="find" aria-labelledby="find-h">
+  <div class="head">
+    <p class="label">Find your sapphire</p>
+    <h2 id="find-h">Tell us what you <br>have in mind.</h2>
+    <p>Three taps. The house reads your request before you arrive, so the right stones are on the table.</p>
+  </div>
+  <form class="pick" data-finder data-wa={waBase} data-house={HOUSE}>
+    <fieldset><legend>The shape</legend><div class="opts">
+      <label class="opt"><input type="radio" name="shape" value="An oval" checked><span>Oval</span></label>
+      <label class="opt"><input type="radio" name="shape" value="A cushion cut"><span>Cushion</span></label>
+      <label class="opt"><input type="radio" name="shape" value="A round"><span>Round</span></label>
+      <label class="opt"><input type="radio" name="shape" value="A pear cut"><span>Pear</span></label>
+      <label class="opt"><input type="radio" name="shape" value=""><span>Not sure yet</span></label>
+    </div></fieldset>
+    <fieldset><legend>The blue</legend><div class="opts">
+      <label class="opt"><input type="radio" name="blue" value="cornflower blue"><span><i style="--sw:#6f8fd8"></i>Cornflower</span></label>
+      <label class="opt"><input type="radio" name="blue" value="royal blue" checked><span><i style="--sw:#1e3f8f"></i>Royal</span></label>
+      <label class="opt"><input type="radio" name="blue" value="deep blue"><span><i style="--sw:#0f1f4d"></i>Deep</span></label>
+      <label class="opt"><input type="radio" name="blue" value=""><span>Show me all three</span></label>
+    </div></fieldset>
+    <fieldset><legend>What it is for</legend><div class="opts">
+      <label class="opt"><input type="radio" name="use" value="for a ring" checked><span>A ring</span></label>
+      <label class="opt"><input type="radio" name="use" value="for a pair of earrings"><span>Earrings</span></label>
+      <label class="opt"><input type="radio" name="use" value="for a pendant"><span>A pendant</span></label>
+      <label class="opt"><input type="radio" name="use" value="as a loose stone"><span>A loose stone</span></label>
+    </div></fieldset>
+    <div class="out">
+      <p class="label">Your request</p>
+      <p class="say" data-say aria-live="polite"></p>
+      <a class="btn solid" data-send href={wa(`Hello, from the ${HOUSE} page. I would like to book a private viewing.`)} target="_blank" rel="noopener">Send this on WhatsApp <Fragment set:html={ic(arrowOutRaw)} /></a>
+      <p class="fine">A request for a viewing, not an order. The house replies with what it can show you.</p>
+    </div>
+  </form>
 </section>
 <section class="story flip" data-needs hidden aria-labelledby="origin-h">
   <figure><img data-pic data-base="assets/one-pager/products/s2-rough" alt="An open palm holding a rough blue sapphire crystal" decoding="async"><span class="tag">Generated sample</span></figure>
@@ -636,6 +701,22 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     if (!es.some(e => e.isIntersecting)) return; o.disconnect();
     setTimeout(() => { const t0 = performance.now(); const tick = t => { if (touched) return; const x = Math.min(1, (t - t0) / 1650); set(50 + 22 * Math.sin(Math.PI * x)); if (x < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, 450);
   }, { threshold: .5 }).observe(cmp);
+})();
+</script>
+<script is:inline>
+(() => {
+  // FIND YOUR SAPPHIRE: every tap rewrites the sentence and the WhatsApp message behind the button.
+  const f = document.querySelector('[data-finder]'); if (!f) return;
+  const say = f.querySelector('[data-say]'), send = f.querySelector('[data-send]');
+  const val = n => (f.querySelector('input[name="' + n + '"]:checked') || {}).value || '';
+  const draw = () => {
+    const shape = val('shape'), blue = val('blue'), use = val('use');
+    const lead = shape ? shape + ' sapphire' : 'A sapphire';
+    const tail = (shape ? '' : ' The shape is still open.') + (blue ? '' : ' I would like to see all three blues.');
+    say.innerHTML = lead + (blue ? ' in <b>' + blue + '</b>' : '') + ', ' + use + '.' + tail;
+    send.href = f.dataset.wa + encodeURIComponent('Hello, from the ' + f.dataset.house + ' page. I am looking for: ' + say.textContent + ' I would like to book a private viewing.');
+  };
+  f.addEventListener('change', draw); f.addEventListener('submit', e => e.preventDefault()); draw();
 })();
 </script>
 </body>
