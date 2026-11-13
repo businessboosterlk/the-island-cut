@@ -145,4 +145,24 @@ measured off these ring frames: other frames need their own.
 - Open decisions: bb_pending 1843 (other stone colours), 1844 (headline wording), 1845 (recast the whole site),
   1846 and 1847. From 13 Nov: 1849 (footer facts), 1850 (real passport values), 1851 (budget bands), 1852 (does
   the house cut its own stones).
-- Pictures `s6-portrait`, `s7-jeweller` and `s8-hands-ring` had not arrived on 13 Nov; no section was built for them.
+- Pictures `s6-portrait`, `s7-jeweller` and `s8-hands-ring` arrived at 09:04 on 13 Nov and have sections (see 9).
+
+## 9. The 09:20 pass on 13 Nov (close-up, live preview, five pictures)
+
+Page order now: nav, hero, `.closeup`, craft `s1-cutting`, ring, `s6-portrait` (flip, "Two stones, one blue."),
+two lights, how judged, `s7-jeweller` ("Look closer than the eye can."), finder with `[data-show]` preview,
+`s2-rough` (flip, "A stone looks different once it is worn."), pieces, `s8-hands-ring` ("Seen as it will be
+worn."), viewing table `s5-viewing`, close.
+
+- The close-up band is pure black `#000`, the stone is shown at most 400 px wide on the phone and 500 px on the desk with a soft oval mask, and `closeup.jpg` is the png at its own 1536 px, quality 92 | why: the old jpg was stretched to 1800 px and sat as a black box on a `#0b0b0b` band, so the box edge showed and the stone looked blotchy | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- Find your sapphire shows the choice in `[data-show]`: "Your stone" by shape (oval p1, cushion p2, round p4, pear p5, not sure p1) and "Set as" by use (ring p3, earrings p4, pendant p5; loose stone and gift show the stone alone). One tile when both would be the same picture | why: Thulaib asked to see the product as in the CCT and Sasto package builders | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- The blue choice tints both tiles with two inline SVG gamma filters, `#hop-light` (0.55) and `#hop-deep` (1.7); royal is the picture untouched | why: a gamma curve keeps the white background white, a CSS brightness filter greys it | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- The preview is a sticky strip on the phone and a sticky panel in the left column on the desk, and it is hidden if its stone picture is not in the folder | why: the choice must stay in view while options are tapped and nothing broken may show | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- The preview's text wrapper is `.said`, never `.cap` | why: `.cap` is the carousel caption class and hid the text | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- The new `s2-rough` is a woman wearing a pear pendant and the new `s5-viewing` is a man showing a stone in tweezers to a client; the slot names stayed, the words and alt text were rewritten to match. The river gravel sentence went with the old rough crystal picture | why: the words must describe the picture that is shown | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- "Generated sample" on the story, room and two lights pictures sits on a white chip | why: grey words on a grey photograph could not be read | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- `s6-portrait` carries `object-position:10% 50%` | why: the desk crop cut off one earring | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- Shrink command: `sips -s format jpeg -s formatOptions 82 -Z 1800 <in>.png --out <products>/<name>.jpg` (these pngs are 1536 px, so sips stretches them to 1800). The three replaced jpgs are kept in `~/Downloads/HOUSE-OF-PRIYANTHA-HERO/products-before-0914/`.
+
+Heights seen on the built page, 14 pictures in the folder: desk 1440 by 900 is 12720 px (14.1 screens), phone
+390 by 844 is 11262 px (13.3 screens), ring track 1890 and 1772 px, 0 hidden picture sections, no sideways scroll.
