@@ -42,6 +42,12 @@ const KNOW = [
   ['Treatment', 'Natural does not mean untreated. A natural sapphire may still have been heated and a buyer should always be told.'],
   ['Origin', 'Where a stone was mined can influence its value. It is one factor among several and it is hard to establish, even for a laboratory.'],
 ];
+// THREE QUESTIONS BUYERS ASK (13 Nov). General gem knowledge only; no line describes this house's stock.
+const ASKED = [
+  ['Heated and unheated', 'Most sapphires sold today have been heated to improve their colour and clarity. It is an old, accepted practice and the result is permanent. An unheated stone of the same quality is rarer and usually costs more, so ask for the treatment in writing.'],
+  ['Ceylon and other origins', 'Ceylon is the old name for Sri Lanka, one of the oldest sources of sapphire and long known for bright, lively blues. Kashmir, Burma and Madagascar are other well known sources. Origin adds to a stone only when the stone itself is good.'],
+  ['Cut styles', 'Oval and cushion are the most common shapes because they keep the most of the rough crystal. Round, pear and emerald cuts are made too. Faceted stones are cut to return light. A cabochon is a smooth dome, the cut used for star sapphires.'],
+];
 const ic = raw => raw.replace(/<!--[\s\S]*?-->/, '').replace(/class="[^"]*"/, 'class="ic" aria-hidden="true" focusable="false"').replace('stroke-width="2"', 'stroke-width="1.5"').trim();
 const waBase = `https://wa.me/${SITE.whatsapp}?text=`;
 const wa = text => waBase + encodeURIComponent(text);
@@ -98,7 +104,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .hero .pic{position:absolute;width:182.86vw;aspect-ratio:3/2;left:-25vw;top:-7.14vw}
     .hero .pic img{width:100%;height:100%;max-width:none;object-fit:cover}
     .hero .tag{position:absolute;left:20%;bottom:11px;font-size:11px;line-height:1;color:#fff}
-    .hero .words{text-align:center;padding:28px max(var(--g),env(safe-area-inset-right)) 44px max(var(--g),env(safe-area-inset-left))}
+    .hero .words{text-align:center;padding:26px max(var(--g),env(safe-area-inset-right)) 36px max(var(--g),env(safe-area-inset-left))}
     .hero h1{font:400 clamp(36px,10.6vw,60px)/1 var(--display);letter-spacing:-.01em;margin:10px 0 14px}
     .hero h1 em{font-style:normal;color:var(--blue)}
     .hero .sub{font-size:16px;color:var(--ink);max-width:34ch;margin:0 auto 24px}
@@ -108,7 +114,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .hero .marks li:first-child{border-left:0}
 
     /* THE SWITCHING PIECES: every picture sits in one fixed box and only its opacity changes, so nothing moves */
-    .pieces{background:var(--paper);display:flex;flex-direction:column;gap:36px;padding:56px max(var(--g),env(safe-area-inset-right)) 64px max(var(--g),env(safe-area-inset-left))}
+    .pieces{background:var(--paper);display:flex;flex-direction:column;gap:28px;padding:44px max(var(--g),env(safe-area-inset-right)) 48px max(var(--g),env(safe-area-inset-left))}
     .pieces .text{text-align:center}
     /* No product picture yet: the picture box is not shown at all and the words stand alone, centred */
     .pieces:not(:has(.slide[data-state="ok"])){display:block}
@@ -146,7 +152,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     @media (prefers-reduced-motion:reduce){.slide,.cap{transition:none}}
 
     /* THE CLOSE-UP BAND: shown only when the close-up picture is in the folder, and never wider than the picture itself */
-    .closeup{background:#0b0b0b;color:#fff;display:grid;gap:28px;justify-items:center;text-align:center;padding:56px max(var(--g),env(safe-area-inset-right)) 60px max(var(--g),env(safe-area-inset-left))}
+    .closeup{background:#0b0b0b;color:#fff;display:grid;gap:28px;justify-items:center;text-align:center;padding:44px max(var(--g),env(safe-area-inset-right)) 48px max(var(--g),env(safe-area-inset-left))}
     .closeup[hidden]{display:none}
     .closeup figure{position:relative;width:min(100%,var(--w,640px))}
     .closeup img{width:100%;height:auto}
@@ -154,8 +160,8 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .closeup .label{color:#b4b4b4}
     .closeup h2{font:400 34px/1.06 var(--display);margin:10px 0 14px}
     .closeup .text p:last-child{color:#d6d6d6;max-width:34ch;margin:0 auto}
-    /* THE RING: one pinned screen inside a track three screens tall. Without scripts or with reduced motion it is a still and three short texts */
-    .ring{position:relative;background:var(--paper);height:300svh}
+    /* THE RING: one pinned screen inside a track about two screens tall (three until 13 Nov). Without scripts or with reduced motion it is a still and three short texts */
+    .ring{position:relative;background:var(--paper);height:210svh}
     .ring .pin{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:calc(8svh + env(safe-area-inset-top)) max(var(--g),env(safe-area-inset-right)) 44px max(var(--g),env(safe-area-inset-left))}
     .ring .turn{position:relative;flex:0 0 auto;width:min(78vw,44svh,360px);aspect-ratio:1}
     .ring .turn img,.ring .turn canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -173,20 +179,28 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .ring[data-still="true"] .step{grid-area:auto;opacity:1}
     @media (prefers-reduced-motion:reduce){.ring .step{transition:none}}
     /* WHAT DECIDES A SAPPHIRE: a plain list with hairlines, term then line */
-    .know{background:var(--grey);padding:56px max(var(--g),env(safe-area-inset-right)) 60px max(var(--g),env(safe-area-inset-left))}
+    .know{background:var(--grey);padding:44px max(var(--g),env(safe-area-inset-right)) 48px max(var(--g),env(safe-area-inset-left))}
     .know .head{text-align:center}
     .know h2{font:400 34px/1.08 var(--display);letter-spacing:-.005em;margin:10px 0 12px}
     .know .aside{font-size:13px;color:var(--mid)}
-    .know dl{margin:30px 0 0;border-bottom:1px solid var(--line)}
+    .know dl{margin:26px 0 0;border-bottom:1px solid var(--line)}
+    .know h3{font:400 14px/1.3 var(--body);color:var(--mid);margin:30px 0 0}
+    .know .asked{margin-top:12px;border-bottom:1px solid var(--line)}
+    .know details{border-top:1px solid var(--line)}
+    .know summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;cursor:pointer;list-style:none;font:500 23px/1.15 var(--display)}
+    .know summary::-webkit-details-marker{display:none}
+    .know summary .ic{transition:transform .2s var(--ease)}
+    .know details[open] summary .ic{transform:rotate(180deg)}
+    .know details p{font-size:15px;line-height:1.5;margin:0 0 18px;max-width:56ch;text-wrap:pretty}
     .know dl div{display:grid;gap:4px;padding:16px 0;border-top:1px solid var(--line)}
     .know dt{font:500 23px/1.15 var(--display)}
     .know dd{margin:0;font-size:15px;line-height:1.5;text-wrap:pretty}
     @media (min-width:600px){
       .ring .turn{width:min(60vw,50svh,480px)}
-      .know dl{max-width:640px;margin-left:auto;margin-right:auto}
+      .know .body{max-width:640px;margin-left:auto;margin-right:auto}
     }
     @media (min-width:1100px){
-      .closeup{grid-template-columns:auto minmax(0,440px);justify-content:center;align-items:center;column-gap:72px;text-align:left;padding:112px var(--g)}
+      .closeup{grid-template-columns:auto minmax(0,440px);justify-content:center;align-items:center;column-gap:72px;text-align:left;padding:84px var(--g)}
       .closeup figure{width:min(52vw,var(--w,640px))}
       .closeup h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
       .closeup .text p:last-child{font-size:18px;margin:0}
@@ -196,19 +210,24 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       .ring h2{font-size:clamp(48px,4.6vw,68px);line-height:1;margin:14px 0 20px}
       .ring .line{font-size:18px;margin:0}
       .ring .note{text-align:left;bottom:26px}
-      .ring[data-still="true"] .pin{padding-top:112px;padding-bottom:112px}
-      .know{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px;align-items:start;padding:120px var(--g) 128px}
+      .ring[data-still="true"] .pin{padding-top:84px;padding-bottom:84px}
+      .know{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px;align-items:start;padding:84px var(--g) 92px}
       .know .head{text-align:left;max-width:440px}
       .know h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
-      .know dl{margin:0;max-width:none}
+      .know .body{margin:0;max-width:none}
+      .know dl:first-child{margin-top:0}
+      .know h3{margin-top:36px}
+      .know summary{font-size:27px;min-height:64px}
+      .know details p{font-size:16px}
       .know dl div{grid-template-columns:170px minmax(0,1fr);column-gap:32px;align-items:baseline;padding:20px 0}
       .know dt{font-size:27px}
       .know dd{font-size:16px;max-width:56ch}
     }
     /* THE CLOSE */
-    .close{background:var(--grey);text-align:center;padding:64px max(var(--g),env(safe-area-inset-right)) calc(36px + env(safe-area-inset-bottom)) max(var(--g),env(safe-area-inset-left))}
+    .close{background:var(--grey);text-align:center;padding:52px max(var(--g),env(safe-area-inset-right)) calc(36px + env(safe-area-inset-bottom)) max(var(--g),env(safe-area-inset-left))}
     .close h2{font:400 clamp(36px,10vw,56px)/1.02 var(--display);letter-spacing:-.01em;margin:10px 0 28px}
     .close .btn{width:100%}
+    .close .next{font-size:14px;line-height:1.5;color:var(--mid);max-width:36ch;margin:14px auto 0;text-wrap:pretty}
     .close .foot{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:12px;color:var(--mid)}
     .close .foot .brand{font-size:19px;color:var(--ink)}
 
@@ -222,7 +241,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       .hero .doors{grid-template-columns:1fr 1fr}
       .hero .marks{font-size:13px}
       .hero .marks li{padding:0 14px}
-      .pieces{padding-top:80px;padding-bottom:88px}
+      .pieces{padding-top:64px;padding-bottom:72px}
       .pieces .text .btn,.close .btn{width:auto}
       .switch{width:min(100%,560px);margin:0 auto}
     }
@@ -248,7 +267,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       .hero .marks{justify-content:flex-start;margin-top:36px;font-size:13px}
       .hero .marks li:first-child{padding-left:0}
 
-      .pieces{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;column-gap:48px;padding:120px var(--g) 128px}
+      .pieces{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;column-gap:48px;padding:84px var(--g) 92px}
       .pieces .text{text-align:left;max-width:440px}
       .pieces h2{font-size:52px;line-height:1.02}
       .pieces .text p{font-size:22px;margin:22px 0 34px}
@@ -259,9 +278,11 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       .arrow.next{grid-column:3;grid-row:1}
       .dots{grid-column:2;grid-row:3}
 
-      .close{text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:48px;padding:112px var(--g) 40px}
+      .close{text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:48px;padding:88px var(--g) 40px}
       .close h2{font-size:clamp(56px,6vw,88px);line-height:.96;margin:14px 0 0;max-width:12ch}
-      .close .foot{grid-column:1/-1;margin-top:96px;grid-template-columns:auto 1fr;align-items:baseline;column-gap:32px}
+      .close .act{max-width:340px}
+      .close .next{margin:14px 0 0}
+      .close .foot{grid-column:1/-1;margin-top:64px;grid-template-columns:auto 1fr;align-items:baseline;column-gap:32px}
       .close .foot p{text-align:right}
     }
 
@@ -272,12 +293,12 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .story figure{position:relative}
     .story img,.room img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
     .story .tag,.room .tag,.lights .tag{position:absolute;left:12px;bottom:10px;font-size:11px;line-height:1;color:var(--mid)}
-    .story .text{padding:40px max(var(--g),env(safe-area-inset-right)) 56px max(var(--g),env(safe-area-inset-left));text-align:center}
+    .story .text{padding:30px max(var(--g),env(safe-area-inset-right)) 44px max(var(--g),env(safe-area-inset-left));text-align:center}
     .story h2,.lights h2{font:400 34px/1.06 var(--display);letter-spacing:-.005em;margin:10px 0 14px}
     .story .text p:last-child,.lights .head p:last-child{font:400 20px/1.42 var(--display);max-width:32ch;margin:0 auto;text-wrap:pretty}
     .rise{display:block;overflow:hidden}
     .rise>span{display:block}
-    .lights{background:var(--grey);padding:56px max(var(--g),env(safe-area-inset-right)) 60px max(var(--g),env(safe-area-inset-left))}
+    .lights{background:var(--grey);padding:44px max(var(--g),env(safe-area-inset-right)) 48px max(var(--g),env(safe-area-inset-left))}
     .lights .head{text-align:center;margin-bottom:28px}
     .cmp{position:relative;aspect-ratio:3/2;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;--p:50%;max-width:1100px;margin:0 auto;cursor:ew-resize}
     .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
@@ -296,26 +317,27 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     @media (min-width:1100px){
       .story{grid-template-columns:1fr 1fr;align-items:center}
       .story img{aspect-ratio:auto;height:min(78svh,720px)}
-      .story .text{text-align:left;padding:96px var(--g) 96px 0}
+      .story .text{text-align:left;padding:64px var(--g) 64px 0}
       .story.flip figure{order:2}
-      .story.flip .text{padding:96px 48px 96px var(--g)}
+      .story.flip .text{padding:64px 48px 64px var(--g)}
       .story:not(.flip) .text{padding-left:0}
       .story:not(.flip) figure{margin-right:56px}
       .story h2,.lights h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
       .story .text p:last-child{font-size:22px;margin:0;max-width:30ch}
-      .lights{padding:120px var(--g) 128px}
+      .lights{padding:84px var(--g) 92px}
       .lights .head{margin-bottom:48px}
       .lights .head p:last-child{font-size:22px}
       .room{padding-top:0}
     }
-    /* FIND YOUR SAPPHIRE: three taps write the enquiry; the sentence is the feature */
-    .finder{padding:64px max(var(--g),env(safe-area-inset-right)) 68px max(var(--g),env(safe-area-inset-left))}
+    /* FIND YOUR SAPPHIRE: four taps write the enquiry; the sentence is the feature */
+    .finder{padding:48px max(var(--g),env(safe-area-inset-right)) 52px max(var(--g),env(safe-area-inset-left))}
     .finder .head{text-align:center}
     .finder h2{font:400 34px/1.08 var(--display);letter-spacing:-.005em;margin:10px 0 12px}
     .finder .head p:last-child{font:400 19px/1.45 var(--display);max-width:30ch;margin:0 auto}
     .finder fieldset{border:0;border-top:1px solid var(--line);margin:0;padding:18px 0 20px;min-width:0}
     .finder .pick{margin-top:30px}
     .finder legend{float:left;width:100%;padding:0;margin-bottom:12px;font-size:14px;color:var(--mid)}
+    .finder legend small{font-size:12px;margin-left:6px}
     .finder .opts{clear:both;display:flex;flex-wrap:wrap;gap:8px}
     .finder .opt{position:relative}
     .finder .opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
@@ -332,7 +354,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .finder .fine{font-size:12px;color:var(--mid);margin:14px 0 0}
     @media (min-width:600px){.finder .pick{max-width:640px;margin-left:auto;margin-right:auto}.finder .btn{width:auto}}
     @media (min-width:1100px){
-      .finder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:0;align-items:start;padding:120px var(--g) 128px}
+      .finder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:0;align-items:start;padding:84px var(--g) 92px}
       .finder .head{text-align:left;max-width:440px}
       .finder h2{font-size:52px;line-height:1.02;margin:14px 0 20px}
       .finder .head p:last-child{font-size:22px;margin:0}
@@ -346,7 +368,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   <a class="brand" href="#top">{HOUSE}</a>
   <div class="right">
     <nav class="links" aria-label="Sections"><a href="#pieces">Sapphires</a></nav>
-    <a class="door" href="#viewing"><span>Book a viewing</span></a>
+    <a class="door" href="#viewing"><span>Arrange a viewing</span></a>
   </div>
 </header>
 
@@ -362,7 +384,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     <p class="sub">Sapphires cut by our own stonecutters, shown in daylight and lamplight before you decide.</p>
     <div class="doors">
       <a class="btn solid" href="#pieces">Explore sapphires <Fragment set:html={ic(arrowDownRaw)} /></a>
-      <a class="btn" href="#viewing">Book a private viewing</a>
+      <a class="btn" href="#viewing">Arrange a private viewing</a>
     </div>
     <ul class="marks"><li>Master cutting</li><li>Seen in two lights</li><li>By private appointment</li></ul>
   </div>
@@ -424,13 +446,17 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     <h2 id="know-h">What makes one sapphire worth more than another</h2>
     <p class="aside">General gem knowledge, not a description of any one stone.</p>
   </div>
-  <dl>{KNOW.map(([term, line]) => <div><dt>{term}</dt><dd>{line}</dd></div>)}</dl>
+  <div class="body">
+    <dl>{KNOW.map(([term, line]) => <div><dt>{term}</dt><dd>{line}</dd></div>)}</dl>
+    <h3>Three questions buyers ask</h3>
+    <div class="asked">{ASKED.map(([term, line]) => <details><summary><span>{term}</span><Fragment set:html={ic(arrowDownRaw)} /></summary><p>{line}</p></details>)}</div>
+  </div>
 </section>
 <section class="finder" id="find" aria-labelledby="find-h">
   <div class="head">
     <p class="label">Find your sapphire</p>
     <h2 id="find-h">Tell us what you <br>have in mind.</h2>
-    <p>Three taps. The house reads your request before you arrive, so the right stones are on the table.</p>
+    <p>Four taps. The house reads your request before you arrive, so the right stones are on the table.</p>
   </div>
   <form class="pick" data-finder data-wa={waBase} data-house={HOUSE}>
     <fieldset><legend>The shape</legend><div class="opts">
@@ -451,11 +477,19 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       <label class="opt"><input type="radio" name="use" value="for a pair of earrings"><span>Earrings</span></label>
       <label class="opt"><input type="radio" name="use" value="for a pendant"><span>A pendant</span></label>
       <label class="opt"><input type="radio" name="use" value="as a loose stone"><span>A loose stone</span></label>
+      <label class="opt"><input type="radio" name="use" value="as a gift"><span>A gift</span></label>
+    </div></fieldset>
+    <fieldset><legend>Your budget <small>Sample bands, until the house sets its own</small></legend><div class="opts">
+      <label class="opt"><input type="radio" name="budget" value="under USD 1,000"><span>Under USD 1,000</span></label>
+      <label class="opt"><input type="radio" name="budget" value="USD 1,000 to 5,000"><span>USD 1,000 to 5,000</span></label>
+      <label class="opt"><input type="radio" name="budget" value="USD 5,000 to 15,000"><span>USD 5,000 to 15,000</span></label>
+      <label class="opt"><input type="radio" name="budget" value="above USD 15,000"><span>Above USD 15,000</span></label>
+      <label class="opt"><input type="radio" name="budget" value="" checked><span>Prefer not to say</span></label>
     </div></fieldset>
     <div class="out">
       <p class="label">Your request</p>
       <p class="say" data-say aria-live="polite"></p>
-      <a class="btn solid" data-send href={wa(`Hello, from the ${HOUSE} page. I would like to book a private viewing.`)} target="_blank" rel="noopener">Send this on WhatsApp <Fragment set:html={ic(arrowOutRaw)} /></a>
+      <a class="btn solid" data-send href={wa(`Hello, from the ${HOUSE} page. I would like to arrange a private viewing.`)} target="_blank" rel="noopener">Send this on WhatsApp <Fragment set:html={ic(arrowOutRaw)} /></a>
       <p class="fine">A request for a viewing, not an order. The house replies with what it can show you.</p>
     </div>
   </form>
@@ -501,7 +535,10 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     <p class="label">By private appointment</p>
     <h2 id="viewing-h">See the stone before you decide.</h2>
   </div>
-  <a class="btn solid" href={wa(`Hello, from the ${HOUSE} page. I would like to book a private viewing.`)} target="_blank" rel="noopener">Book a private viewing <Fragment set:html={ic(arrowOutRaw)} /></a>
+  <div class="act">
+    <a class="btn solid" href={wa(`Hello, from the ${HOUSE} page. I would like to arrange a private viewing.`)} target="_blank" rel="noopener">Arrange a private viewing <Fragment set:html={ic(arrowOutRaw)} /></a>
+    <p class="next">Your message reaches the house on WhatsApp. They reply to agree a time, in person or by video call.</p>
+  </div>
   <div class="foot">
     <span class="brand">{HOUSE}</span>
     <p>The pictures on this page are generated samples, standing in for the house's own photographs.</p>
@@ -513,7 +550,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
 (() => {
   const root = document.querySelector('[data-switch]');
   if (!root) return;
-  const EXT = ['png', 'jpg', 'jpeg', 'webp'];
+  const EXT = ['jpg', 'png', 'jpeg', 'webp'];
   const stage = root.querySelector('[data-stage]');
   const slides = [...root.querySelectorAll('[data-slide]')];
   const caps = [...root.querySelectorAll('[data-cap]')];
@@ -669,7 +706,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
 <script is:inline>
 (() => {
   // THE NEW SECTIONS: a section shows only when every picture it needs has answered; then its heading rises once.
-  const EXT = ['png', 'jpg', 'jpeg', 'webp'];
+  const EXT = ['jpg', 'png', 'jpeg', 'webp'];
   const find = img => new Promise(done => { let k = 0; const next = () => { if (k >= EXT.length) return done(false); const src = img.dataset.base + '.' + EXT[k++], t = new Image(); t.onload = () => { img.src = src; done(true); }; t.onerror = next; t.src = src; }; next(); });
   const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .25 }) : null;
   document.querySelectorAll('[data-needs]').forEach(sec => {
@@ -710,11 +747,11 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   const say = f.querySelector('[data-say]'), send = f.querySelector('[data-send]');
   const val = n => (f.querySelector('input[name="' + n + '"]:checked') || {}).value || '';
   const draw = () => {
-    const shape = val('shape'), blue = val('blue'), use = val('use');
+    const shape = val('shape'), blue = val('blue'), use = val('use'), budget = val('budget');
     const lead = shape ? shape + ' sapphire' : 'A sapphire';
-    const tail = (shape ? '' : ' The shape is still open.') + (blue ? '' : ' I would like to see all three blues.');
+    const tail = (shape ? '' : ' The shape is still open.') + (blue ? '' : ' I would like to see all three blues.') + (budget ? ' My budget is ' + budget + '.' : '');
     say.innerHTML = lead + (blue ? ' in <b>' + blue + '</b>' : '') + ', ' + use + '.' + tail;
-    send.href = f.dataset.wa + encodeURIComponent('Hello, from the ' + f.dataset.house + ' page. I am looking for: ' + say.textContent + ' I would like to book a private viewing.');
+    send.href = f.dataset.wa + encodeURIComponent('Hello, from the ' + f.dataset.house + ' page. I am looking for: ' + say.textContent + ' I would like to arrange a private viewing.');
   };
   f.addEventListener('change', draw); f.addEventListener('submit', e => e.preventDefault()); draw();
 })();
