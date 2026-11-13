@@ -346,7 +346,7 @@
       .show+.pick fieldset:first-child{border-top:1px solid var(--line)}
       .finder .say{font-size:38px;line-height:1.1;margin-bottom:28px}
     }
-  </style><link rel="stylesheet" href="layout-polish.css?v=3"></head><body><header class="nav"><a class="brand" href="#top">House of Priyantha</a><div class="right"><nav class="links" aria-label="Sections"><a href="#pieces">Gemstones</a></nav><a class="door" href="#viewing"><span>Arrange a viewing</span></a></div></header><main id="top"><section class="hero" aria-label="The house"><div class="frame"><figure class="pic" data-gem="royal" data-s=".99" data-boxes="600,506,707,625"><img src="assets/one-pager/people/hero-royal-blue.webp" width="1536" height="1024" alt="A woman in profile looks at an oval gemstone held between her finger and thumb" fetchpriority="high" decoding="async"></figure></div><div class="words"><p class="label">Master stonecutters of Ceylon</p><h1><span>It begins </span><span>with <em>colour.</em></span></h1><p class="sub">Coloured gemstones, cut in our own workshop. Choose a loose stone or picture the piece it could become.</p><div class="doors"><a class="btn solid" href="#pieces">Explore gemstones <svg
+  </style><link rel="stylesheet" href="layout-polish.css?v=4"></head><body><header class="nav"><a class="brand" href="#top">House of Priyantha</a><div class="right"><nav class="links" aria-label="Sections"><a href="#pieces">Gemstones</a></nav><a class="door" href="#viewing"><span>Arrange a viewing</span></a></div></header><main id="top"><section class="hero" aria-label="The house"><div class="frame"><figure class="pic" data-gem="royal" data-s=".99" data-boxes="600,506,707,625"><img src="assets/one-pager/people/hero-royal-blue.webp" width="1536" height="1024" alt="A woman in profile looks at an oval gemstone held between her finger and thumb" fetchpriority="high" decoding="async"></figure></div><div class="words"><p class="label">Master stonecutters of Ceylon</p><h1><span>It begins </span><span>with <em>colour.</em></span></h1><p class="sub">Coloured gemstones, cut in our own workshop. Choose a loose stone or picture the piece it could become.</p><div class="doors"><a class="btn solid" href="#pieces">Explore gemstones <svg
   class="ic" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
@@ -472,7 +472,7 @@
 >
   <path d="M7 7h10v10" />
   <path d="M7 17 17 7" />
-</svg></a><p class="fine">Sample passports. The house confirms every detail before a viewing.</p></div></section><section class="story plain" data-needs hidden aria-labelledby="hand-h"><figure><img data-pic data-ext="webp" data-base="assets/one-pager/products/s8-hands-ring-1500" alt="A hand resting on linen, wearing an oval blue gemstone ring" decoding="async"></figure><div class="text"><p class="label">On the hand</p><h2 id="hand-h"><span class="rise"><span>Try it on</span></span><span class="rise"><span>before you decide.</span></span></h2><p>A ring is seen from above and always on the move. Put it on, turn your hand and watch how the stone sits.</p></div></section><section class="room" data-needs data-room hidden aria-label="The viewing table"><figure><img data-pic data-ext="webp" data-base="assets/one-pager/products/s5-viewing-1600" alt="A man holding a blue gemstone in tweezers across a table for a client, with a loupe and a stone tray between them" decoding="async"></figure></section><section class="finale" id="viewing" data-finale data-src="" aria-labelledby="viewing-h"><div class="art" data-art aria-hidden="true"></div><div class="mid"><p class="label">By private appointment</p><h2 id="viewing-h">Which would you choose?</h2><p class="next">See the stone before you decide. Message the house on WhatsApp and they reply to agree a time, in person or by video call.</p><a class="btn solid" href="https://wa.me/94767412531?text=Hello%2C%20from%20the%20House%20of%20Priyantha%20page.%20I%20would%20like%20to%20arrange%20a%20private%20viewing." target="_blank" rel="noopener">Arrange a private viewing <svg
+</svg></a><p class="fine">Sample passports. The house confirms every detail before a viewing.</p></div></section><section class="story plain" data-needs hidden aria-labelledby="hand-h"><figure><img data-pic data-ext="webp" data-base="assets/one-pager/products/s8-hands-ring-1500" alt="A hand resting on linen, wearing an oval blue gemstone ring" decoding="async"></figure><div class="text"><p class="label">On the hand</p><h2 id="hand-h"><span class="rise"><span>Try it on</span></span><span class="rise"><span>before you decide.</span></span></h2><p>A ring is seen from above and always on the move. Put it on, turn your hand and watch how the stone sits.</p></div></section><section class="room" data-needs data-room hidden aria-label="The viewing table"><figure><img data-pic data-ext="webp" data-base="assets/one-pager/products/s5-viewing-1600" alt="A man holding a blue gemstone in tweezers across a table for a client, with a loupe and a stone tray between them" decoding="async"></figure></section><section class="finale" id="viewing" data-finale data-float="assets/one-pager/closing/float-" aria-labelledby="viewing-h"><div class="art" data-art aria-hidden="true"></div><div class="mid"><p class="label">By private appointment</p><h2 id="viewing-h">Which would you choose?</h2><p class="next">See the stone before you decide. Message the house on WhatsApp and they reply to agree a time, in person or by video call.</p><a class="btn solid" href="https://wa.me/94767412531?text=Hello%2C%20from%20the%20House%20of%20Priyantha%20page.%20I%20would%20like%20to%20arrange%20a%20private%20viewing." target="_blank" rel="noopener">Arrange a private viewing <svg
   class="ic" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
@@ -532,10 +532,12 @@ window.HOP = (() => {
   const face = () => { btn.innerHTML = '<i aria-hidden="true"></i>' + (paused ? 'Play' : 'Pause'); btn.setAttribute('aria-label', paused ? 'Play the gemstone colour changes' : 'Pause the gemstone colour changes'); };
   btn.type = 'button'; btn.className = 'gempause'; btn.setAttribute('aria-pressed', 'false');
   document.body.appendChild(btn); face();
-  const refresh = () => btn.classList.toggle('on', [...scenes.values()].some(s => s.vis && s.layers.length));
+  const refresh = () => btn.classList.toggle('on', [...scenes.values()].some(s => s.vis && (s.layers.length || s.own)));
   btn.addEventListener('click', () => { paused = !paused; btn.setAttribute('aria-pressed', String(paused)); btn.classList.toggle('off', paused); face(); document.documentElement.dataset.gemPaused = String(paused); });
   const draw = (s, a, b, t) => s.layers.forEach(L => { const A = L.v[a], B = L.v[b], o = L.id.data; if (!t) o.set(A); else for (let i = 0; i < o.length; i++) o[i] = A[i] + (B[i] - A[i]) * t; L.x.putImageData(L.id, 0, 0); });
   const io = new IntersectionObserver(es => { es.forEach(e => { const s = scenes.get(e.target); if (s) s.vis = e.isIntersecting; }); refresh(); }, { threshold: .25 });
+  // A section that runs its own colour clock (the closing) joins here so the same pause control shows for it.
+  HOP.watch = el => { const s = { el, vis: false, layers: [], own: true }; scenes.set(el, s); io.observe(el); return s; };
   figs.forEach(fig => {
     const sec = fig.closest('section'), img = fig.querySelector('img'), src = fig.dataset.gem;
     if (!scenes.has(sec)) { scenes.set(sec, { el: sec, col: src, vis: false, layers: [] }); sec.dataset.gemColour = src; io.observe(sec); }
@@ -770,10 +772,54 @@ window.HOP = (() => {
   const EXT = ['jpg', 'png', 'jpeg', 'webp'];
   const find = img => new Promise(done => { let k = 0; const next = () => { if (k >= (img.dataset.ext ? 1 : EXT.length)) return done(false); const E = img.dataset.ext ? [img.dataset.ext] : EXT, src = img.dataset.base + '.' + E[k++], t = new Image(); t.onload = () => { img.src = src; done(true); }; t.onerror = next; t.src = src; }; next(); });
   const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .25 }) : null;
-  // THE CLOSING PICTURE: put the file in assets/one-pager/closing/ and write its path in data-src on the closing section. It becomes the closing background
-  // and the viewing-table picture above it steps aside. Until then the closing is words on a plain ground.
+  // THE CLOSING (13 Nov): four cut-out pieces float round the words. Each drifts in from its own edge when the section arrives, then floats.
+  // Every 3.5 seconds the stones hand their colours round the circle: ring takes the cufflinks' colour, pendant the ring's, earrings the pendant's,
+  // cufflinks the earrings'. Only stone pixels are painted (HOP.mix), so metal, chain and ground never change. If any piece fails to load the
+  // closing stays as words alone and the viewing-table picture above it stays too.
   const fin = document.querySelector('[data-finale]');
-  if (fin && fin.dataset.src) { const src = fin.dataset.src, t = new Image(); t.onload = () => { fin.querySelector('[data-art]').style.backgroundImage = 'url(' + src + ')'; fin.dataset.art = 'ok'; const room = document.querySelector('[data-room]'); if (room) room.remove(); }; t.src = src; }
+  if (fin && fin.dataset.float) {
+    const P = [['ring', 400, 670, 'royal', .95, 30, 30, '40,22,375,352', { pink: .7, orange: .82, teal: .92 }], ['pendant', 600, 372, 'pink', .3, 24, 20, '310,200,475,368', {}], ['earrings', 415, 610, 'orange', .92, 20, 24, '15,180,160,350;135,340,345,605', {}], ['cufflinks', 575, 326, 'teal', .85, 16, 24, '20,40,150,190;200,110,385,310', { pink: .68, orange: .78 }]];
+    // The last entry lifts a dark stone when it takes a lighter colour, so pink stays pink and orange stays orange.
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    Promise.all(P.map(p => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.alt = ''; im.width = p[1]; im.height = p[2]; im.src = fin.dataset.float + p[0] + '.webp'; }))).then(imgs => {
+      const art = fin.querySelector('[data-art]'), CIRCLE = P.map(p => p[3]), pieces = [];
+      imgs.forEach((im, i) => {
+        const p = P[i], pc = document.createElement('div'), fl = document.createElement('div');
+        pc.className = 'pc pc-' + p[0]; fl.className = 'fl'; fl.appendChild(im); pc.appendChild(fl); art.appendChild(pc);
+        pieces.push({ p, im, fl, layers: [] });
+      });
+      fin.dataset.art = 'float';
+      const room = document.querySelector('[data-room]'); if (room) room.remove();
+      const arrive = () => { fin.dataset.in = 'true'; };
+      if (still || !('IntersectionObserver' in window)) return arrive();
+      let next = 0;
+      const seen = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { arrive(); next = performance.now() + 3600; } }), { threshold: .3 });
+      seen.observe(fin);
+      if (!window.HOP || !HOP.watch) return;
+      const scene = HOP.watch(fin);
+      try {
+        pieces.forEach(o => o.p[7].split(';').forEach(q => {
+          const [x0, y0, x1, y1] = q.split(',').map(Number), w = x1 - x0, h = y1 - y0, cv = document.createElement('canvas'), W = o.p[1], H = o.p[2];
+          cv.width = w; cv.height = h; cv.className = 'gemc'; cv.setAttribute('aria-hidden', 'true');
+          cv.style.cssText = 'left:' + x0 / W * 100 + '%;top:' + y0 / H * 100 + '%;width:' + w / W * 100 + '%;height:' + h / H * 100 + '%';
+          const x = cv.getContext('2d'); x.drawImage(o.im, x0, y0, w, h, 0, 0, w, h);
+          const d = x.getImageData(0, 0, w, h).data, v = {};
+          CIRCLE.forEach(k => { v[k] = new Uint8ClampedArray(d.length); HOP.mix(d, o.p[3], k, k, 0, o.p[4], o.p[5], o.p[6], v[k], true); const g = o.p[8][k]; if (g) { const lut = new Uint8ClampedArray(256); for (let i = 0; i < 256; i++) lut[i] = 255 * Math.pow(i / 255, g); const a = v[k]; for (let i = 0; i < a.length; i += 4) if (a[i + 3]) { a[i] = lut[a[i]]; a[i + 1] = lut[a[i + 1]]; a[i + 2] = lut[a[i + 2]]; } } });
+          const L = { x, id: x.createImageData(w, h), v };
+          L.id.data.set(v[o.p[3]]); x.putImageData(L.id, 0, 0);
+          o.layers.push(L); o.fl.appendChild(cv);
+        }));
+      } catch (e) { return; }
+      const paint = (o, a, b, t) => o.layers.forEach(L => { const A = L.v[a], B = L.v[b], out = L.id.data; if (!t) out.set(A); else for (let i = 0; i < out.length; i++) out[i] = A[i] + (B[i] - A[i]) * t; L.x.putImageData(L.id, 0, 0); });
+      let n = 0;
+      const turn = () => {
+        const was = n, t0 = performance.now(); n = (n + 1) % 4; fin.dataset.turn = n;
+        const f = now => { const t = Math.min(1, (now - t0) / 1000); pieces.forEach((o, i) => { const a = CIRCLE[(i - was + 4) % 4], b = CIRCLE[(i - n + 4) % 4]; if (t < 1) paint(o, a, b, t * t * (3 - 2 * t)); else paint(o, b, b, 0); }); if (t < 1) requestAnimationFrame(f); };
+        requestAnimationFrame(f);
+      };
+      setInterval(() => { const now = performance.now(); if (!next || now < next || !scene.vis || document.hidden || document.documentElement.dataset.gemPaused === 'true') return; next = now + 3500; turn(); }, 200);
+    }).catch(() => {});
+  }
   document.querySelectorAll('[data-needs]').forEach(sec => {
     Promise.all([...sec.querySelectorAll('[data-pic]')].map(find)).then(r => {
       if (!r.every(Boolean)) return;
