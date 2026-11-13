@@ -162,7 +162,7 @@ html[data-gem-paused="true"] .finale .fl{animation-play-state:paused}
  .craft-triptych.in .cut,.craft-triptych.in .text .label,.craft-triptych.in .text>p:last-child{opacity:1;transform:none}
 }
 @media(min-width:1100px){
- .story.craft-triptych{padding-top:clamp(80px,8vw,150px)}
+ .story.craft-triptych{padding-top:clamp(150px,15vw,280px)}
  /* The worth section has no picture now: its heading stays beside the list while the list is read. */
  .know .head{grid-row:1 / span 2;align-self:start;position:sticky;top:96px}
 }
