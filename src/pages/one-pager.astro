@@ -17,12 +17,15 @@ const HOUSE = 'House of Priyantha';
 // A file that is missing is left out of the rotation; if none are there the slots show as marked empty slots.
 // Captions name the piece only. Pink and yellow wait for bb_pending row 1843.
 const PRODUCTS = [
-  { file: 'p1-oval-sapphire', caption: 'Oval blue sapphire, loose' },
-  { file: 'p2-cushion-sapphire', caption: 'Cushion blue sapphire, loose' },
-  { file: 'p3-ring', caption: 'Oval sapphire ring' },
-  { file: 'p4-earrings', caption: 'Sapphire stud earrings' },
-  { file: 'p5-pendant', caption: 'Pear sapphire pendant' },
+  { file: 'p1-oval-sapphire', caption: 'Oval blue sapphire, loose', ref: 'HOP-001', shape: 'Oval', weight: '2.10 ct', treatment: 'Heated', report: 'Laboratory to be named' },
+  { file: 'p2-cushion-sapphire', caption: 'Cushion blue sapphire, loose', ref: 'HOP-002', shape: 'Cushion', weight: '3.05 ct', treatment: 'Unheated', report: 'Laboratory to be named' },
+  { file: 'p3-ring', caption: 'Oval sapphire ring', ref: 'HOP-003', shape: 'Oval', weight: '1.80 ct', treatment: 'Heated', report: 'Laboratory to be named' },
+  { file: 'p4-earrings', caption: 'Sapphire stud earrings', ref: 'HOP-004', shape: 'Round', weight: '2 x 0.75 ct', treatment: 'Heated', report: 'Laboratory to be named' },
+  { file: 'p5-pendant', caption: 'Pear sapphire pendant', ref: 'HOP-005', shape: 'Pear', weight: '2.40 ct', treatment: 'Unheated', report: 'Laboratory to be named' },
 ];
+// STONE PASSPORT (13 Nov): ref, shape, weight, treatment and report above are SAMPLES, every one of them, and the card
+// says so. Not one is a fact about the house's stock. Swap them for the house's own values when they arrive.
+const PASS = [['ref', 'Reference'], ['shape', 'Shape'], ['weight', 'Weight'], ['treatment', 'Treatment'], ['report', 'Report']];
 
 // THE RING, three steps on about three screens of scroll. The frames and the words are the site's own ring journey
 // (src/components/Journey.astro, public/assets/motion/): the turn, the parts coming apart and the turn back to blue.
@@ -64,6 +67,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   <meta name="description" content="Sapphires cut by our own stonecutters, shown in daylight and lamplight before you decide.">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#f1f1f1">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="color-scheme" content="light">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/cormorant.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/instrument.woff2">
@@ -150,6 +154,35 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .dots button[aria-current="true"]::before{background:var(--blue);border-color:var(--blue)}
     .switch[data-count="1"] .arrow,.switch[data-count="1"] .dots{visibility:hidden}
     @media (prefers-reduced-motion:reduce){.slide,.cap{transition:none}}
+    /* STONE PASSPORT and SHORTLIST (13 Nov): one card under the picture, rewritten as the piece changes; sample values */
+    .pass{grid-column:1/-1;grid-row:4;border:1px solid var(--line);padding:16px;margin-top:6px;text-align:left}
+    .pass .ph{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .pass .ph b{font:500 21px/1.1 var(--display)}
+    .chip{font:500 11px/1 var(--body);color:var(--blue);border:1px solid var(--blue);padding:4px 6px}
+    .pass dl{margin:12px 0 10px;border-bottom:1px solid var(--line)}
+    .pass dl div{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+    .pass dt,.compare dt{color:var(--mid)}
+    .pass dd,.compare dd{margin:0;text-align:right}
+    .pass .fine,.compare .fine{font-size:12px;color:var(--mid);margin:0 0 12px}
+    .pass .btn{width:100%;min-height:46px}
+    .btn[aria-pressed="true"]{background:var(--ink);color:#fff}
+    .btn[aria-disabled="true"]{opacity:.45;cursor:default}
+    .compare{border-top:1px solid var(--ink);padding-top:26px;text-align:left}
+    .compare[hidden]{display:none}
+    .compare h3{font:400 30px/1.1 var(--display);margin:8px 0 6px}
+    .compare .cnote{font-size:14px;color:var(--mid);margin:0}
+    .compare .cols{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:8px;margin:18px 0 20px}
+    .compare [data-col]{border:1px solid var(--line);padding:10px;display:flex;flex-direction:column;font-size:13px;min-width:0}
+    .compare [data-col] img{width:100%;aspect-ratio:1;object-fit:contain}
+    .compare [data-col] b{font:500 17px/1.15 var(--display);margin:8px 0 6px;min-height:3.45em}
+    .compare dl{margin:0}
+    .compare dl div{padding:6px 0;border-top:1px solid var(--line)}
+    .compare dt{font-size:11px}
+    .compare dd{text-align:left;overflow-wrap:anywhere}
+    .compare [data-drop]{margin-top:auto;min-height:44px;font-size:13px;text-decoration:underline;text-underline-offset:4px;text-align:left}
+    .compare .btn{width:100%}
+    .compare .fine{margin:12px 0 0}
+    @media (min-width:600px){.compare .btn{width:auto}.compare .cols{gap:20px;max-width:900px}.compare [data-col]{padding:16px;font-size:14px}.compare [data-col] b{font-size:21px;min-height:2.3em}}
 
     /* THE CLOSE-UP BAND: shown only when the close-up picture is in the folder, and never wider than the picture itself */
     .closeup{background:#0b0b0b;color:#fff;display:grid;gap:28px;justify-items:center;text-align:center;padding:44px max(var(--g),env(safe-area-inset-right)) 48px max(var(--g),env(safe-area-inset-left))}
@@ -230,6 +263,10 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     .close .next{font-size:14px;line-height:1.5;color:var(--mid);max-width:36ch;margin:14px auto 0;text-wrap:pretty}
     .close .foot{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:12px;color:var(--mid)}
     .close .foot .brand{font-size:19px;color:var(--ink)}
+    .close .facts{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;margin:14px 0 10px;font-size:13px}
+    .close .facts dt{color:var(--mid);margin-bottom:2px}
+    .close .facts dd{margin:0;color:var(--ink)}
+    .close .facts a{display:inline-block;padding:6px 0;margin:-6px 0;text-decoration:underline;text-underline-offset:4px}
 
     /* TABLET: the whole picture, the words still centred under it */
     @media (min-width:600px){
@@ -277,13 +314,17 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
       .arrow.prev{grid-column:1;grid-row:1}
       .arrow.next{grid-column:3;grid-row:1}
       .dots{grid-column:2;grid-row:3}
+      .pass{grid-column:2}
+      .compare{grid-column:1/-1;margin-top:56px}
 
       .close{text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:48px;padding:88px var(--g) 40px}
       .close h2{font-size:clamp(56px,6vw,88px);line-height:.96;margin:14px 0 0;max-width:12ch}
       .close .act{max-width:340px}
       .close .next{margin:14px 0 0}
       .close .foot{grid-column:1/-1;margin-top:64px;grid-template-columns:auto 1fr;align-items:baseline;column-gap:32px}
-      .close .foot p{text-align:right}
+      .close .foot{grid-template-columns:minmax(0,1fr) minmax(0,3fr)}
+      .close .facts{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin:0;font-size:14px}
+      .close .foot p{grid-column:1/-1;margin-top:20px}
     }
 
     /* THE NEW SECTIONS (13 Nov): each one stays hidden until its picture is in the folder. Text starts on the left
@@ -508,7 +549,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     <p>Start with the stone or with the piece it could become. Ask about any of them and we will show it to you by appointment.</p>
     <a class="btn" data-ask href={wa(askText(PRODUCTS[0].caption))} target="_blank" rel="noopener">Ask about this piece <Fragment set:html={ic(arrowOutRaw)} /></a>
   </div>
-  <div class="switch" data-switch data-wa={waBase} data-house={HOUSE} role="group" aria-roledescription="carousel" aria-label="Stones and pieces">
+  <div class="switch" data-switch data-wa={waBase} data-house={HOUSE} data-items={JSON.stringify(PRODUCTS)} data-pass-rows={JSON.stringify(PASS)} role="group" aria-roledescription="carousel" aria-label="Stones and pieces">
     <div class="stage" data-stage tabindex="0" aria-label="Piece on show. Use the left and right arrow keys to change it.">
       {PRODUCTS.map((p, i) => (
         <figure class={i === 0 ? 'slide on' : 'slide'} data-slide aria-hidden={i === 0 ? 'false' : 'true'}>
@@ -524,6 +565,20 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     <button class="arrow prev" type="button" data-prev aria-label="Previous piece"><Fragment set:html={ic(arrowLeftRaw)} /></button>
     <div class="dots" data-dots></div>
     <button class="arrow next" type="button" data-next aria-label="Next piece"><Fragment set:html={ic(arrowRightRaw)} /></button>
+    <div class="pass" data-pass aria-live="polite">
+      <p class="ph"><b>Stone passport</b><span class="chip">Sample</span></p>
+      <dl>{PASS.map(([k, label]) => <div><dt>{label}</dt><dd data-f={k}>{PRODUCTS[0][k]}</dd></div>)}</dl>
+      <p class="fine">Every value on this card is a sample until the house supplies its own.</p>
+      <button class="btn" type="button" data-short aria-pressed="false">Add to shortlist</button>
+    </div>
+  </div>
+  <div class="compare" data-compare hidden aria-labelledby="compare-h">
+    <p class="label">Your shortlist</p>
+    <h3 id="compare-h">Side by side</h3>
+    <p class="cnote" data-cnote aria-live="polite"></p>
+    <div class="cols" data-cols></div>
+    <a class="btn solid" data-csend href={waBase} target="_blank" rel="noopener">Ask about my shortlist <Fragment set:html={ic(arrowOutRaw)} /></a>
+    <p class="fine">Sample passports. The house confirms every detail before a viewing.</p>
   </div>
 </section>
 
@@ -541,6 +596,12 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   </div>
   <div class="foot">
     <span class="brand">{HOUSE}</span>
+    <dl class="facts">
+      <div><dt>Visit</dt><dd>By appointment</dd></div>
+      <div><dt>Hours</dt><dd>By appointment</dd></div>
+      <div><dt>Contact</dt><dd><a href={wa(`Hello, from the ${HOUSE} page.`)} target="_blank" rel="noopener">Message the house on WhatsApp</a></dd></div>
+      <div><dt>Policies</dt><dd>To be confirmed by the house</dd></div>
+    </dl>
     <p>The pictures on this page are generated samples, standing in for the house's own photographs.</p>
   </div>
 </section>
@@ -558,6 +619,35 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   const ask = document.querySelector('[data-ask]');
   let live = slides.map((_, i) => i);
   let at = 0;
+  // PASSPORT and SHORTLIST: the card under the picture follows the piece; up to three pieces can be set side by side.
+  const items = JSON.parse(root.dataset.items || '[]'), rows = JSON.parse(root.dataset.passRows || '[]');
+  const pass = root.querySelector('[data-pass]'), shortBtn = root.querySelector('[data-short]');
+  const cmp = document.querySelector('[data-compare]'), cols = cmp && cmp.querySelector('[data-cols]'), cnote = cmp && cmp.querySelector('[data-cnote]'), csend = cmp && cmp.querySelector('[data-csend]');
+  const MAX = 3; let picked = [];
+  const esc = t => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const card = () => {
+    if (!pass) return;
+    const on = live[at], it = items[on]; if (!it) return;
+    rows.forEach(([k]) => { const d = pass.querySelector('[data-f="' + k + '"]'); if (d) d.textContent = it[k]; });
+    const inList = picked.includes(on), full = picked.length >= MAX && !inList;
+    shortBtn.textContent = inList ? 'Remove from shortlist' : full ? 'Shortlist full, three pieces' : 'Add to shortlist';
+    shortBtn.setAttribute('aria-pressed', String(inList));
+    shortBtn.setAttribute('aria-disabled', String(full));
+  };
+  const table = () => {
+    if (!cmp) return;
+    cmp.hidden = picked.length === 0;
+    cols.style.setProperty('--n', String(Math.max(2, picked.length)));
+    cols.innerHTML = picked.map(i => { const it = items[i], im = slides[i].querySelector('img');
+      return '<div data-col><img src="' + esc(im.getAttribute('src') || '') + '" alt=""><b>' + esc(it.caption) + '</b><dl>' + rows.map(([k, l]) => '<div><dt>' + esc(l) + '</dt><dd>' + esc(it[k]) + '</dd></div>').join('') + '</dl><button type="button" data-drop="' + i + '" aria-label="Remove ' + esc(it.caption) + ' from the shortlist">Remove</button></div>'; }).join('');
+    cnote.textContent = picked.length === 1 ? 'One piece so far. Add one more to compare.' : picked.length + ' pieces, sample passports side by side.';
+    const names = picked.map(i => items[i].ref + ' (' + items[i].caption + ')');
+    const list = names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0] || '';
+    csend.href = root.dataset.wa + encodeURIComponent('Hello, from the ' + root.dataset.house + ' page. I am asking about ' + (names.length > 1 ? 'these pieces' : 'this piece') + ' on my shortlist: ' + list + '. I would like to arrange a private viewing.');
+  };
+  const toggle = i => { const k = picked.indexOf(i); if (k >= 0) picked.splice(k, 1); else if (picked.length < MAX) picked.push(i); else return; table(); card(); };
+  if (shortBtn) shortBtn.addEventListener('click', () => toggle(live[at]));
+  if (cols) cols.addEventListener('click', e => { const b = e.target.closest('[data-drop]'); if (b) toggle(Number(b.dataset.drop)); });
 
   // Look for each picture under every ending. Nothing is shown until a file answers.
   const probe = slide => new Promise(done => {
@@ -582,7 +672,8 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
     [...dots.children].forEach((d, i) => d.setAttribute('aria-current', i === at ? 'true' : 'false'));
     stage.dataset.shown = slides[on].dataset.state || '';
     root.dataset.at = String(at + 1);
-    if (ask) ask.href = root.dataset.wa + encodeURIComponent('Hello, from the ' + root.dataset.house + ' page. I am asking about this piece: ' + caps[on].textContent + '.');
+    if (ask) ask.href = root.dataset.wa + encodeURIComponent('Hello, from the ' + root.dataset.house + ' page. I am asking about this piece: ' + caps[on].textContent + (items[on] ? ', reference ' + items[on].ref : '') + '.');
+    card();
   };
 
   const build = () => {
@@ -622,7 +713,7 @@ const fontCss = `@font-face{font-family:'Cormorant Garamond';src:url(assets/font
   Promise.all(slides.map(probe)).then(found => {
     const ok = found.map((f, i) => f ? i : -1).filter(i => i >= 0);
     if (ok.length) live = ok;
-    build();
+    build(); table();
   });
 })();
 </script>

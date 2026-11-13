@@ -1,9 +1,9 @@
 # RECIPE: House of Priyantha one pager
 
 Kind: website page, a sample for a client meeting, front end only
-Live: none. Not deployed. It opens from this folder with a double click.
+Live: https://businessboosterlk.github.io/the-island-cut/ (branch `gh-pages` of `businessboosterlk/the-island-cut`, a demo address, front end only)
 Ignore: stills/, node_modules/, dist/
-Last verified: 2026-11-12
+Last verified: 2026-11-13
 
 ## 1. What it is
 
@@ -13,12 +13,26 @@ list of six points on how a sapphire is judged, a section where one product pict
 a short close with the "Book a private viewing" door. Desk and phone have their own layouts. The hero is still:
 the colour change on scroll waits on bb_pending row 1843.
 
+Since 13 Nov 2026, from two outside reviews, the page top to bottom is: nav, hero, close-up, craft story
+(`s1-cutting`), ring sequence on a track 210svh tall (300 before), two lights drag to compare, "How a sapphire is
+judged" (six rows plus three tap-to-open explainers from the `ASKED` list: heated and unheated, Ceylon and other
+origins, cut styles), Find your sapphire (four radio groups: shape, blue, what it is for with "A gift", budget
+with "Prefer not to say"), origin story (`s2-rough`), the pieces carousel with a stone passport card under each
+picture and an "Add to shortlist" button, the shortlist compare table (one to three pieces, one WhatsApp button
+that names them by reference), the viewing table picture and the close with a four slot footer (Visit, Hours,
+Contact, Policies). Every door reads "Arrange a private viewing" and the close says what happens next.
+Page height seen on the live address: desk 1440 went 11,105 px to 10,776 px, phone 390 went 9,493 px to 9,579 px
+with the passport card, compare table and footer added (9,038 px after the first publish, before those).
+
 ## 2. Where the source lives
 
 - Clone `~/bb-websites/hop-hero/site`, branch `hero-one-stone-two-moments`. Never the shared tree
   `~/bb-websites/the-island-cut`.
 - `src/pages/one-pager.astro`: the whole page, styles and scripts inline. Three lists sit at the top: `PRODUCTS`
-  (a file name without its ending and a caption), `STEPS` (the ring's three texts) and `KNOW` (the six points).
+  (a file name without its ending, a caption and the five SAMPLE passport values), `PASS` (the passport rows),
+  `STEPS` (the ring's three texts), `KNOW` (the six points) and `ASKED` (the three explainers).
+- `scripts/one-pager-publish.sh <packed folder> "<message>"`: puts a packed page on the live address.
+- `scripts/one-pager-live-check.mjs <url> <tag>`: presses everything at desk 1440 and phone 390 on any address.
 - `scripts/one-pager-pack.mjs`: packs the built page into this folder and writes the ring frames with a blue stone.
 - `scripts/one-pager-check.mjs`: opens the packed page in a real browser, shoots the stills and presses everything.
 - `scripts/one-pager-closeup-test.mjs`: proves the close-up band on a throwaway copy with a stand-in picture.
@@ -59,6 +73,18 @@ starting and ending on its first frame, reduced motion, the six rows of the list
 words and the list of unconfirmed words. The close-up test: 3 PASS (band shows on desk and phone, never wider
 than its picture, labelled, house style on its words).
 
+13 Nov 2026: `one-pager-check.mjs` was NOT re-run and will fail as written (it still expects a ring track three
+screens tall, six list rows and the old door wording). The gate used instead, on the live address:
+
+```bash
+node scripts/one-pager-live-check.mjs https://businessboosterlk.github.io/the-island-cut/ live   # must end ALL CLEAN
+```
+
+It reads the page height, checks for sideways scroll and console errors, presses all 19 finder options and reads
+all 500 combinations (sentence and WhatsApp text), presses next, previous and every marker, adds four pieces to
+the shortlist (the fourth must be refused), removes them, opens the three explainers, moves the compare grip by
+keyboard and presses the three in-page doors. Screenshots land beside the script. Use `waitUntil: 'load'`.
+
 NOT run, because this is a folder page for one meeting and not a shipped site: `speed.mjs` on a live address,
 `device-views.mjs`, the iOS Simulator, `check_stack.py`. Run them before the page goes on any address.
 
@@ -68,8 +94,20 @@ NOT run, because this is a folder page for one meeting and not a shipped site: `
 open ~/Downloads/HOUSE-OF-PRIYANTHA-ONE-PAGER/"House of Priyantha one pager.html"
 ```
 
-No deploy. Putting it on the demo address needs Thulaib's yes first. The folder must travel whole: the page reads
-`assets/` beside it.
+The folder must travel whole: the page reads `assets/` beside it.
+
+Publish to the live demo address (Thulaib asked for this on 13 Nov; Pages takes about 45 seconds):
+
+```bash
+cd ~/bb-websites/hop-hero/site
+npm run build
+node scripts/one-pager-pack.mjs /tmp/hop-out
+scripts/one-pager-publish.sh /tmp/hop-out "what changed"
+```
+
+The publish script adds a detached worktree of `origin/gh-pages`, copies the packed page to BOTH `index.html` and
+`one-pager.html`, rsyncs `assets/` without the products link, copies the product jpgs in as real files, commits,
+pushes `HEAD:gh-pages` and removes the worktree (no force flag: a hook refuses it).
 
 ## 6. Finishing touches
 
@@ -86,6 +124,12 @@ No deploy. Putting it on the demo address needs Thulaib's yes first. The folder 
 - The ring ends on the frame it starts on | why: the last thing seen before the knowledge list is the first blue stone | held by: ~/bb-websites/hop-hero/site/scripts/one-pager-check.mjs
 - The close-up band stays hidden until `closeup` exists and never shows the picture wider than its own pixels | why: a small picture stretched across a desk screen goes soft | held by: ~/bb-websites/hop-hero/site/scripts/one-pager-closeup-test.mjs
 
+- The pictures are asked for as jpg first | why: the published pictures are jpg and asking for png first put eleven 404 lines in the console | held by: ~/bb-websites/hop-hero/site/scripts/one-pager-live-check.mjs
+- Every passport value and every budget band is a sample and the card and legend say so | why: the house has supplied no stock list, treatment, report or prices | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+- The three explainers are closed until tapped | why: open they made the phone page longer than before the upgrade | held by: ~/bb-websites/hop-hero/site/scripts/one-pager-live-check.mjs
+- The shortlist stops at three and lives only in the open page | why: three cards is what fits side by side at 390 px and the demo has no backend | held by: ~/bb-websites/hop-hero/site/scripts/one-pager-live-check.mjs
+- The footer shows "By appointment" and "To be confirmed by the house" | why: address, hours, phone and policies are not known (bb_pending 1849) | held by: ~/bb-websites/hop-hero/site/src/pages/one-pager.astro
+
 ## 7. Cast a copy
 
 Copy `src/pages/one-pager.astro` to a new page name, change `HOUSE`, the `PRODUCTS`, `STEPS` and `KNOW` lists, the
@@ -99,4 +143,6 @@ measured off these ring frames: other frames need their own.
 - The house's own photographs. Every picture here is a generated sample.
 - The WhatsApp doors open BB's own demo line from `src/config.js`, not the client's number.
 - Open decisions: bb_pending 1843 (other stone colours), 1844 (headline wording), 1845 (recast the whole site),
-  1846 and 1847.
+  1846 and 1847. From 13 Nov: 1849 (footer facts), 1850 (real passport values), 1851 (budget bands), 1852 (does
+  the house cut its own stones).
+- Pictures `s6-portrait`, `s7-jeweller` and `s8-hands-ring` had not arrived on 13 Nov; no section was built for them.
