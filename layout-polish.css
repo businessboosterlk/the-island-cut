@@ -1,11 +1,14 @@
 /* Editorial flow v2 (13 Nov): people cut into the white page, gemstone colour layers, a shorter ring and the gallery on the left. */
 html,.nav,.hero{background:#fff}
 .gemc{position:absolute;pointer-events:none}
-.hero .tag{left:12px;bottom:10px;color:#494949;background:rgba(255,255,255,.92);padding:4px 6px}
-.gempause{position:fixed;z-index:5;right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));min-height:36px;padding:0 12px;font:500 12px/1 var(--body);color:#494949;background:rgba(255,255,255,.94);border:1px solid var(--line);opacity:0;visibility:hidden;transition:opacity .2s var(--ease),visibility .2s}
-.gempause.on{opacity:1;visibility:visible}
+/* The pause control (13 Nov round 2): a small plain word, no box. It stays because it is the way to stop the colour change. */
+.gempause{position:fixed;z-index:5;right:max(14px,env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom));min-height:36px;padding:0 6px;display:inline-flex;align-items:center;gap:7px;font:500 11px/1 var(--body);letter-spacing:.03em;color:#fff;mix-blend-mode:difference;background:none;border:0;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .2s var(--ease),visibility .2s}
+.gempause.on{opacity:.62;visibility:visible}
+.gempause i{box-sizing:border-box;width:8px;height:9px;border:solid currentColor;border-width:0 2.5px}
+.gempause.off i{width:0;height:0;border:solid transparent;border-width:5px 0 5px 8px;border-left-color:currentColor}
+.gempause:focus-visible{opacity:1;outline:2px solid currentColor;outline-offset:2px}
 @media(pointer:coarse){.gempause{min-height:44px}}
-@media(hover:hover){.gempause:hover{border-color:var(--ink);color:var(--ink)}}
+@media(hover:hover){.gempause:hover{opacity:1}}
 
 /* PEOPLE AND CRAFT: each cut-out fills its section from top to bottom, so every cropped edge sits on a section edge or a screen edge. */
 .story{padding:0;gap:0;background:#fff;border-top:1px solid var(--line);grid-template-columns:minmax(0,1fr);align-items:center;--h:74vw}
@@ -17,7 +20,6 @@ html,.nav,.hero{background:#fff}
 .gemfig{position:absolute;top:0;left:var(--x,0%);height:100%;aspect-ratio:3/2}
 .cut.mirror .gemfig{left:auto;right:0;transform:scaleX(-1)}
 .story .cut .gemfig img{display:block;width:100%;height:100%;max-width:none;aspect-ratio:auto;object-fit:fill}
-.story .tag{color:#494949;background:rgba(255,255,255,.92)}
 .story.craft-triptych{grid-template-columns:auto auto;justify-content:space-between;--h:40.6vw}
 .craft-triptych .text{grid-column:1/-1;max-width:420px;justify-self:center;padding-bottom:28px}
 .craft-triptych .cut{justify-self:auto}
@@ -77,7 +79,6 @@ html,.nav,.hero{background:#fff}
  .hero .pic{-webkit-mask-image:none;mask-image:none}
  .hero .frame{left:0;top:0;height:var(--hh);width:calc(var(--hh) * 1.5)}
  .hero .words{left:calc(var(--hh) * 1.02 + 36px)}
- .hero .tag{left:var(--g);bottom:14px}
  .story.craft-triptych{grid-template-columns:auto minmax(0,1fr) auto;--h:clamp(310px,28vw,540px)}
  .craft-triptych .text{grid-column:auto;text-align:center;max-width:380px;padding:24px 16px;align-self:center}
  .craft-triptych .text p:last-child{margin-inline:auto;font-size:21px}
@@ -98,3 +99,34 @@ html,.nav,.hero{background:#fff}
  .ring .steps{min-height:190px}
 }
 @media(prefers-reduced-motion:reduce){.ring[data-still="true"] .steps{min-height:0}.gempause{display:none}}
+
+/* ROUND 2 (13 Nov): no word is cut. The rising heading lines keep their clip for the entrance, with room above and below for tall letters and tails. */
+.rise{padding:.16em .06em .24em;margin:-.16em -.06em -.24em}
+[data-needs] .rise>span{transform:translateY(150%)}
+[data-needs].in .rise>span{transform:none}
+.story .text p:last-child{max-width:36ch}
+
+/* THE CLOSING: words in the middle, the floating jewellery picture behind them once it is in the folder. */
+.room{padding-bottom:0}
+.finale{position:relative;overflow:hidden;display:grid;place-items:center;text-align:center;background:#f1f1f1;padding:72px max(var(--g),env(safe-area-inset-right)) 84px max(var(--g),env(safe-area-inset-left))}
+.finale .art{position:absolute;inset:0;background:#f6f5f2 center/cover no-repeat;opacity:0;transition:opacity .6s var(--ease)}
+.finale[data-art="ok"]{min-height:min(100svh,62vw);padding-top:96px;padding-bottom:96px}
+.finale[data-art="ok"] .art{opacity:1}
+.finale .mid{position:relative;isolation:isolate;max-width:560px}
+.finale[data-art="ok"] .mid::before{content:"";position:absolute;z-index:-1;inset:-64px -96px;background:radial-gradient(closest-side,rgba(255,255,255,.94),rgba(255,255,255,.8) 58%,rgba(255,255,255,0))}
+.finale h2{font:400 clamp(40px,11vw,60px)/1 var(--display);letter-spacing:-.01em;margin:12px 0 18px}
+.finale .next{font:400 19px/1.45 var(--display);color:var(--ink);max-width:34ch;margin:0 auto 28px;text-wrap:pretty}
+.close{display:block;padding-top:0}
+.close .foot{margin-top:0;border-top:0;padding-top:28px}
+@media(min-width:900px){
+ .story:not(.craft-triptych):not(.band):not(.plain) .text{max-width:620px}
+ .finale{padding-top:112px;padding-bottom:128px}
+ .finale h2{font-size:clamp(60px,5.4vw,96px);line-height:.96;margin:16px 0 24px}
+ .finale .next{font-size:22px}
+ .close{padding:0 var(--g) 40px}
+ .close .foot{padding-top:40px;border-top:1px solid var(--line)}
+}
+/* hero marks: three plain lines on desk, so no divider is left hanging on a wrapped row */
+@media (min-width:900px){.hero .marks{display:block}.hero .marks li{border-left:0;padding:0;margin:0 0 7px}}
+/* stone passport: the sample note is plain words, not a boxed tag */
+.chip{border:0;padding:0;background:none}
