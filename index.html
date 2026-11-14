@@ -486,7 +486,7 @@
 >
   <path d="M7 7h10v10" />
   <path d="M7 17 17 7" />
-</svg></a><p class="fine">Sample passports. The house confirms every detail before a viewing.</p></div></section><section class="story plain" data-needs hidden aria-labelledby="hand-h"><figure><img data-pic data-ext="webp" data-base="assets/one-pager/products/s8-hands-ring-1500" alt="A hand resting on linen, wearing an oval blue gemstone ring" decoding="async"></figure><div class="text"><p class="label">On the hand</p><h2 id="hand-h"><span class="rise"><span>Try it on</span></span><span class="rise"><span>before you decide.</span></span></h2><p>A ring is seen from above and always on the move. Put it on, turn your hand and watch how the stone sits.</p></div></section><section class="story band" data-needs hidden aria-labelledby="loupe-h"><div class="text"><p class="label">Under the loupe</p><h2 id="loupe-h"><span class="rise"><span>Look closer</span></span><span class="rise"><span>than the eye can.</span></span></h2><p>A loupe shows what the eye alone misses. At a viewing, look through one and ask anything about the stone in front of you.</p></div><figure class="cut" style=""><div class="gemfig" data-gem="teal" data-s=".97" data-boxes="780,298,917,435"><img data-pic data-ext="webp" data-base="assets/one-pager/people/loupe-detail" width="1536" height="1024" alt="Hands holding a loupe beside a round gemstone held in tweezers" decoding="async"></div></figure></section><section class="close" aria-label="House details"><div class="foot"><span class="brand">Ascent Mastercuts by Priyantha Gems</span><dl class="facts"><div><dt>Visit</dt><dd>By appointment</dd></div><div><dt>Hours</dt><dd>By appointment</dd></div><div><dt>Contact</dt><dd><a href="https://wa.me/94767412531?text=Hello%2C%20from%20the%20Ascent%20Mastercuts%20by%20Priyantha%20Gems%20page." target="_blank" rel="noopener">Message the house on WhatsApp</a></dd></div><div><dt>Policies</dt><dd>To be confirmed by the house</dd></div></dl><p>The pictures on this page are generated samples, standing in for the house's own photographs.</p></div></section></main><script>
+</svg></a><p class="fine">Sample passports. The house confirms every detail before a viewing.</p></div></section><section class="story plain" data-needs hidden aria-labelledby="hand-h"><figure><img data-pic data-ext="webp" data-base="assets/one-pager/products/s8-hands-ring-1500" alt="A hand resting on linen, wearing an oval blue gemstone ring" decoding="async"></figure><div class="text"><p class="label">On the hand</p><h2 id="hand-h"><span class="rise"><span>Try it on</span></span><span class="rise"><span>before you decide.</span></span></h2><p>A ring is seen from above and always on the move. Put it on, turn your hand and watch how the stone sits.</p></div></section><section class="story band" data-needs hidden aria-labelledby="loupe-h"><div class="text"><p class="label">Under the loupe</p><h2 id="loupe-h"><span class="rise"><span>Look closer</span></span><span class="rise"><span>than the eye can.</span></span></h2><p>A loupe shows what the eye alone misses. At a viewing, look through one and ask anything about the stone in front of you.</p></div><figure class="cut" data-zoom><div class="gemfig" data-gem="teal" data-s=".97" data-boxes="698,447,834,576"><img data-pic data-ext="webp" data-base="assets/one-pager/people/loupe-top" width="1536" height="1024" alt="Seen from above, two hands hold a loupe over a round gemstone gripped in tweezers" decoding="async"></div><div class="zl" role="img" aria-label="The inside of the gemstone under magnification: growth lines, fine needles and tiny crystals" aria-hidden="true"><img data-c="teal" data-src="assets/one-pager/people/zoom/teal.webp" width="1254" height="1254" alt="" decoding="async"><img data-c="royal" data-src="assets/one-pager/people/zoom/royal.webp" width="1254" height="1254" alt="" decoding="async"><img data-c="pink" data-src="assets/one-pager/people/zoom/pink.webp" width="1254" height="1254" alt="" decoding="async"><img data-c="orange" data-src="assets/one-pager/people/zoom/orange.webp" width="1254" height="1254" alt="" decoding="async"><span class="zl-note">An illustration of what a loupe can show</span></div><button type="button" class="zbtn">Zoom</button></figure></section><section class="close" aria-label="House details"><div class="foot"><span class="brand">Ascent Mastercuts by Priyantha Gems</span><dl class="facts"><div><dt>Visit</dt><dd>By appointment</dd></div><div><dt>Hours</dt><dd>By appointment</dd></div><div><dt>Contact</dt><dd><a href="https://wa.me/94767412531?text=Hello%2C%20from%20the%20Ascent%20Mastercuts%20by%20Priyantha%20Gems%20page." target="_blank" rel="noopener">Message the house on WhatsApp</a></dd></div><div><dt>Policies</dt><dd>To be confirmed by the house</dd></div></dl><p>The pictures on this page are generated samples, standing in for the house's own photographs.</p></div></section></main><script>
 // GEMSTONE COLOUR (13 Nov): one recipe for every stone on the page. Only pixels that carry the stone's own hue are touched,
 // so faces, skin, hands, tools and metal stay exactly as supplied. The master picture is never altered or crossfaded.
 window.HOP = (() => {
@@ -893,4 +893,30 @@ window.HOP = (() => {
   f.addEventListener('change', draw); f.addEventListener('submit', e => e.preventDefault()); draw();
   if (box) Promise.all(Object.keys(PIC).filter(k => !PIC[k][3] || HAVE.includes(PIC[k][3])).map(look)).then(draw);
 })();
-</script></body></html>
+</script><script>
+(() => {
+  // THE LOUPE ZOOM (14 Nov): Zoom dives through the lens into a close-up of the stone in its current colour.
+  // Lens measured on loupe-top.webp (1536 x 1024): centre 766,512, glass radius 127, outer rim 182.
+  const cut = document.querySelector('.cut[data-zoom]');
+  if (!cut) return;
+  const fig = cut.querySelector('.gemfig'), zl = cut.querySelector('.zl'), btn = cut.querySelector('.zbtn'), sec = cut.closest('section');
+  const LX = 766 / 1536, LY = 512 / 1024, LR = 127 / 1536, RIM = 182 / 1536;
+  const place = () => {
+    const w = fig.offsetWidth, h = fig.offsetHeight, x = fig.offsetLeft + w * LX, y = fig.offsetTop + h * LY, st = cut.style;
+    st.setProperty('--lx', x + 'px'); st.setProperty('--ly', y + 'px'); st.setProperty('--lr', w * LR + 'px');
+    st.setProperty('--by', y + w * RIM + 14 + 'px'); st.setProperty('--big', Math.hypot(cut.clientWidth, cut.clientHeight) + 'px');
+  };
+  place();
+  'ResizeObserver' in window ? new ResizeObserver(place).observe(cut) : addEventListener('resize', place);
+  let loaded = false;
+  const load = () => { if (loaded) return; loaded = true; zl.querySelectorAll('img[data-src]').forEach(i => { i.src = i.dataset.src; }); };
+  if ('IntersectionObserver' in window) { const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { load(); io.disconnect(); } }, { rootMargin: '800px 0px' }); io.observe(cut); } else load();
+  const show = () => { const k = sec.dataset.gemColour || 'teal'; zl.querySelectorAll('img').forEach(i => i.classList.toggle('on', i.dataset.c === k)); };
+  show(); new MutationObserver(show).observe(sec, { attributes: true, attributeFilter: ['data-gem-colour'] });
+  const set = on => { load(); cut.classList.toggle('z', on); btn.textContent = on ? 'Zoom out' : 'Zoom'; zl.setAttribute('aria-hidden', String(!on)); };
+  btn.addEventListener('click', () => set(!cut.classList.contains('z')));
+  zl.addEventListener('click', () => set(false));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && cut.classList.contains('z')) { set(false); btn.focus(); } });
+})();
+</script>
+</body></html>
