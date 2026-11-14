@@ -198,3 +198,24 @@ html[data-gem-paused="true"] .finale .fl{animation-play-state:paused}
  .cut[data-zoom] .gemfig,.zl,.zl img,.zbtn{transition:opacity .3s ease}
  .cut[data-zoom].z .gemfig,.zl img{transform:none}
 }
+
+/* ARRIVAL TIMING (14 Nov, on Thulaib's word "everything comes too early"). Each section waits until its first picture or words pass
+   70 per cent of the screen height (the script adds .in). The picture comes first, then the heading lines, then the paragraph.
+   The ring waits until its section is 40 per cent up the screen, appears, holds still for a fifth of its scroll, then turns.
+   Transform and opacity only; reduced motion shows everything still. */
+.ring{height:200svh}
+@media(prefers-reduced-motion:no-preference){
+ .story[data-needs]:not(.craft-triptych)>figure{opacity:0;transform:translate3d(0,48px,0);transition:opacity 1.1s var(--ease),transform 1.5s cubic-bezier(.16,1,.3,1)}
+ .story[data-needs]>figure.cut.to-left{transform:translate3d(-8%,0,0)}
+ .story[data-needs]>figure.cut.to-right{transform:translate3d(8%,0,0)}
+ .story[data-needs]:not(.craft-triptych) .text .label,.story[data-needs]:not(.craft-triptych) .text>p:last-child{opacity:0;transform:translate3d(0,18px,0);transition:opacity .9s var(--ease) .55s,transform 1.1s cubic-bezier(.16,1,.3,1) .55s}
+ .story[data-needs]:not(.craft-triptych) .text .label{transition-delay:.15s}
+ [data-needs] .rise>span{transition-delay:.3s}
+ [data-needs] .rise:nth-child(2)>span{transition-delay:.4s}
+ .story[data-needs].in>figure,.story[data-needs].in>figure.cut,.story[data-needs].in .text .label,.story[data-needs].in .text>p:last-child{opacity:1;transform:none}
+ .rv{opacity:0;transform:translate3d(0,24px,0);transition:opacity .9s var(--ease),transform 1.2s cubic-bezier(.16,1,.3,1)}
+ .rv.in{opacity:1;transform:none}
+ .ring[data-still="false"] .turn{opacity:0;transform:translate3d(0,40px,0) scale(.94);transition:opacity 1s var(--ease),transform 1.4s cubic-bezier(.16,1,.3,1)}
+ .ring[data-still="false"] .steps{opacity:0;transform:translate3d(0,22px,0);transition:opacity .9s var(--ease) .5s,transform 1.1s cubic-bezier(.16,1,.3,1) .5s}
+ .ring[data-still="false"].in .turn,.ring[data-still="false"].in .steps{opacity:1;transform:none}
+}

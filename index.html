@@ -346,7 +346,7 @@
       .show+.pick fieldset:first-child{border-top:1px solid var(--line)}
       .finder .say{font-size:38px;line-height:1.1;margin-bottom:28px}
     }
-  </style><link rel="stylesheet" href="layout-polish.css?v=7"></head><body><header class="nav"><a class="brand" href="#top">Ascent Mastercuts <span class="by">by Priyantha Gems</span></a><div class="right"><nav class="links" aria-label="Sections"><a href="#pieces">Gemstones</a></nav><a class="door" href="#viewing"><span>Arrange a viewing</span></a></div></header><main id="top"><section class="hero" aria-label="The house"><div class="frame"><figure class="pic" data-gem="royal" data-s=".99" data-boxes="600,506,707,625"><img src="assets/one-pager/people/hero-royal-blue.webp" width="1536" height="1024" alt="A woman in profile looks at an oval gemstone held between her finger and thumb" fetchpriority="high" decoding="async"></figure></div><div class="words"><p class="label">Master stonecutters of Ceylon</p><h1><span>It begins </span><span>with <em>colour.</em></span></h1><p class="sub">Coloured gemstones, cut in our own workshop. Choose a loose stone or picture the piece it could become.</p><div class="doors"><a class="btn solid" href="#pieces">Explore gemstones <svg
+  </style><link rel="stylesheet" href="layout-polish.css?v=8"></head><body><header class="nav"><a class="brand" href="#top">Ascent Mastercuts <span class="by">by Priyantha Gems</span></a><div class="right"><nav class="links" aria-label="Sections"><a href="#pieces">Gemstones</a></nav><a class="door" href="#viewing"><span>Arrange a viewing</span></a></div></header><main id="top"><section class="hero" aria-label="The house"><div class="frame"><figure class="pic" data-gem="royal" data-s=".99" data-boxes="600,506,707,625"><img src="assets/one-pager/people/hero-royal-blue.webp" width="1536" height="1024" alt="A woman in profile looks at an oval gemstone held between her finger and thumb" fetchpriority="high" decoding="async"></figure></div><div class="words"><p class="label">Master stonecutters of Ceylon</p><h1><span>It begins </span><span>with <em>colour.</em></span></h1><p class="sub">Coloured gemstones, cut in our own workshop. Choose a loose stone or picture the piece it could become.</p><div class="doors"><a class="btn solid" href="#pieces">Explore gemstones <svg
   class="ic" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
@@ -707,6 +707,7 @@ window.HOP = (() => {
   const base = el.dataset.frames, px = innerWidth >= 760 && devicePixelRatio > 1.3 ? 1200 : 560, sets = {}; // the ring is drawn at most 540 px wide, so only sharp screens need the large frames
   const BOX = {"turn":[[0.137,0.037,0.637,0.862],[0.122,0.044,0.757,0.479],[0.118,0.052,0.497,0.378],[0.117,0.058,0.496,0.32],[0.118,0.064,0.502,0.335],[0.124,0.066,0.501,0.347],[0.131,0.075,0.51,0.36],[0.141,0.072,0.518,0.371],[0.154,0.086,0.524,0.381],[0.163,0.09,0.532,0.39],[0.173,0.094,0.545,0.398],[0.188,0.098,0.561,0.407],[0.205,0.099,0.569,0.438],[0.222,0.093,0.638,0.767],[0.24,0.102,0.657,0.7],[0.263,0.103,0.609,0.743],[0.285,0.102,0.628,0.718],[0.311,0.103,0.626,0.442],[0.33,0.103,0.636,0.44],[0.349,0.105,0.652,0.439],[0.367,0.102,0.66,0.436],[0.383,0.101,0.672,0.447],[0.398,0.1,0.69,0.468],[0.412,0.102,0.706,0.678],[0.422,0.101,0.717,0.692],[0.407,0.098,0.732,0.702],[0.387,0.096,0.743,0.703],[0.366,0.088,0.757,0.715],[0.347,0.091,0.776,0.728],[0.33,0.087,0.794,0.736],[0.316,0.082,0.81,0.741],[0.304,0.079,0.824,0.751],[0.293,0.076,0.836,0.761],[0.286,0.072,0.846,0.764],[0.273,0.069,0.856,0.769],[0.281,0.065,0.863,0.874],[0.273,0.062,0.869,0.919],[0.268,0.058,0.874,0.772],[0.264,0.054,0.878,0.79],[0.268,0.052,0.882,0.812],[0.276,0.048,0.882,0.829],[0.275,0.045,0.884,0.838],[0.282,0.043,0.882,0.843],[0.3,0.039,0.874,0.861],[0.329,0.037,0.865,0.866],[0.338,0.036,0.856,0.856],[0.454,0.037,0.843,0.347],[0.436,0.039,0.829,0.323],[0.417,0.044,0.813,0.376],[0.398,0.052,0.797,0.324],[0.273,0.062,0.781,0.354],[0.36,0.076,0.765,0.347],[0.344,0.091,0.798,0.5],[0.187,0.105,0.739,0.463],[0.318,0.119,0.728,0.827],[0.31,0.133,0.719,0.427],[0.303,0.145,0.711,0.807],[0.297,0.154,0.707,0.8],[0.297,0.162,0.704,0.795],[0.296,0.163,0.703,0.794]],"apart":[[0.163,0.256,0.703,0.817],[0.295,0.251,0.703,0.507],[0.162,0.246,0.706,0.599],[0.293,0.241,0.705,0.507],[0.162,0.231,0.706,0.599],[0.292,0.217,0.706,0.507],[0.163,0.2,0.706,0.598],[0.296,0.188,0.705,0.507],[0.162,0.173,0.705,0.597],[0.292,0.157,0.705,0.507],[0.163,0.143,0.705,0.597],[0.163,0.129,0.705,0.599],[0.163,0.119,0.705,0.599],[0.297,0.111,0.705,0.499],[0.162,0.105,0.705,0.599],[0.292,0.104,0.705,0.499],[0.162,0.102,0.705,0.598],[0.154,0.097,0.705,0.622],[0.292,0.095,0.705,0.489],[0.162,0.091,0.705,0.599],[0.292,0.085,0.705,0.478],[0.303,0.076,0.705,0.469],[0.303,0.067,0.705,0.461],[0.292,0.061,0.705,0.452],[0.162,0.053,0.705,0.599],[0.292,0.045,0.828,0.585],[0.291,0.039,0.705,0.428],[0.292,0.032,0.698,0.422],[0.162,0.026,0.697,0.599],[0.298,0.022,0.696,0.431],[0.162,0.019,0.697,0.599],[0.291,0.018,0.698,0.431]]};
   const STOPS = [[0, 'royal'], [.22, 'orange'], [.42, 'orange'], [.5, 'pink'], [.58, 'teal'], [.8, 'teal'], [.97, 'royal'], [1.01, 'royal']];
+  const HOLD = .2;
   let started = false, queued = false;
   const clamp = v => Math.max(0, Math.min(1, v)), ease = v => { v = clamp(v); return v * v * (3 - 2 * v); };
   const tint = p => { let i = 0; while (i < STOPS.length - 2 && p >= STOPS[i + 1][0]) i++; const s = STOPS[i], e = STOPS[i + 1], t = Math.round(ease((p - s[0]) / (e[0] - s[0])) * 16) / 16; return s[1] === e[1] || t === 0 ? [s[1], s[1], 0] : t === 1 ? [e[1], e[1], 0] : [s[1], e[1], t]; };
@@ -738,7 +739,8 @@ window.HOP = (() => {
   const update = () => {
     queued = false;
     if (el.dataset.still === 'true') return;
-    const travel = el.offsetHeight - innerHeight, p = clamp(-el.getBoundingClientRect().top / travel);
+    // HOLD (14 Nov): the first fifth of the pinned scroll keeps the ring still on its first step, so it arrives, settles and only then turns.
+    const travel = el.offsetHeight - innerHeight, p = clamp((-el.getBoundingClientRect().top / travel - HOLD) / (1 - HOLD));
     const n = p < .3 ? 0 : p < .72 ? 1 : 2, col = tint(p);
     let f = 59, af = -1;
     if (p < .32) f = 59 * ease(p / .32);
@@ -769,6 +771,9 @@ window.HOP = (() => {
     el.dataset.still = String(calm.matches);
     if (calm.matches) { steps.forEach(s => s.classList.add('on')); return; }
     steps.forEach((s, i) => s.classList.toggle('on', i === 0));
+    // ARRIVAL (14 Nov): the ring and its first words appear only when the section's top has climbed past 40 per cent of the screen.
+    if ('IntersectionObserver' in window && !el.classList.contains('in')) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); el.classList.add('in'); } }, { rootMargin: '0px 0px -60% 0px' }).observe(el);
+    else el.classList.add('in');
     if ('IntersectionObserver' in window) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); start(); } }, { rootMargin: '100% 0px' }).observe(el);
     else start();
     ask();
@@ -783,7 +788,11 @@ window.HOP = (() => {
   // THE NEW SECTIONS: a section shows only when every picture it needs has answered; then its heading rises once.
   const EXT = ['jpg', 'png', 'jpeg', 'webp'];
   const find = img => new Promise(done => { let k = 0; const next = () => { if (k >= (img.dataset.ext ? 1 : EXT.length)) return done(false); const E = img.dataset.ext ? [img.dataset.ext] : EXT, src = img.dataset.base + '.' + E[k++], t = new Image(); t.onload = () => { img.src = src; done(true); }; t.onerror = next; t.src = src; }; next(); });
-  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .25 }) : null;
+  // ARRIVAL (14 Nov): a section animates only once its first picture or words have climbed past 70 per cent of the screen height,
+  // so nothing plays below the fold or on white space. The observer watches the section's first real child, never the section's padding.
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { (e.target._sec || e.target).classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -30% 0px', threshold: 0 }) : null;
+  const watch = (sec, els) => { if (!io) return sec.classList.add('in'); (els && els.length ? els : [sec]).forEach(el => { el._sec = sec; io.observe(el); }); }; // whichever child reaches the line first wins: the picture on desk, the words on a phone
+  document.querySelectorAll('.finder .head,.pieces .text').forEach(el => { el.classList.add('rv'); watch(el, [el]); });
   // THE CLOSING (13 Nov): four cut-out pieces float round the words. Each drifts in from its own edge when the section arrives, then floats.
   // Every 3.5 seconds the stones hand their colours round the circle: ring takes the cufflinks' colour, pendant the ring's, earrings the pendant's,
   // cufflinks the earrings'. Only stone pixels are painted (HOP.mix), so metal, chain and ground never change. If any piece fails to load the
@@ -836,7 +845,7 @@ window.HOP = (() => {
     Promise.all([...sec.querySelectorAll('[data-pic]')].map(find)).then(r => {
       if (!r.every(Boolean)) return;
       sec.hidden = false;
-      io ? io.observe(sec) : sec.classList.add('in');
+      watch(sec, [...sec.querySelectorAll(':scope > figure, :scope > .text')]);
     });
   });
 })();
